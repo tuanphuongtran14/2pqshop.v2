@@ -9,8 +9,8 @@ const {
   resetPassword,
   changePassword,
 } = require('../controllers/user.controllers');
-const authentication = require('../middlewares/authentication');
-const permission = require('../middlewares/permission');
+const authentication = require('../middleware/authentication');
+const permission = require('../middleware/permission');
 
 // Sign in & Sign up
 router.post('/auth/local', signIn);

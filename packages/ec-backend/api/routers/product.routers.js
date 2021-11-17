@@ -9,8 +9,8 @@ const {
   countProducts,
   deleteProductById,
 } = require('../controllers/product.controllers');
-const authentication = require('../middlewares/authentication');
-const permission = require('../middlewares/permission');
+const authentication = require('../middleware/authentication');
+const permission = require('../middleware/permission');
 
 router.get('/search', searchProducts);
 router.get('/count', countProducts);

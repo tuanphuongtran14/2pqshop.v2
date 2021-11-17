@@ -17,7 +17,7 @@ module.exports = {
 
       const params = req.body;
       // Check if user exists
-      const user = await User.findOne({ email: params.email });
+      const user = await User.findOne({ email: params.email }).populate('role');
       if (!user) {
         return handleError.unauthorized(
           res,

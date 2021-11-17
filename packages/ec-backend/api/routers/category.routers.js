@@ -6,9 +6,9 @@ const {
   updateCategoryById,
   countCategories,
   deleteCategoryById,
-} = require('../controllers/product.controllers');
-const authentication = require('../middlewares/authentication');
-const permission = require('../middlewares/permission');
+} = require('../controllers/category.controllers');
+const authentication = require('../middleware/authentication');
+const permission = require('../middleware/permission');
 
 router.get('/count', countCategories);
 router.delete('/:id', authentication, permission, deleteCategoryById);

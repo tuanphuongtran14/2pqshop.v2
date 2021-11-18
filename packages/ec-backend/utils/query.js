@@ -14,13 +14,14 @@ module.exports = (modelName) => ({
     if (!_.isEmpty(_sort)) {
       _sort.created_at = 'desc';
     }
-    const total = await db[modelName].estimatedDocumentCount();
+
     const results = await db[modelName]
       .find(queryParams)
       .sort(_sort)
       .limit(_.toInteger(pageSize))
       .skip((page - 1) * pageSize)
       .populate(populates);
+    const total = results.length;
 
     return {
       results,

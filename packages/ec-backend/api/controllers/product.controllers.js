@@ -2,6 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 const multer = require('multer');
 const path = require('path');
+const _ = require('lodash');
 const { Product } = require('../models');
 const query = require('../../utils/query');
 const handleError = require('../../utils/handleErrorResponse');
@@ -162,8 +163,19 @@ module.exports = {
   searchProducts: async (req, res) => {
     try {
       const { _q } = req.query;
-      const products = await Product.find({ $text: { $search: _q } });
-      return res.status(200).json(products);
+      _.unset(req.query, '_q');
+      const queryParams = {
+        ...req.query,
+        $text: { $search: _q },
+      };
+      const populates = [
+        {
+          path: 'options',
+          model: 'Variation',
+        },
+      ];
+      const page = await query(MODEL_NAME).findPage(queryParams, populates);
+      return res.status(200).json(page);
     } catch (ex) {
       return handleError.badGateway(res, `Error: ${ex}`);
     }

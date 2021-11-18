@@ -10,7 +10,7 @@ module.exports = {
       category: Joi.string().min(1).max(100).required(),
       shortDesc: Joi.string().max(1024).required(),
       options: Joi.alternatives().try(
-        Joi.array().items(Joi.object().keys({
+        Joi.array().items(Joi.object({
           size: Joi.string().valid('S', 'M', 'L', 'XL'),
           quantity: Joi.number().min(0),
           remaining: Joi.number().min(0),

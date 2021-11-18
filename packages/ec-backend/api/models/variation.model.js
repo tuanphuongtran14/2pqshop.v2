@@ -11,10 +11,6 @@ exports.initializeModel = (mongoose) => {
         enum: ['S', 'M', 'L', 'XL'],
         required: true,
       },
-      quantity: {
-        type: Number,
-        required: true,
-      },
       remaining: {
         type: Number,
         required: true,

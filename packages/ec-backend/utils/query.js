@@ -1,3 +1,5 @@
+/* eslint-disable prefer-arrow-callback */
+/* eslint-disable func-names */
 const _ = require('lodash');
 const db = require('../api/models');
 
@@ -31,7 +33,22 @@ module.exports = (modelName) => ({
     };
   },
 
-  create: (params) => db[modelName].create(params),
+  create: async (params, populates) => {
+    const entity = new db[modelName](params);
+    await entity.save();
+
+    if (!populates) {
+      return entity;
+    }
+    
+    db[modelName].populate(entity, populates, function (err, result) {
+      if (err) {
+        throw err;
+      }
+
+      return result;
+    });
+  },
 
   updateById: (id, params) => db[modelName].findByIdAndUpdate(id, params),
 

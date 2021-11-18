@@ -26,6 +26,8 @@ module.exports = {
     {
       roleKey: 'user',
       permissions: [
+        { path: '/categories', isExactly: false },
+        { path: '/tags', isExactly: false },
       ],
     },
     {
@@ -46,6 +48,9 @@ module.exports = {
         { path: '/users', isExactly: false },
         { path: '/roles', isExactly: false },
         { path: '/products', isExactly: false },
+        { path: '/categories', isExactly: false },
+        { path: '/tags', isExactly: false },
+        { path: '/carts', isExactly: false },
       ],
     },
   ],

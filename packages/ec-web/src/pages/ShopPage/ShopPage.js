@@ -17,20 +17,30 @@ class ShopPage extends Component {
     super(props);
     this.state = {
       page: 1,
-      pageSize: 6,
+      pageSize: 9,
       categoriesList: [],
       tagsList: [],
+      queryParams: JSON.parse(
+        '{"' +
+          decodeURI(
+            this.props.history.location.search
+              .substring(1)
+              .replace(/&/g, '","')
+              .replace(/=/g, '":"')
+          ) +
+          '"}'
+      ),
     };
   }
 
   componentDidMount() {
-    this.props.fetchProductsRequest(this.state.page, this.state.pageSize);
+    this.props.fetchProductsRequest(this.state.page, this.state.pageSize, this.state.queryParams);
     this.props.getDataPage(this.state.page);
     callApi("categories", "GET")
       .then((res) => {
         if (res && res.status === 200)
           this.setState({
-            categoriesList: res.data,
+            categoriesList: res.data.results,
           });
       })
       .catch((err) => {
@@ -40,35 +50,25 @@ class ShopPage extends Component {
       .then((res) => {
         if (res && res.status === 200)
           this.setState({
-            tagsList: res.data,
+            tagsList: res.data.results,
           });
-      })
-      .catch((err) => {
-        // if (err && err.response) alert(err.response.data);
-      });
-    callApi("products/count", "GET")
-      .then((res) => {
-        if (res && res.status === 200) {
-          this.setState({
-            productsNumber: res.data,
-          });
-
-          if (this.props.products.length === res.data)
-            document
-              .getElementById("loadMoreBtn")
-              .setAttribute("disabled", true);
-        }
       })
       .catch((err) => {
         // if (err && err.response) alert(err.response.data);
       });
   }
 
-  displayFilterCategories = () => {
-    return this.state.categoriesList.map((category, index) => {
+  displayFilterCategories = () => {return this.state.categoriesList.map((category, index) => {
       return (
         <li key={index}>
-          <Link type="button" to={`/shop/categories?value=${category.name}`}>
+          <Link type="button" to={`/shop?category=${category.name}`} onClick={() => {
+            const queryParams = {
+              ...this.state.queryParams,
+              category: category.name
+            } 
+            this.setState({ queryParams });
+            this.props.fetchProductsRequest(this.state.page, this.state.pageSize, queryParams);
+          }}>
             {category.name}
           </Link>
         </li>
@@ -88,10 +88,44 @@ class ShopPage extends Component {
 
   handlePageChange(pageNumber) {
     this.setState({page: pageNumber});
-    this.props.fetchProductsRequest(pageNumber, this.state.pageSize);
+    this.props.fetchProductsRequest(pageNumber, this.state.pageSize, this.state.queryParams);
+  }
+
+  renderProductContainer() {
+    if (this.props.productsPagination.total > 0) {
+      return (
+        <>
+        <div className="row">
+          <ShopContainer history={this.props.history} />
+        </div>
+          <div className="row pagination">
+            <Pagination
+              activePage={this.state.page}
+              itemsCountPerPage={this.state.pageSize}
+              totalItemsCount={this.props.productsPagination.total}
+              pageRangeDisplayed={5}
+              onChange={this.handlePageChange.bind(this)}
+              breakClassName={'page-item'}
+              breakLinkClassName={'page-link'}
+              containerClassName={'pagination'}
+              pageClassName={'page-item'}
+              pageLinkClassName={'page-link'}
+              previousClassName={'page-item'}
+              previousLinkClassName={'page-link'}
+              nextClassName={'page-item'}
+              nextLinkClassName={'page-link'}
+              activeClassName={'active'}
+            />
+        </div>
+        </>
+      )
+    }
+    
+    return (<p class="mt-5 pt-5 text-center">Không có sản phẩm</p>);
   }
 
   render() {
+    console.log(this.props.history);
     return (
       <Fragment>
         <Helmet>
@@ -247,28 +281,7 @@ class ShopPage extends Component {
                     </div>
                   </div>
                 </div>
-                <div className="row">
-                  <ShopContainer history={this.props.history} />
-                </div>
-                  <div className="row pagination">
-                    <Pagination
-                      activePage={this.state.page}
-                      itemsCountPerPage={this.state.pageSize}
-                      totalItemsCount={22}
-                      pageRangeDisplayed={5}
-                      onChange={this.handlePageChange.bind(this)}
-                      breakClassName={'page-item'}
-                      breakLinkClassName={'page-link'}
-                      containerClassName={'pagination'}
-                      pageClassName={'page-item'}
-                      pageLinkClassName={'page-link'}
-                      previousClassName={'page-item'}
-                      previousLinkClassName={'page-link'}
-                      nextClassName={'page-item'}
-                      nextLinkClassName={'page-link'}
-                      activeClassName={'active'}
-                    />
-                  </div>
+                { this.renderProductContainer() }
               </div>
             </div>
           </div>
@@ -282,12 +295,13 @@ class ShopPage extends Component {
 const mapStateToProps = (state) => {
   return {
     page: state.page,
+    productsPagination: state.products.pagination,
   };
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchProductsRequest: (page, pageSize) => {
-      dispatch(actions.fetchProductsRequest(page, pageSize));
+    fetchProductsRequest: (page, pageSize, queryParams) => {
+      dispatch(actions.fetchProductsRequest(page, pageSize, queryParams));
     },
     getDataPage: (data) => {
       dispatch(actions.getDataPage(data));

@@ -11,16 +11,16 @@ export const fetchProducts = (products) => {
 };
 
 //Lên API lấy dữ liệu products về
-export const fetchProductsRequest = (page, pageSize) => {
+export const fetchProductsRequest = (page = 1, pageSize = 20, queryParams) => {
   return (dispatch) => {
-    let query = "?";
+    const queryString = new URLSearchParams({
+      ...queryParams,
+      page,
+      pageSize
+    }).toString();
 
-    if (page) query += `page=${page}&`;
-
-    if (pageSize) query += `pageSize=${pageSize}&`;
-
-    return callApi(`products${query}`, "GET", null).then((res) => {
-      dispatch(fetchProducts(res.data.results));
+    return callApi(`products?${queryString}`, "GET", null).then((res) => {
+      dispatch(fetchProducts(res.data));
     });
   };
 };

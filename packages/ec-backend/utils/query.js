@@ -21,8 +21,8 @@ module.exports = (modelName) => ({
       .limit(_.toInteger(pageSize))
       .skip((page - 1) * pageSize)
       .populate(populates);
-    const total = results.length;
 
+    const total = await db[modelName].countDocuments(queryParams);
     return {
       results,
       pagination: {
@@ -41,7 +41,7 @@ module.exports = (modelName) => ({
     if (!populates) {
       return entity;
     }
-    
+
     db[modelName].populate(entity, populates, function (err, result) {
       if (err) {
         throw err;
@@ -51,7 +51,17 @@ module.exports = (modelName) => ({
     });
   },
 
-  updateById: (id, params) => db[modelName].findByIdAndUpdate(id, params),
+  updateById: async (id, params, populates) => {
+    let entity = await db[modelName].findByIdAndUpdate(id, params);
+    entity = await db[modelName].findById(id);
+
+    if (!populates) {
+      return entity;
+    }
+
+    const result = await db[modelName].populate(entity, populates);
+    return result;
+  },
 
   deleteById: (id) => db[modelName].findByIdAndDelete(id),
 

@@ -3,7 +3,6 @@
 const multer = require('multer');
 const path = require('path');
 const _ = require('lodash');
-const { Product } = require('../models');
 const query = require('../../utils/query');
 const handleError = require('../../utils/handleErrorResponse');
 const validate = require('../validations/product.validations');
@@ -85,7 +84,7 @@ module.exports = {
   findProductBySlug: async (req, res) => {
     try {
       const { slug } = req.params;
-      const product = await query('Product').findOne({ slug });
+      const product = await query('Product').findOne({ slug }, 'options');
       if (!product) {
         return handleError.notFound(
           res,
@@ -143,7 +142,8 @@ module.exports = {
             'Product.not.found',
           );
         }
-        return res.status(201).json(await Product.findById(id));
+
+        return res.status(201).json(product);
       } catch (ex) {
         return handleError.badGateway(res, `Error: ${ex}`);
       }
@@ -174,6 +174,44 @@ module.exports = {
           model: 'Variation',
         },
       ];
+      const page = await query(MODEL_NAME).findPage(queryParams, populates);
+      return res.status(200).json(page);
+    } catch (ex) {
+      return handleError.badGateway(res, `Error: ${ex}`);
+    }
+  },
+
+  findRelatedProduct: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const populates = [
+        {
+          path: 'options',
+          model: 'Variation',
+        },
+      ];
+      const product = await query(MODEL_NAME).findById(id);
+      if (!product) {
+        return handleError.notFound(
+          res,
+          'Product not found',
+          'Product.not.found',
+        );
+      }
+
+      const queryParams = {
+        $and: [
+          {
+            $or: [
+              { category: product.category },
+              { tags: { $in: product.tags } },
+              { price: { $gte: product.price - 50000, $lte: product.price + 50000 } },
+            ],
+          },
+          { _id: { $nin: [product._id] } },
+        ],
+        ...req.query,
+      };
       const page = await query(MODEL_NAME).findPage(queryParams, populates);
       return res.status(200).json(page);
     } catch (ex) {

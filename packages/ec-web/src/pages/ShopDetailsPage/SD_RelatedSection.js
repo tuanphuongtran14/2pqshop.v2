@@ -76,7 +76,7 @@ class SD_RelatedSection extends Component {
                         {image}
                         <div className="product__item__text">
                             <h6 >
-                                <Link to={`/${product.sku}`}>
+                                <Link to={`/san-pham/${product.slug}`}>
                                     {product.name}
                                 </Link>
                             </h6>

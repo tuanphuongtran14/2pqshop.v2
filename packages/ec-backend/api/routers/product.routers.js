@@ -8,11 +8,13 @@ const {
   searchProducts,
   countProducts,
   deleteProductById,
+  findRelatedProduct,
 } = require('../controllers/product.controllers');
 
 router.get('/search', searchProducts);
 router.get('/count', countProducts);
 router.get('/slug/:slug', findProductBySlug);
+router.get('/related/:id', findRelatedProduct);
 router.delete('/:id', deleteProductById);
 router.put('/:id', updateProductById);
 router.get('/:id', findProductById);

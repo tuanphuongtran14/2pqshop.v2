@@ -32,6 +32,12 @@ module.exports = {
 
   updateProductById: async (id, data, files = []) => {
     const params = data;
+    const populates = [
+      {
+        path: 'options',
+        model: 'Variation',
+      },
+    ];
     if (params.tags) {
       params.tags = _.isArray(params.tags)
         ? params.tags
@@ -70,7 +76,7 @@ module.exports = {
       params.options = variations.map(({ _id }) => _id);
     }
 
-    const product = await query('Product').updateById(id, params);
+    const product = await query('Product').updateById(id, params, populates);
     return product;
   },
 };

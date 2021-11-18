@@ -30,10 +30,11 @@ class ShopDetailsPage extends Component {
     }).init();
     const { slug } = this.props.match.params;
     if (prevProps.match.params.slug !== slug) {
-      var product = {};
-      var listProduct = [];
+      $("#preloder").css("opacity", "1").fadeIn("fast");
+      $(".loader").delay(200).fadeIn("slow");
+      let product = {};
+      let listProduct = [];
       if (this.props.match && this.props.match.params.slug) {
-        // window.location.reload();
         axios({
           method: "GET",
           url: `/products/slug/${this.props.match.params.slug}`,
@@ -42,7 +43,7 @@ class ShopDetailsPage extends Component {
             product = response.data;
             axios({
               method: "GET",
-              url: "/products",
+              url: `/products/related/${product.id}?page=1&pageSize=4`,
             }).then((response) => {
               if (response && response.status === 200) {
                 listProduct = response.data.results;
@@ -50,6 +51,8 @@ class ShopDetailsPage extends Component {
                   listProduct: listProduct,
                   product: product,
                 });
+                $(".loader").fadeOut();
+                $("#preloder").delay(200).fadeOut("slow");
               }
             });
           }
@@ -59,11 +62,11 @@ class ShopDetailsPage extends Component {
   }
 
   componentDidMount() {
-    // window.location.reload();
-    var product = {};
-    var listProduct = [];
+    let product = {};
+    let listProduct = [];
     if (this.props.match && this.props.match.params.slug) {
-      // window.location.reload();
+      $("#preloder").css("opacity", "1").fadeIn("fast");
+      $(".loader").delay(200).fadeIn("slow");
       axios({
         method: "GET",
         url: `/products/slug/${this.state.slug}`,
@@ -72,7 +75,7 @@ class ShopDetailsPage extends Component {
           product = response.data;
           axios({
             method: "GET",
-            url: "/products",
+            url: `/products/related/${product.id}?page=1&pageSize=4`,
           }).then((response) => {
             if (response && response.status === 200) {
               listProduct = response.data.results;
@@ -80,6 +83,8 @@ class ShopDetailsPage extends Component {
                 listProduct: listProduct,
                 product: product,
               });
+              $(".loader").fadeOut();
+              $("#preloder").delay(200).fadeOut("slow");
             }
           });
         }
@@ -123,19 +128,14 @@ class ShopDetailsPage extends Component {
   render() {
     return (
       <Fragment>
-        {/* <!-- Shop Details Section Begin --> */}
         <SDDetailsSection
           history={this.props.history}
           product={this.state.product}
         />
-        {/* <!-- Shop Details Section End --> */}
-
-        {/* <!-- Related Section Begin --> */}
         <SDRelatedSection
           listProduct={this.state.listProduct}
           history={this.props.history}
         />
-        {/* {/* <!-- Related Section End --> */}
         <SearchContainer history={this.props.history} />
       </Fragment>
     );

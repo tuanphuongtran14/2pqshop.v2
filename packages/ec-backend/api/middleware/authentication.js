@@ -2,11 +2,11 @@ const jwt = require('../../utils/jwt');
 const { User } = require('../models');
 const handleError = require('../../utils/handleErrorResponse');
 
-// eslint-disable-next-line consistent-return
 module.exports = async (req, res, next) => {
   const token = jwt.getJWT(req);
+  req.state = {};
   if (!token) {
-    return handleError.unauthorized(res, 'Unauthorized', 'Unauthorized');
+    return next();
   }
 
   jwt.verify(token, async (error, payload) => {
@@ -21,9 +21,8 @@ module.exports = async (req, res, next) => {
     }
 
     try {
-      req.state = {};
       req.state.user = (await User.findOne({ id: payload.id }).populate('role')).toJSON();
-      return await next();
+      return next();
     } catch (ex) {
       return handleError.badGateway(res, `Error: ${ex}`);
     }

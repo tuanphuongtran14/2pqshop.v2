@@ -8,6 +8,8 @@ const { HOST, PORT } = require('./configs/server');
 const db = require('./api/models');
 const logger = require('./utils/logger');
 const bootstrap = require('./configs/functions/bootstrap');
+const authentication = require('./api/middleware/authentication');
+const permission = require('./api/middleware/permission');
 
 app.use(morgan('dev'));
 app.use(cors());
@@ -42,6 +44,8 @@ db.mongoose
     process.exit(0);
   });
 
+app.use(authentication);
+app.use(permission);
 // Configure routing
 require('./api/routers')(app);
 

@@ -18,6 +18,7 @@ module.exports = async () => {
     await Promise.all(permissions.map((permissionInfo) => {
       const permission = new Permission({
         roleKey,
+        method: permissionInfo.method,
         path: permissionInfo.path,
         isExactly: permissionInfo.isExactly,
       });

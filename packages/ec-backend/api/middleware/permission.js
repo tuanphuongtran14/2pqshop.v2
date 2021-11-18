@@ -2,10 +2,12 @@ const { Permission } = require('../models');
 const handleError = require('../../utils/handleErrorResponse');
 
 module.exports = async (req, res, next) => {
-  const { baseUrl, path } = req;
+  const { baseUrl, path, method } = req;
   const { user } = req.state;
+  const roleKey = user ? user.role.key : 'public';
   const permissions = await Permission.find({
-    roleKey: user.role.key,
+    method: { $in: ['*', method] },
+    roleKey,
     path: { $regex: `^${baseUrl}` },
   });
 

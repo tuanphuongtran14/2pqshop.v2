@@ -9,8 +9,6 @@ const {
   countProducts,
   deleteProductById,
 } = require('../controllers/product.controllers');
-const authentication = require('../middleware/authentication');
-const permission = require('../middleware/permission');
 
 router.get('/search', searchProducts);
 router.get('/count', countProducts);
@@ -19,6 +17,6 @@ router.delete('/:id', deleteProductById);
 router.put('/:id', updateProductById);
 router.get('/:id', findProductById);
 router.get('/', findProducts);
-router.post('/', authentication, permission, createProduct);
+router.post('/', createProduct);
 
 module.exports = router;

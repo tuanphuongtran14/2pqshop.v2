@@ -17,8 +17,6 @@ const {
   changeItemQuantity,
   changeItemSize,
 } = require('../controllers/cart.controllers');
-const authentication = require('../middleware/authentication');
-const permission = require('../middleware/permission');
 
 // Sign in & Sign up
 router.post('/auth/local', signIn);
@@ -29,19 +27,19 @@ router.post('/auth/send-email-confirmation', resendEmailConfirmation);
 router.get('/auth/email-confirmation', confirmEmail);
 
 // Forget password
-router.get('/auth/forget-password', forgetPassword);
-router.get('/auth/reset-password', resetPassword);
+router.post('/auth/forget-password', forgetPassword);
+router.post('/auth/reset-password', resetPassword);
 
 // User cart
-router.post('/me/cart/add-item', authentication, permission, addItemToCart);
-router.post('/me/cart/remove-item', authentication, permission, removeItemFromCart);
-router.get('/me/cart/item-numbers', authentication, permission, getItemNumbers);
-router.post('/me/cart/change-item-quantity', authentication, permission, changeItemQuantity);
-router.post('/me/cart/change-item-size', authentication, permission, changeItemSize);
-router.get('/me/cart', authentication, permission, getMyCart);
+router.post('/me/cart/add-item', addItemToCart);
+router.post('/me/cart/remove-item', removeItemFromCart);
+router.get('/me/cart/item-numbers', getItemNumbers);
+router.post('/me/cart/change-item-quantity', changeItemQuantity);
+router.post('/me/cart/change-item-size', changeItemSize);
+router.get('/me/cart', getMyCart);
 
 // Profile and update profile
-router.get('/auth/change-password', authentication, changePassword);
-router.get('/me', authentication, permission, me);
+router.post('/auth/change-password', changePassword);
+router.get('/me', me);
 
 module.exports = router;

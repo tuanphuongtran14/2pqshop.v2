@@ -7,14 +7,12 @@ const {
   countCategories,
   deleteCategoryById,
 } = require('../controllers/category.controllers');
-const authentication = require('../middleware/authentication');
-const permission = require('../middleware/permission');
 
 router.get('/count', countCategories);
-router.delete('/:id', authentication, permission, deleteCategoryById);
-router.put('/:id', authentication, permission, updateCategoryById);
+router.delete('/:id', deleteCategoryById);
+router.put('/:id', updateCategoryById);
 router.get('/:id', findCategoryById);
 router.get('/', findCategories);
-router.post('/', authentication, permission, createCategory);
+router.post('/', createCategory);
 
 module.exports = router;

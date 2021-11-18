@@ -7,14 +7,12 @@ const {
   countTags,
   deleteTagById,
 } = require('../controllers/tag.controllers');
-const authentication = require('../middleware/authentication');
-const permission = require('../middleware/permission');
 
 router.get('/count', countTags);
-router.delete('/:id', authentication, permission, deleteTagById);
-router.put('/:id', authentication, permission, updateTagById);
+router.delete('/:id', deleteTagById);
+router.put('/:id', updateTagById);
 router.get('/:id', findTagById);
 router.get('/', findTags);
-router.post('/', authentication, permission, createTag);
+router.post('/', createTag);
 
 module.exports = router;

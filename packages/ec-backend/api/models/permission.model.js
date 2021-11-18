@@ -9,6 +9,10 @@ exports.initializeModel = (mongoose) => {
       type: String,
       require: true,
     },
+    method: {
+      type: String,
+      require: true,
+    },
     path: {
       type: String,
       require: true,

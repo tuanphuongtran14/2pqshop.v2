@@ -22,43 +22,37 @@ class LoginPage extends Component {
         });
         axios({
             method: 'POST',
-            url: '/login',
+            url: '/users/auth/local',
             data: {
-                username: document.getElementById('username').value,
+                email:  document.getElementById('username').value,
                 password: document.getElementById('password').value
             }
         }).then(res => {
             if(res && res.status === 200) {
-                this.props.setToken(res.data.token);
+                this.props.setToken(res.data.jwt);
+                if(res.data.user.role.key!=='user'&&res.data.user.role.key!=='public'){
+                    this.props.setAdmin(true);
+                }else{
+                    this.props.setAdmin(false);
+                }
                 
-                axios({
-                    method: 'GET',
-                    url: `/api/users/me`,
-                    headers: {
-                        "Authorization": `Bearer ${this.props.token}`
-                    }
-                }).then(res => {
-                    if(res && res.status === 200) {
-                        this.props.setAdmin(res.data.isAdmin);
-                        let user = {
-                            ...res.data
-                        };
-                        this.props.fetchCartByIdUserRequest(user.id_User);
-                        this.props.fetchUserByIdRequest(user.id_User);
-                        this.props.fetchIdUserInCart(user.id_User);
-                        this.props.fetchIdUserInOrder(user.id_Order);
-                        user = JSON.stringify(user);
-                        this.props.getUserLogin(user);
-                        localStorage.setItem('user', user);
-                        this.setState({
-                            loading: false
-                        });
-                        this.props.history.push("/");
+                let user = {
+                    ...res.data.user
+                };
+                this.props.getUserLogin(user);
+                this.props.fetchCartByIdUserRequest(user.id);
+                this.props.fetchUserByIdRequest(user.id);
+                this.props.fetchIdUserInCart(user.id);
+                this.props.fetchIdUserInOrder(user.id);
+                user = JSON.stringify(user);
+                localStorage.setItem('user', user);
+                this.setState({
+                    loading: false
+                });
+                this.props.history.push("/");
 
-                        this.setState({
-                            loading: false
-                        });
-                    }
+                this.setState({
+                    loading: false
                 });
             }
         }).catch(error => {
@@ -110,16 +104,16 @@ class LoginPage extends Component {
                     <div className="col-md-6 p-4 shadow wow fadeInLeftBig" data-wow-duration="1s">
                         <div className="form-group">
                             <h2 className="text-center">Đăng nhập</h2>
-                            <label for="username">Đăng nhập</label>
+                            <label >Email</label>
                             <input type="text" className="form-control" name="username" id="username" aria-describedby="helpId" placeholder="Tên đăng nhập" />
                         </div>
-                        <div class="form-group">
-                            <label for="password">Mật khẩu</label>
-                            <input type="password" class="form-control" name="password" id="password" aria-describedby="helpId" placeholder="Mật khẩu" /> 
+                        <div className="form-group">
+                            <label >Mật khẩu</label>
+                            <input type="password" className="form-control" name="password" id="password" aria-describedby="helpId" placeholder="Mật khẩu" /> 
                         </div>
                         <p className="text-center"><u><Link to="/forget-password">Quên mật khẩu?</Link></u></p>
                         <div className="text-center">
-                            <button type="submit" class="btn btn-dark w-25" onClick={this.handleLoginSubmit} disabled={disabledSubmit}>{contentSubmit}</button>
+                            <button type="submit" className="btn btn-dark w-25" onClick={this.handleLoginSubmit} disabled={disabledSubmit}>{contentSubmit}</button>
                         </div>
                     </div>
 
@@ -129,7 +123,7 @@ class LoginPage extends Component {
                             quy trình thanh toán nhanh hơn, lưu trữ nhiều địa chỉ giao hàng, xem và 
                             theo dõi đơn đặt hàng trong tài khoản của bạn và hơn thế nữa.
                         </p>
-                        <Link to="/register"><button type="button" class="btn btn-primary">Tạo tài khoản mới</button></Link>
+                        <Link to="/register"><button type="button" className="btn btn-primary">Tạo tài khoản mới</button></Link>
                     </div>
                 </form>
                 

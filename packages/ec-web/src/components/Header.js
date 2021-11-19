@@ -57,22 +57,23 @@ signOut=(e)=>{
 }
 
 renderSignin=(user)=>{
-    if(!user.id_User){
+    console.log(user);
+    if(!user.id){
         return <Link to={"/login"}>Đăng nhập</Link>
     }else{
         if(localStorage.getItem('isAdmin') === 'true')
             return (
                 <Fragment>
                     <a href={"/admin"}>Quản lý Admin</a>
-                    <Link to={"/user"}>{user.username}</Link>
-                    <Link onClick={this.signOut} className="text-white"><i class="fa fa-sign-out" aria-hidden="true"></i></Link>
+                    <Link to={"/user"}>{`${user.firstName} ${user.lastName}`}</Link>
+                    <Link onClick={this.signOut} className="text-white"><i className="fa fa-sign-out" aria-hidden="true"></i></Link>
                 </Fragment>
             );
         else
             return (
                 <Fragment>
-                    <Link to={"/user"}>{user.username}</Link>
-                    <Link onClick={this.signOut} className="text-white"><i class="fa fa-sign-out" aria-hidden="true"></i></Link>
+                    <Link to={"/user"}>{`${user.firstName} ${user.lastName}`}</Link>
+                    <Link onClick={this.signOut} className="text-white"><i className="fa fa-sign-out" aria-hidden="true"></i></Link>
                 </Fragment>
             );
     }

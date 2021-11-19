@@ -1,23 +1,29 @@
 import * as types from'../constants/ActionTypes'
 var result=localStorage.getItem('user');
 var init_user=result?JSON.parse(result):{
-    id_User: '',
-     username:'',
-     name:'',
-     phone:'',
-     address:'',
-     email:'',
-     isAdmin: false
+    id: '',
+    firstName:'',
+    lastName:'',
+    gender:'',
+    phone:'',
+    addresses:[],
+    joinDate:'',
+    email:'',
+    isAdmin: false,
+    role:[]
 };
 
 var initialState={
-     id_User: init_user.id_User,
-     username:init_user.username,
-     name:init_user.name,
+     id: init_user.id,
+     firstName:init_user.firstName,
+     lastName:init_user.lastName,
+     gender:init_user.gender,
      phone:init_user.phone,
-     address:init_user.address,
+     addresses:init_user.addresses,
+     joinDate:init_user.joinDate,
      email:init_user.email,
-     isAdmin: init_user.isAdmin
+     role:init_user.role,
+     isAdmin: false
 };
 
 const user=(state=initialState,action)=>{
@@ -25,16 +31,20 @@ const user=(state=initialState,action)=>{
         case types.FETCH_USER_BY_ID:
             return action.user; 
         case types.LOGIN_USER:
-            
+            console.log('action',action.user);
             return action.user;  
         case types.LOG_OUT:
-            
              var newUser={
-                id_User:'',
-                username:' ',
-                phone:' ',
-                address:' ',
-                email:' ',
+                id: '',
+                firstName:'',
+                lastName:'',
+                gender:'',
+                phone:'',
+                addresses:[],
+                joinDate:'',
+                email:'',
+                role:[],
+                isAdmin: false
             }  
             localStorage.removeItem('user');
             localStorage.removeItem('token');

@@ -1,12 +1,9 @@
 import React,{Component,Fragment} from 'react';
-// import $ from "jquery";
 import {Link} from 'react-router-dom';
 import {deleteBill} from './../../actions'
 import * as actions from './../../actions'
 import {connect} from 'react-redux'
-import convertToMoney from './../../utils/convertMoney'
-import $ from "jquery";
-// import Cart from './Cart';
+import convertToMoney from './../../utils/convertMoney';
 
 class DetailBill extends Component {
     constructor(props)
@@ -110,15 +107,15 @@ const mapStateToProps=(state)=>{
         onFetchBillsByUserRequest:(id_User)=>{
             dispatch(actions.fetchBillsByUserRequest(id_User));
         },
-        onFetchUserByIdRequest:(id_User)=>{
-            dispatch(actions.fetchUserByIdRequest(id_User));
-        },
+        // onFetchUserByIdRequest:(id_User)=>{
+        //     dispatch(actions.fetchUserByIdRequest(id_User));
+        // },
         onChangeStatusBill:(bill)=>{
             dispatch(actions.changeStatusBill(bill));
         },
-        fetchCartByIdUserRequest:(id)=>{
-            dispatch(actions.fetchCartByIdUserRequest(id));
-        }
+        // fetchCartByIdUserRequest:(id)=>{
+        //     dispatch(actions.fetchCartByIdUserRequest(id));
+        // }
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(DetailBill);

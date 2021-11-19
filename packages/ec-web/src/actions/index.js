@@ -49,30 +49,6 @@ export const onSort = (status) => {
   };
 };
 
-//Xử lý giỏ hàng
-export const onAddToCart = (product) => {
-  return {
-    type: types.ADD_TO_CART,
-    product, //products=products
-  };
-};
-
-//xóa sản phẩm khỏi giỏ hàng
-export const onDeleteProductToCart = (product) => {
-  return {
-    type: types.DELETE_PRODUCT_TO_CART,
-    product,
-  };
-};
-
-//cập nhật sản phẩm khỏi giỏ hàng
-export const onUpdateProductToCart = (product) => {
-  return {
-    type: types.UPDATE_PRODUCT_TO_CART,
-    product,
-  };
-};
-
 //add thông tin user vào order
 export const addInfoUserToOrder = (infoUser) => {
   return {
@@ -223,12 +199,6 @@ export const changeCartInDTB = (cart) => {
   });
 };
 
-export const fetchIdUserInCart = (id_User) => {
-  return {
-    type: types.FETCH_ID_USER_IN_CART,
-    id_User,
-  };
-};
 export const fetchIdUserInOrder = (id_User) => {
   return {
     type: types.FETCH_ID_USER_IN_ORDER,
@@ -236,19 +206,84 @@ export const fetchIdUserInOrder = (id_User) => {
   };
 };
 
-//xử lý render list sản phẩm
-export const fetchCartByIdUser = (cart) => {
+
+export const getCart = (cart) => {
   return {
-    type: types.FETCH_CART_BY_ID_USER,
-    cart, //products=products
+    type: types.GET_CART,
+    cart,
   };
 };
 
-//Lên API lấy dữ liệu products về
-export const fetchCartByIdUserRequest = (id_User) => {
+export const fetchCart = (jwt) => {
   return (dispatch) => {
-    return callApi(`carts/${id_User}`, "GET", null).then((res) => {
-      dispatch(fetchCartByIdUser(res.data));
-    });
+    return callApi('users/me/cart', "GET", null, {
+      headers: {
+        Authorization: `Bearer ${jwt}`
+      }
+    })
+      .then((res) => {
+        const cart = res.data;
+        dispatch(getCart(cart));
+      });
+  };
+};
+
+export const addItemToCart = (item, jwt, cb) => {
+  return (dispatch) => {
+    return callApi('users/me/cart/add-item', "POST", item, {
+      headers: {
+        Authorization: `Bearer ${jwt}`
+      }
+    })
+      .then((res) => {
+        const cart = res.data;
+        dispatch(getCart(cart));
+        cb();
+      });
+  };
+};
+
+export const removeItemFromCart = (itemId, jwt, cb) => {
+  return (dispatch) => {
+    return callApi('users/me/cart/remove-item', "POST", { id: itemId }, {
+      headers: {
+        Authorization: `Bearer ${jwt}`
+      }
+    })
+      .then((res) => {
+        const cart = res.data;
+        dispatch(getCart(cart));
+        cb();
+      });
+  };
+};
+
+export const changeItemQuantity = (itemId, quantity, jwt, cb) => {
+  return (dispatch) => {
+    return callApi('users/me/cart/change-item-quantity', "POST", { id: itemId, quantity }, {
+      headers: {
+        Authorization: `Bearer ${jwt}`
+      }
+    })
+      .then((res) => {
+        const cart = res.data;
+        dispatch(getCart(cart));
+        cb();
+      });
+  };
+};
+
+export const changeItemSize = (itemId, size, jwt, cb) => {
+  return (dispatch) => {
+    return callApi('users/me/cart/change-item-size', "POST", { id: itemId, size }, {
+      headers: {
+        Authorization: `Bearer ${jwt}`
+      }
+    })
+      .then((res) => {
+        const cart = res.data;
+        dispatch(getCart(cart));
+        cb();
+      });
   };
 };

@@ -15,9 +15,9 @@ var init_user=result?JSON.parse(result):{
 
 var initialState={
      id: init_user.id,
-     firstName:init_user.firstName,
-     lastName:init_user.lastName,
-     gender:init_user.gender,
+     firstName: init_user.firstName,
+     lastName: init_user.lastName,
+     gender: init_user.gender,
      phone:init_user.phone,
      addresses:init_user.addresses,
      joinDate:init_user.joinDate,

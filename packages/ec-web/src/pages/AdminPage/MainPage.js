@@ -280,9 +280,9 @@ const mapDispatchToProps = (dispatch) => {
         setAdmin: (isAdmin) => {
             dispatch(actions.setAdmin(isAdmin));
         },
-        fetchIdUserInCart: (id) => {
-            dispatch(actions.fetchIdUserInCart(id));
-        },
+        // fetchIdUserInCart: (id) => {
+        //     dispatch(actions.fetchIdUserInCart(id));
+        // },
         fetchIdUserInOrder:(id)=>{
             dispatch(actions.fetchIdUserInOrder(id));
         }

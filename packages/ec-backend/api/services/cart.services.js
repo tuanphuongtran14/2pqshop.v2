@@ -2,6 +2,7 @@
 /* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable no-underscore-dangle */
 const _ = require('lodash');
+const query = require('../../utils/query');
 
 module.exports = {
   formatCart: (cart) => {
@@ -65,11 +66,14 @@ module.exports = {
       throw new Error('Quantity must be a number and greater than 0');
     }
 
-    cart.items.forEach((item) => {
-      if (item._id.toString() === itemId) {
-        item.quantity = quantity;
-      }
-    });
+    const item = cart.items.find(({ _id: id }) => id.toString() === itemId);
+    const product = await query('Product').findById(item.product.toString(), 'options');
+    const option = product.options.find(({ size }) => size === item.size);
+    if (quantity > option.remaining) {
+      throw new Error('Quantity is over remaining of product');
+    }
+
+    item.quantity = quantity;
     await cart.save();
     return cart;
   },

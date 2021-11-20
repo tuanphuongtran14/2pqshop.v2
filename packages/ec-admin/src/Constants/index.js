@@ -1,1 +1,1 @@
-//thư mục lưu những hằng số dùng chung
+//thư mục lưu những hằng số dùng chu

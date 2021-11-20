@@ -2,7 +2,7 @@ import React from 'react';
 import { Layout as AntLayout, Breadcrumb } from 'antd';
 // import { Layout as AntLayout, Breadcrumb } from 'antd';
 import styled from 'styled-components';
-
+import {HeaderLayout, BreadcrumbLayout} from './../../Components'
 const { Header, Footer, Content } = AntLayout;
 
 const StyledHomePage = styled(AntLayout)`
@@ -13,13 +13,10 @@ const StyledHomePage = styled(AntLayout)`
 
 const Homepage = () => {
   return (
-    <StyledHomePage menuSelectedKey={'Home'}>
-      <Header className="site-layout-background" style={{ padding: 0 }} />
+    <StyledHomePage >
+      <HeaderLayout />
       <Content style={{ margin: '0 16px' }}>
-        <Breadcrumb style={{ margin: '16px 0' }}>
-          <Breadcrumb.Item>User</Breadcrumb.Item>
-          <Breadcrumb.Item>Bill</Breadcrumb.Item>
-        </Breadcrumb>
+        <BreadcrumbLayout root="Category" branch="create" />
         <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
           This is Home Page.
         </div>

@@ -8,6 +8,8 @@ const PRIVATE_ATTRIBUTES = [
   'resetPwToken',
 ];
 
+exports.PRIVATE_ATTRIBUTES = PRIVATE_ATTRIBUTES;
+
 exports.initializeModel = (mongoose) => {
   const { Schema } = mongoose;
   const UserSchema = new Schema({

@@ -27,6 +27,9 @@ module.exports = {
 
       return formattedItem;
     });
+    if (formattedCart.items.length === 0) {
+      formattedCart.canOrder = false;
+    }
 
     // Todo: Handle coupon
     // if (formattedCart.coupon) {

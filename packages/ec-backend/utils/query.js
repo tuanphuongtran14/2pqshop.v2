@@ -42,13 +42,8 @@ module.exports = (modelName) => ({
       return entity;
     }
 
-    db[modelName].populate(entity, populates, function (err, result) {
-      if (err) {
-        throw err;
-      }
-
-      return result;
-    });
+    const result = await db[modelName].populate(entity, populates);
+    return result;
   },
 
   updateById: async (id, params, populates) => {
@@ -62,6 +57,8 @@ module.exports = (modelName) => ({
     const result = await db[modelName].populate(entity, populates);
     return result;
   },
+
+  update: (query, params) => db[modelName].updateMany(query, params),
 
   deleteById: (id) => db[modelName].findByIdAndDelete(id),
 

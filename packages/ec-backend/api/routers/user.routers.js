@@ -17,6 +17,9 @@ const {
   changeItemQuantity,
   changeItemSize,
 } = require('../controllers/cart.controllers');
+const {
+  findOrdersByUser,
+} = require('../controllers/order.controllers');
 
 // Sign in & Sign up
 router.post('/auth/local', signIn);
@@ -37,6 +40,8 @@ router.get('/me/cart/item-numbers', getItemNumbers);
 router.post('/me/cart/change-item-quantity', changeItemQuantity);
 router.post('/me/cart/change-item-size', changeItemSize);
 router.get('/me/cart', getMyCart);
+
+router.get('/me/orders', findOrdersByUser);
 
 // Profile and update profile
 router.post('/auth/change-password', changePassword);

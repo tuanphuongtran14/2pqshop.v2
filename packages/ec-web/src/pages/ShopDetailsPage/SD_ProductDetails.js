@@ -24,7 +24,7 @@ class SD_ProductDetails extends Component {
         $(this).addClass("active");
       }
     );
-    var { options } = this.props.product;
+    const { options } = this.props.product;
     if (prevProps.product !== this.props.product) {
       this.setState({
         size: options[0].size,
@@ -32,33 +32,47 @@ class SD_ProductDetails extends Component {
       });
     }
   }
-  onClick = () => {
-    var { size, quantitySize } = this.state;
-    var { token, history } = this.props;
-    if (!token) {
-      history.replace("/login");
-    } else {
-      const { sku, slug, price, name, images, options } = this.props.product;
-      var inventory = quantitySize;
-      var quantity = inventory === 0 ? 0 : 1;
 
-      const cartItem = {
-        sku: sku,
-        name: name,
-        images: images,
-        slug: slug,
-        price: price,
-        size: size,
-        inventory: inventory,
-        quantity: quantity,
-        options: options,
-        index: 0,
-      };
-
-      this.props.onAddToCart(cartItem);
+  renderAddToCartBtn = () => {
+    if (this.state.quantitySize > 0) {
+      return (
+        <button id="addToCartBtn" className="primary-btn" onClick={this.handleAddItemToCart}>
+          Thêm vào giỏ hàng
+        </button>
+      );
     }
+
+    return (
+      <button id="addToCartBtn" className="primary-btn" style={{ opacity: "0.6", cursor: "not-allowed" }} disabled={true}>
+        Thêm vào giỏ hàng
+      </button>
+    );
+  }
+
+  handleAddItemToCart = () => {
+    const { token, history } = this.props;
+    if (!token) {
+      return history.replace("/login");
+    }
+
+    const item = {
+      product: this.props.product.id,
+      size: this.state.size,
+      quantity: 1
+    };
+    const btn = document.getElementById("addToCartBtn");
+    btn.setAttribute("disabled", true);
+    btn.innerHTML = 
+      `<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+        Đang thêm vào...`;
+
+    this.props.addItemToCart(item, token, function() {
+      btn.removeAttribute("disabled");
+      btn.innerHTML = "Thêm vào giỏ hàng";
+    });
   };
-  onClickSize = (value) => {
+
+  handleChangeSize = (value) => {
     var product = this.props.product;
     var options = product.options;
     var quantity = 0;
@@ -76,6 +90,7 @@ class SD_ProductDetails extends Component {
       });
     }
   };
+
   render() {
     var product = this.props.product;
     let options = this.props.options;
@@ -87,7 +102,7 @@ class SD_ProductDetails extends Component {
         return (
           <label
             key={index}
-            onClick={() => this.onClickSize(option.size)}
+            onClick={() => this.handleChangeSize(option.size)}
             className={size === option.size ? "active" : ""}
           >
             {option.size}
@@ -129,9 +144,7 @@ class SD_ProductDetails extends Component {
               </span>
             </div>
           </div>
-          <button className="primary-btn" onClick={this.onClick}>
-            Thêm vào giỏ hàng
-          </button>
+          { this.renderAddToCartBtn() }
         </div>
         <div className="product__details__last__option">
           <h5>
@@ -161,8 +174,8 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    onAddToCart: (product) => {
-      dispatch(actions.onAddToCart(product));
+    addItemToCart: (item, jwt, cb) => {
+      dispatch(actions.addItemToCart(item, jwt, cb));
     },
   };
 };

@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import * as actions from "../actions";
 class ProductItem extends Component {
   renderClass = (status) => {
     let result = "";
@@ -37,32 +38,19 @@ class ProductItem extends Component {
   }
   onClick = (e) => {
     e.preventDefault();
-    var { token, history } = this.props;
+    const { token, history } = this.props;
     if (!token) {
       history.replace("/login");
-    } else {
-      const { sku, slug, price, name, images, options } = this.props.product;
-      let i = 0;
-      while (options[i].remaining === 0) i++;
-      var size = options[i].size;
-      var inventory = options[i].remaining;
-      var quantity = inventory === 0 ? 0 : 1;
-
-      const cartItem = {
-        sku: sku,
-        name: name,
-        images: images,
-        slug: slug,
-        price: price,
-        size: size,
-        inventory: inventory,
-        quantity: quantity,
-        options: options,
-        index: 0,
-      };
-
-      this.props.onAddToCart(cartItem);
     }
+
+    const { size } = this.props.product.options.find((option) => option.remaining > 0);
+    const item = {
+      product: this.props.product.id,
+      size: size || this.props.product.options[0].size,
+      quantity: 1
+    };
+
+    this.props.addItemToCart(item, token, function() {});
   };
 
   refreshPage = () => {
@@ -130,6 +118,10 @@ const mapStateToProps = (state) => {
   };
 };
 const mapDispatchToProps = (dispatch) => {
-  return {};
+  return {
+    addItemToCart: (item, jwt, cb) => {
+      dispatch(actions.addItemToCart(item, jwt, cb));
+    },
+  };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ProductItem);

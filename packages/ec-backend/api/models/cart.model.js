@@ -1,4 +1,7 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-underscore-dangle */
 const _ = require('lodash');
+const { ObjectId } = require('mongoose').Types;
 
 const PRIVATE_ATTRIBUTES = [];
 
@@ -32,6 +35,17 @@ exports.initializeModel = (mongoose) => {
   CartSchema.method('toJSON', function () {
     const { __v, _id, ...object } = this.toObject();
     object.id = _id;
+    if (_.isArray(object.items)) {
+      object.items = object.items.map((item) => {
+        if (ObjectId.isValid(item)) {
+          return item;
+        }
+
+        item.id = item._id;
+        return _.omit(item, ['__v', '_id']);
+      });
+    }
+
     PRIVATE_ATTRIBUTES.forEach((attribute) => {
       _.unset(object, attribute);
     });

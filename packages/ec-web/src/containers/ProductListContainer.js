@@ -124,11 +124,7 @@ const mapStateToProps = (state) => {
   };
 };
 const mapDispatchToProps = (dispatch) => {
-  return {
-    onAddToCart: (product) => {
-      dispatch(actions.onAddToCart(product));
-    },
-  };
+  return {};
 };
 export default connect(
   mapStateToProps,

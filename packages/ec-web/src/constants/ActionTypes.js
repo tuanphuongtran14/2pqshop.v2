@@ -9,17 +9,10 @@ export const SEARCH="SEARCH"
 
 //sort 
 export const SORT="SORT"
-//Thêm vào giỏ hàng
-export const ADD_TO_CART="ADD_TO_CART";
-
-//xóa sản phẩm ra khỏi giỏ hàng 
-export const DELETE_PRODUCT_TO_CART="DELETE_PRODUCT_TO_CART"
-
-//cập nhật số sản phẩm muốn mua
-export const UPDATE_PRODUCT_TO_CART="UPDATE_PRODUCT_TO_CART";
 
 //add thông tin người mua hàng
 export const ADD_INFO_USER_TO_ORDER="ADD_INFO_USER_TO_ORDER";
+
 //add coupon 
 export const ADD_COUPON_TO_ORDER="ADD_COUPON_TO_ORDER";
 
@@ -55,13 +48,6 @@ export const LOGOUT_CART="LOGOUT_CART"
 export const LOGIN_USER="LOGIN_USER";
 
 //fetch cart by id user
-export const FETCH_CART_BY_ID_USER="FETCH_CART_BY_ID_USER";
-
-//fetch cart by id user
-export const FETCH_ID_USER_IN_CART="FETCH_ID_USER_IN_CART";
-
-//fetch cart by id user
 export const FETCH_ID_USER_IN_ORDER="FETCH_ID_USER_IN_ORDER";
 
-
-
+export const GET_CART="GET_CART";

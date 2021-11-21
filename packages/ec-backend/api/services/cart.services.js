@@ -31,11 +31,48 @@ module.exports = {
       formattedCart.canOrder = false;
     }
 
-    // Todo: Handle coupon
-    // if (formattedCart.coupon) {
-
-    // }
     formattedCart.finalAmount = formattedCart.totalAmount;
+    const { coupon } = formattedCart;
+    if (coupon) {
+      const today = new Date();
+      let satisfyCondition;
+      if (coupon.condition === 'GTE') {
+        satisfyCondition = formattedCart.totalAmount >= coupon.orderValue;
+      }
+
+      if (coupon.condition === 'LTE') {
+        satisfyCondition = formattedCart.totalAmount <= coupon.orderValue;
+      }
+
+      if (coupon.condition === 'NONE') {
+        satisfyCondition = true;
+      }
+
+      if (today < coupon.expiresDate && satisfyCondition) {
+        formattedCart.validCoupon = true;
+        switch (coupon.type) {
+          case 'PERCENT':
+            formattedCart.finalAmount *= (1 - coupon.value / 100);
+            formattedCart.finalAmount = _.toInteger(formattedCart.finalAmount);
+            break;
+
+          case 'CASH':
+            formattedCart.finalAmount -= coupon.value;
+            if (formattedCart.finalAmount < 0) {
+              formattedCart.finalAmount = 0;
+            }
+
+            formattedCart.finalAmount = _.toInteger(formattedCart.finalAmount);
+            break;
+
+          default:
+            break;
+        }
+      } else {
+        formattedCart.validCoupon = false;
+      }
+    }
+
     return formattedCart;
   },
 

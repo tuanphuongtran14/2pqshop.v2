@@ -16,6 +16,7 @@ const {
   getItemNumbers,
   changeItemQuantity,
   changeItemSize,
+  applyCoupon,
 } = require('../controllers/cart.controllers');
 const {
   findOrdersByUser,
@@ -39,6 +40,7 @@ router.post('/me/cart/remove-item', removeItemFromCart);
 router.get('/me/cart/item-numbers', getItemNumbers);
 router.post('/me/cart/change-item-quantity', changeItemQuantity);
 router.post('/me/cart/change-item-size', changeItemSize);
+router.post('/me/cart/apply-coupon', applyCoupon);
 router.get('/me/cart', getMyCart);
 
 router.get('/me/orders', findOrdersByUser);

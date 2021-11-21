@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const query = require('../../utils/query');
 const handleError = require('../../utils/handleErrorResponse');
 const cartServices = require('../services/cart.services');
@@ -129,6 +130,39 @@ module.exports = {
         });
       } else {
         cart = await cartServices.changeItemSize(cart, itemId, size);
+      }
+
+      cart = await query('Cart').findOne({ user: user.id }, populates);
+      cart = cartServices.formatCart(cart);
+      return res.status(200).json(cart);
+    } catch (ex) {
+      return handleError.badGateway(res, `Error: ${ex}`);
+    }
+  },
+
+  applyCoupon: async (req, res) => {
+    try {
+      const { user } = req.state;
+      const { code } = req.body;
+      const coupon = await query('Coupon').findOne({ code });
+      if (!coupon) {
+        return handleError.badRequest(
+          res,
+          'Coupon not found',
+          'Coupon.not.found',
+        );
+      }
+
+      let cart = await query('Cart').findOne({ user: user.id });
+      if (!cart) {
+        await query('Cart').create({
+          user: user.id,
+          items: [],
+          coupon: coupon._id,
+        });
+      } else {
+        cart.coupon = coupon._id;
+        await cart.save();
       }
 
       cart = await query('Cart').findOne({ user: user.id }, populates);

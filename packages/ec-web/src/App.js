@@ -41,8 +41,7 @@ class App extends Component {
               <Route exact path="/" component={({ match, history }) => <IndexPage match={match} history={history} />} />
               <Route path="/about" component={({ match, history }) => <AboutPage match={match} history={history} />}/>
               <Route exact path="/shop/cart" component={({ match, history }) => <CartPage match={match} history={history} />}/>
-              <Route path="/shop" exact component={({ match, history }) => <ShopPage match={match} history={history} />} />
-              <Route path="/shop/:filter" component={({ match, history }) => <ShopPage match={match} history={history} />} />
+              <Route path="/shop" disableScrollToTop={true} exact component={({ match, history }) => <ShopPage match={match} history={history} />} />
               <Route path="/payment" component={({ match, history }) => <CheckoutPage match={match} history={history} />} />
               <Route path='/contact' component={({ match, history }) => <ContactPage match={match} history={history} />} />
               <Route path='/user' component={({ match, history }) => <UserPage match={match} history={history} />}>

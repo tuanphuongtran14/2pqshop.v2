@@ -20,7 +20,7 @@ class ShopPage extends Component {
       pageSize: 9,
       categoriesList: [],
       tagsList: [],
-      queryParams: JSON.parse(
+      queryParams: this.props.history.location.search.length > 0 ? JSON.parse(
         '{"' +
           decodeURI(
             this.props.history.location.search
@@ -29,7 +29,7 @@ class ShopPage extends Component {
               .replace(/=/g, '":"')
           ) +
           '"}'
-      ),
+      ) : {},
     };
   }
 
@@ -63,10 +63,9 @@ class ShopPage extends Component {
         <li key={index}>
           <Link type="button" to={`/shop?category=${category.name}`} onClick={() => {
             const queryParams = {
-              ...this.state.queryParams,
               category: category.name
             } 
-            this.setState({ queryParams });
+            this.setState({ queryParams, page: 1  });
             this.props.fetchProductsRequest(this.state.page, this.state.pageSize, queryParams);
           }}>
             {category.name}
@@ -79,7 +78,13 @@ class ShopPage extends Component {
   displayFilterTags = () => {
     return this.state.tagsList.map((tag, index) => {
       return (
-        <Link key={index} type="button" to={`/shop/tags?value=${tag.name}`}>
+        <Link key={index} type="button" to={`/shop?tag=${tag.name}`} onClick={() => {
+          const queryParams = {
+            tags: tag.name
+          } 
+          this.setState({ queryParams, page: 1 });
+          this.props.fetchProductsRequest(this.state.page, this.state.pageSize, queryParams);
+        }}>
           {tag.name}
         </Link>
       );
@@ -125,7 +130,6 @@ class ShopPage extends Component {
   }
 
   render() {
-    console.log(this.props.history);
     return (
       <Fragment>
         <Helmet>

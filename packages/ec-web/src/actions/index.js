@@ -206,7 +206,6 @@ export const fetchIdUserInOrder = (id_User) => {
   };
 };
 
-
 export const getCart = (cart) => {
   return {
     type: types.GET_CART,
@@ -287,3 +286,11 @@ export const changeItemSize = (itemId, size, jwt, cb) => {
       });
   };
 };
+
+export const createOrder = (orderInfo, jwt) => {
+  return callApi('orders', "POST", orderInfo, {
+    headers: {
+      Authorization: `Bearer ${jwt}`
+    }
+  });
+}

@@ -54,6 +54,7 @@ class CheckoutContainer extends Component {
         <ListOrder
           renderOrderItem={this.renderOrderItem(cart)}
           onAddCouponToOrder={this.props.onAddCouponToOrder}
+          cart={cart}
         />
       </Fragment>
     );

@@ -172,4 +172,26 @@ module.exports = {
       return handleError.badGateway(res, `Error: ${ex}`);
     }
   },
+
+  removeCoupon: async (req, res) => {
+    try {
+      const { user } = req.state;
+      let cart = await query('Cart').findOne({ user: user.id });
+      if (!cart) {
+        await query('Cart').create({
+          user: user.id,
+          items: [],
+        });
+      } else {
+        cart.coupon = undefined;
+        await cart.save();
+      }
+
+      cart = await query('Cart').findOne({ user: user.id }, populates);
+      cart = cartServices.formatCart(cart);
+      return res.status(200).json(cart);
+    } catch (ex) {
+      return handleError.badGateway(res, `Error: ${ex}`);
+    }
+  },
 };

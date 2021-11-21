@@ -49,7 +49,6 @@ module.exports = {
       }
 
       if (today < coupon.expiresDate && satisfyCondition) {
-        formattedCart.validCoupon = true;
         switch (coupon.type) {
           case 'PERCENT':
             formattedCart.finalAmount *= (1 - coupon.value / 100);
@@ -69,7 +68,13 @@ module.exports = {
             break;
         }
       } else {
-        formattedCart.validCoupon = false;
+        if (today >= coupon.expiresDate) {
+          formattedCart.invalidCoupon = 'EXPIRES';
+        }
+
+        if (!satisfyCondition) {
+          formattedCart.invalidCoupon = 'CONDITION';
+        }
       }
     }
 

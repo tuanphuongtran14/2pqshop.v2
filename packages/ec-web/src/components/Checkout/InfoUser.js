@@ -32,7 +32,26 @@ class InfoUser extends Component {
 
   handleSubmitOrder = (e) => {
     e.preventDefault();
-    const { token, history } = this.props;
+    const { cart, history } = this.props;
+    if (cart.items.length === 0 || !cart.canOrder) {
+      confirmAlert({
+        title: "Giỏ hàng của bạn rỗng!!!",
+        message: "Vui lòng thêm ít nhất một sản phẩm để có thể thanh toán",
+        buttons: [
+          {
+            label: 'Về trang chủ',
+            onClick: () => history.push('/')
+          },
+          {
+            label: 'Tiếp tục mua sắm',
+            onClick: () => history.push('/shop')
+          }
+        ],
+        closeOnClickOutside: false
+      });
+    }
+
+    const { token } = this.props;
     const orderInfo = {
       receiverName: this.state.receiverName,
       receiverPhone: this.state.receiverPhone,
@@ -70,25 +89,6 @@ class InfoUser extends Component {
   };
 
   render() {
-    const { cart, history } = this.props;
-    if (cart.items.length === 0 || !cart.canOrder) {
-      confirmAlert({
-        title: "Giỏ hàng của bạn rỗng!!!",
-        message: "Vui lòng thêm ít nhất một sản phẩm để có thể thanh toán",
-        buttons: [
-          {
-            label: 'Về trang chủ',
-            onClick: () => history.push('/')
-          },
-          {
-            label: 'Tiếp tục mua sắm',
-            onClick: () => history.push('/shop')
-          }
-        ],
-        closeOnClickOutside: false
-      });
-    }
-
     return (
       <Fragment>
         <h6 className="coupon__code">

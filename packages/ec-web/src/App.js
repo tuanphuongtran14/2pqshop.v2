@@ -36,7 +36,7 @@ class App extends Component {
       <Router>
           <div className="App">
             <ScrollToTop /> 
-            { ((this.props.location.pathname.indexOf('/admin') === -1) ? <Route component={({ match, history }) => <Header match={match} history={history} />}/> : '') }
+            <Route component={({ match, history }) => <Header match={match} history={history} />}/>
             <Switch>
               <Route exact path="/" component={({ match, history }) => <IndexPage match={match} history={history} />} />
               <Route path="/about" component={({ match, history }) => <AboutPage match={match} history={history} />}/>
@@ -54,18 +54,9 @@ class App extends Component {
               </Route>
               <Route path='/login'component={({ match, history }) => <LoginPage match={match} history={history} />}/>
               <Route path='/register' component={({ match, history }) => <RegisterPage match={match} history={history} />}/>
-              <Route path='/admin'>
-                <AdminPage />
-              </Route>
-              {/* <Route path='/info'>
-                <ShopDetailsPage />
-              </Route> */}
-              <Route path='/test'>
-                <Test />
-              </Route>
               <Route path="/san-pham/:slug" strict render={({ match, history }) => <ShopDetailsPage match={match} history={history}/>} />
             </Switch>
-            { ((this.props.location.pathname.indexOf('/admin') === -1) ? <Footer /> : '') }
+            <Footer />
           </div>
       </Router>
     )

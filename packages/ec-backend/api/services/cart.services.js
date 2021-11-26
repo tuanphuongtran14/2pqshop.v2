@@ -27,12 +27,57 @@ module.exports = {
 
       return formattedItem;
     });
+    if (formattedCart.items.length === 0) {
+      formattedCart.canOrder = false;
+    }
 
-    // Todo: Handle coupon
-    // if (formattedCart.coupon) {
-
-    // }
     formattedCart.finalAmount = formattedCart.totalAmount;
+    const { coupon } = formattedCart;
+    if (coupon) {
+      const today = new Date();
+      let satisfyCondition;
+      if (coupon.condition === 'GTE') {
+        satisfyCondition = formattedCart.totalAmount >= coupon.orderValue;
+      }
+
+      if (coupon.condition === 'LTE') {
+        satisfyCondition = formattedCart.totalAmount <= coupon.orderValue;
+      }
+
+      if (coupon.condition === 'NONE') {
+        satisfyCondition = true;
+      }
+
+      if (today < coupon.expiresDate && satisfyCondition) {
+        switch (coupon.type) {
+          case 'PERCENT':
+            formattedCart.finalAmount *= (1 - coupon.value / 100);
+            formattedCart.finalAmount = _.toInteger(formattedCart.finalAmount);
+            break;
+
+          case 'CASH':
+            formattedCart.finalAmount -= coupon.value;
+            if (formattedCart.finalAmount < 0) {
+              formattedCart.finalAmount = 0;
+            }
+
+            formattedCart.finalAmount = _.toInteger(formattedCart.finalAmount);
+            break;
+
+          default:
+            break;
+        }
+      } else {
+        if (today >= coupon.expiresDate) {
+          formattedCart.invalidCoupon = 'EXPIRES';
+        }
+
+        if (!satisfyCondition) {
+          formattedCart.invalidCoupon = 'CONDITION';
+        }
+      }
+    }
+
     return formattedCart;
   },
 

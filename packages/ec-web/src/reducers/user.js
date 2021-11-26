@@ -31,7 +31,7 @@ const user=(state=initialState,action)=>{
         case types.FETCH_USER_BY_ID:
             return action.user; 
         case types.LOGIN_USER:
-            console.log('action',action.user);
+            localStorage.setItem('user', JSON.stringify(action.user));
             return action.user;  
         case types.LOG_OUT:
              var newUser={

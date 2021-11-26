@@ -1,100 +1,190 @@
-import React,{Component,Fragment} from 'react';
-// import $ from "jquery";
-import convertToMoney from './../../utils/convertMoney'
+import React, { Component, Fragment } from "react";
+import convertToMoney from "./../../utils/convertMoney";
+import { connect } from "react-redux";
+import * as actions from "../../actions";
+
 class ListOrder extends Component {
-    constructor(props)
-    {
-        super(props);
-        this.state={
-            coupon:'',
-            salePrice:0,
-            infoCheckout:'',
-        }
-    }
-    onChange=(event)=>
-    {
-        var target=event.target;
-        var name=target.name;
-        var value=target.value;
-        this.setState({
-            [name]:value
-        });
-    }
-    isCheckCoupon=(coupon,price)=>{
-        var salePrice=0;
-        if(coupon==='quocdeptrai'||coupon==='PhatLC'){
-            if(coupon==='quocdeptrai'){
-                salePrice=price*5/100;
-                this.setState({
-                    coupon:coupon,
-                    salePrice:salePrice,
-                    infoCheckout:'Bạn được giảm 5% giá trị hóa đơn của bạn!!!'
-                    })
+  constructor(props) {
+    super(props);
+    this.state = {
+      code: this.props.cart.coupon ? this.props.cart.coupon.code : "",
+    };
+  }
 
-                this.props.onAddCouponToOrder(
-                    {coupon:coupon,
-                    salePrice:salePrice});
-            }else if(coupon==='PhatLC'){
-                salePrice=price*(2/100);
-                this.setState({
-                    coupon:coupon,
-                    salePrice:salePrice,
-                    infoCheckout:'Bạn được giảm 2% giá trị hóa đơn của bạn!!!'
-                    })
+  onChange = (event) => {
+    const { name, value } = event.target;
+    this.setState({
+      [name]: value,
+    });
+  };
 
-                this.props.onAddCouponToOrder(
-                    {coupon:coupon,
-                    salePrice:salePrice});
-            }
-            
-        }else{
-            this.setState({
-                coupon:'',
-                salePrice:0,
-                infoCheckout:'Mã khuyến mãi của bạn không đúng hoặc đã hết thời hạn!!!'
-                })
-        }
-       
-        
+  renderSubmitCouponBtn = (coupon) => {
+    const input = document.querySelector('input[name="code"]');
+    if (coupon) {
+      if (input) {
+        input.setAttribute('disabled', true);
+      }
+
+      return (
+        <button
+          type="button"
+          className="site-btn my-0"
+          onClick={() => {
+            this.props.removeCoupon(this.props.token)
+            this.setState({ code: "" });
+          }}
+        >
+          Hủy
+        </button>
+      );
     }
-  render(){
-      const {coupon,salePrice,infoCheckout}=this.state;
+
+    if (input) {
+      input.removeAttribute('disabled');
+    }
+    
     return (
-        <Fragment>
-            <div className="checkout__order">
-                <h4 className="order__title">Hóa đơn của bạn</h4>
-                <div className="checkout__order__products">Sản phẩm <span>Tổng cộng</span></div>
-                <ul className="checkout__total__products">
-                    {this.props.renderOrderItem}
-                </ul>
-                <ul className="checkout__total__all">
-                    <li>Tổng phụ <span>{convertToMoney(this.props.totalPrice)}VND</span></li>
-                    <li>Khuyến mãi <span>{convertToMoney(salePrice)}VND</span></li>
-                    <li>Số tiền phải trả <span>{convertToMoney(this.props.totalPrice-salePrice)}VND</span></li>
-                </ul>
-                <p>Nhập mã khuyến mãi tại đây</p>
-                <div className="row">     
-                    <div className="col-lg-6">
-                        <div className="checkout__input">  
-                            <input type="text" name="coupon" value={coupon} onChange={this.onChange} />
-
-                        </div>
-                    </div>
-                        <div className="col-lg-6">
-                            <button type="button" onClick={()=>this.isCheckCoupon(coupon,this.props.totalPrice)}>Kiểm tra</button>
-                        </div>
-                        <p></p>
-                </div>
-                <div className="row">     
-                    <label className="text-success">{infoCheckout}</label>
-                </div>
-            </div>
-        </Fragment>
-        
+      <button
+        type="button"
+        className="site-btn my-0"
+        onClick={() =>
+          this.props.applyCoupon(this.props.cart, this.state.code, this.props.token)
+        }
+      >
+        Dùng
+      </button>
     );
   }
-  
+
+  renderCouponStatus = (cart) => {
+    const { coupon } = cart;
+    if (cart.invalidCoupon === 'INVALID_CODE') {
+      return (
+        <p className="text-danger">
+          Mã khuyến mãi không hợp lệ
+        </p>
+      );
+    }
+
+    if (!coupon) {
+      return;
+    }
+
+    if (cart.invalidCoupon === 'EXPIRES') {
+      if (coupon.expiresDate && typeof coupon.expiresDate === 'string') {
+        coupon.expiresDate = new Date(coupon.expiresDate.substring(0,10));
+      }
+      
+      const expiresDate = `${coupon.expiresDate.getDate()}/${coupon.expiresDate.getMonth() + 1}/${coupon.expiresDate.getFullYear()}`;
+      return (
+        <p className="text-danger">
+          Mã khuyến mãi đã hết hạn từ { expiresDate }
+        </p>
+      );
+    }
+
+    if (cart.invalidCoupon === 'CONDITION') {
+      let condition;
+      switch (coupon.condition) {
+        case 'GTE':
+          condition = 'lớn hơn hoặc bằng';
+          break;
+
+        case 'LTE':
+          condition = 'nhỏ hơn hoặc bằng';
+          break;
+
+        default:
+          break;
+      }
+      return (
+        <p className="text-danger">
+          Mã khuyến mãi chỉ áp dụng cho đơn hàng { condition } { convertToMoney(coupon.orderValue) }đ
+        </p>
+      );
+    }
+
+    let value;
+    switch(coupon.type) {
+      case 'PERCENT':
+        value = `${coupon.value}% giá trị đơn hàng`;
+        break;
+
+      case 'CASH':
+        value = `${convertToMoney(coupon.value)}đ`;
+        break;
+
+      default:
+        break;
+    }
+    return(
+      <p className="text-success">
+        <i class="fa fa-info-circle" aria-hidden="true"></i>
+        &nbsp;Thành công. Mã khuyến mãi giảm { value }
+      </p>
+    );
+  }
+
+  render() {
+    const { totalAmount, finalAmount, coupon } = this.props.cart;
+    return (
+      <Fragment>
+        <div className="checkout__order">
+          <h4 className="order__title">Hóa đơn của bạn</h4>
+          <ul className="checkout__total__products" style={{ maxHeight: "250px", display: "block", overflowY: "auto"}}>
+            {this.props.renderOrderItem}
+          </ul>
+          <ul className="checkout__total__all">
+            <li>
+              Tổng phụ <span>{convertToMoney(totalAmount)}đ</span>
+            </li>
+            <li>
+              Khuyến mãi <span>{convertToMoney(totalAmount - finalAmount)}đ</span>
+            </li>
+            <li>
+              Số tiền phải trả <span> {convertToMoney(finalAmount)}đ </span>
+            </li>
+          </ul>
+          <p>Nhập mã khuyến mãi tại đây</p>
+          <div className="row align-items-center mb-3">
+            <div className="col-lg-6 mr-0 pr-0">
+              <div className="checkout__input my-0">
+                <input
+                  type="text"
+                  name="code"
+                  className="my-0"
+                  value={this.state.code}
+                  onChange={this.onChange}
+                />
+              </div>
+            </div>
+            <div className="col-lg-6">
+              { this.renderSubmitCouponBtn(coupon) }
+            </div>
+          </div>
+          { this.renderCouponStatus(this.props.cart) }
+        </div>
+      </Fragment>
+    );
+  }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    ...state.authorization,
+  };
+};
 
-export default ListOrder;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    applyCoupon: (cart, code, jwt) => {
+        dispatch(actions.applyCoupon(cart, code, jwt));
+    },
+
+    removeCoupon: (jwt) => {
+        dispatch(actions.removeCoupon(jwt));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ListOrder);

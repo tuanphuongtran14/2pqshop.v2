@@ -206,7 +206,6 @@ export const fetchIdUserInOrder = (id_User) => {
   };
 };
 
-
 export const getCart = (cart) => {
   return {
     type: types.GET_CART,
@@ -216,7 +215,7 @@ export const getCart = (cart) => {
 
 export const fetchCart = (jwt) => {
   return (dispatch) => {
-    return callApi('users/me/cart', "GET", null, {
+    return callApi("users/me/cart", "GET", null, {
       headers: {
         Authorization: `Bearer ${jwt}`
       }
@@ -230,7 +229,7 @@ export const fetchCart = (jwt) => {
 
 export const addItemToCart = (item, jwt, cb) => {
   return (dispatch) => {
-    return callApi('users/me/cart/add-item', "POST", item, {
+    return callApi("users/me/cart/add-item", "POST", item, {
       headers: {
         Authorization: `Bearer ${jwt}`
       }
@@ -245,7 +244,7 @@ export const addItemToCart = (item, jwt, cb) => {
 
 export const removeItemFromCart = (itemId, jwt, cb) => {
   return (dispatch) => {
-    return callApi('users/me/cart/remove-item', "POST", { id: itemId }, {
+    return callApi("users/me/cart/remove-item", "POST", { id: itemId }, {
       headers: {
         Authorization: `Bearer ${jwt}`
       }
@@ -260,7 +259,7 @@ export const removeItemFromCart = (itemId, jwt, cb) => {
 
 export const changeItemQuantity = (itemId, quantity, jwt, cb) => {
   return (dispatch) => {
-    return callApi('users/me/cart/change-item-quantity', "POST", { id: itemId, quantity }, {
+    return callApi("users/me/cart/change-item-quantity", "POST", { id: itemId, quantity }, {
       headers: {
         Authorization: `Bearer ${jwt}`
       }
@@ -275,7 +274,7 @@ export const changeItemQuantity = (itemId, quantity, jwt, cb) => {
 
 export const changeItemSize = (itemId, size, jwt, cb) => {
   return (dispatch) => {
-    return callApi('users/me/cart/change-item-size', "POST", { id: itemId, size }, {
+    return callApi("users/me/cart/change-item-size", "POST", { id: itemId, size }, {
       headers: {
         Authorization: `Bearer ${jwt}`
       }
@@ -287,3 +286,37 @@ export const changeItemSize = (itemId, size, jwt, cb) => {
       });
   };
 };
+
+export const applyCoupon = (cart, code, jwt) => {
+  return (dispatch) => {
+    return callApi("users/me/cart/apply-coupon", "POST", { code }, {
+      headers: {
+        Authorization: `Bearer ${jwt}`
+      }
+    })
+      .then((res) => {
+        const newCart = res.data;
+        dispatch(getCart(newCart));
+      })
+      .catch((error) => {
+        // const { data } = error.response.data;
+        cart.invalidCoupon = 'INVALID_CODE';
+        dispatch(getCart(JSON.parse(JSON.stringify(cart))));
+      });
+  };
+};
+
+export const removeCoupon = (jwt) => {
+  return (dispatch) => {
+    return callApi("users/me/cart/remove-coupon", "GET", null, {
+      headers: {
+        Authorization: `Bearer ${jwt}`
+      }
+    })
+      .then((res) => {
+        const cart = res.data;
+        dispatch(getCart(cart));
+      });
+  };
+};
+

@@ -135,6 +135,7 @@ module.exports = {
   resetPassword: async (req, res) => {
     try {
       const { error } = validate.resetPasswordSchema(req.body);
+      console.log(error);
       if (error) {
         const message = error.message || 'Params is not valid';
         const data = message.replace(/ /g, '.');

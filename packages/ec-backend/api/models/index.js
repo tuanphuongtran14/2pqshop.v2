@@ -8,6 +8,8 @@ const categoryModel = require('./category.model');
 const tagModel = require('./tag.model');
 const variationModel = require('./variation.model');
 const cartModel = require('./cart.model');
+const orderModel = require('./order.model');
+const couponModel = require('./coupon.model');
 
 const db = {};
 db.url = dbConfig.URL;
@@ -20,5 +22,7 @@ db.Category = categoryModel.initializeModel(mongoose);
 db.Tag = tagModel.initializeModel(mongoose);
 db.Variation = variationModel.initializeModel(mongoose);
 db.Cart = cartModel.initializeModel(mongoose);
+db.Order = orderModel.initializeModel(mongoose);
+db.Coupon = couponModel.initializeModel(mongoose);
 
 module.exports = db;

@@ -8,6 +8,8 @@ const PRIVATE_ATTRIBUTES = [
   'resetPwToken',
 ];
 
+exports.PRIVATE_ATTRIBUTES = PRIVATE_ATTRIBUTES;
+
 exports.initializeModel = (mongoose) => {
   const { Schema } = mongoose;
   const UserSchema = new Schema({
@@ -33,7 +35,6 @@ exports.initializeModel = (mongoose) => {
     },
     birthday: {
       type: Date,
-      required: true,
     },
     gender: {
       type: String,
@@ -43,15 +44,12 @@ exports.initializeModel = (mongoose) => {
     },
     addressLine1: {
       type: String,
-      required: true,
     },
     district: {
       type: String,
-      required: true,
     },
     province: {
       type: String,
-      required: true,
     },
     joinDate: {
       type: Date,

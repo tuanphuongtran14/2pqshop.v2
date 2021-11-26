@@ -16,7 +16,12 @@ const {
   getItemNumbers,
   changeItemQuantity,
   changeItemSize,
+  applyCoupon,
+  removeCoupon,
 } = require('../controllers/cart.controllers');
+const {
+  findOrdersByUser,
+} = require('../controllers/order.controllers');
 
 // Sign in & Sign up
 router.post('/auth/local', signIn);
@@ -36,7 +41,11 @@ router.post('/me/cart/remove-item', removeItemFromCart);
 router.get('/me/cart/item-numbers', getItemNumbers);
 router.post('/me/cart/change-item-quantity', changeItemQuantity);
 router.post('/me/cart/change-item-size', changeItemSize);
+router.post('/me/cart/apply-coupon', applyCoupon);
+router.get('/me/cart/remove-coupon', removeCoupon);
 router.get('/me/cart', getMyCart);
+
+router.get('/me/orders', findOrdersByUser);
 
 // Profile and update profile
 router.post('/auth/change-password', changePassword);

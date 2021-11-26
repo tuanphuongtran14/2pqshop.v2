@@ -58,7 +58,7 @@ module.exports = {
     const { email, resetPwToken } = user;
     const params = {
       websiteName: '2PQFashion Shop',
-      websiteURL: DOMAIN,
+      websiteURL: 'http://localhost:3000',
       resetPwToken,
     };
     ejs.renderFile(RESET_PW_EMAIL_TEMPLATE, params, {}, (error, htmlContent) => {

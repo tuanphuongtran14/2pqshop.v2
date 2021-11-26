@@ -162,6 +162,7 @@ const mapStateToProps = (state) => {
     cart: state.cart,
     user: state.user,
     products: state.products,
+    ...state.authorization,
   };
 };
 const mapDispatchToProps = (dispatch) => {

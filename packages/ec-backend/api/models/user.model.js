@@ -35,7 +35,6 @@ exports.initializeModel = (mongoose) => {
     },
     birthday: {
       type: Date,
-      required: true,
     },
     gender: {
       type: String,
@@ -45,15 +44,12 @@ exports.initializeModel = (mongoose) => {
     },
     addressLine1: {
       type: String,
-      required: true,
     },
     district: {
       type: String,
-      required: true,
     },
     province: {
       type: String,
-      required: true,
     },
     joinDate: {
       type: Date,

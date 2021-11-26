@@ -1,6 +1,6 @@
 /* eslint-disable no-template-curly-in-string */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import {
   Layout as AntLayout,
@@ -13,9 +13,10 @@ import {
   Table,
   Space,
 } from 'antd';
-
-import { DownloadOutlined, EditOutlined, EyeOutlined,DeleteOutlined } from '@ant-design/icons';
-import {HeaderLayout, BreadcrumbLayout,FooterLayout} from './../../Components'
+import * as actions from './actions';
+import { DownloadOutlined, EditOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
+import { HeaderLayout, BreadcrumbLayout, FooterLayout } from './../../Components';
+import { useLocation } from 'react-router-dom';
 const { Title, Text } = Typography;
 const { Column } = Table;
 const { Content } = AntLayout;
@@ -67,172 +68,160 @@ const StyleManageCategory = styled(AntLayout)`
 `;
 
 const ManageCategoryPage = () => {
-  const [showReportResult, setShowReportResult] = useState(false);
-  const [dateData, setDateData] = useState({ month: '', year: '' });
-  const [dataSource] = useState([
-    {
-        key:'1',
-        index: '1',
-        sku: 'Toyota1',
-        CategoryName: 'Toyota',
-        price: 10000,
-    },
-    {   
-        key:'2',
-        index: '1',
-        sku: 'Toyota2',
-        CategoryName: 'Toyota',
-        price: 10000,
-      },
-      { 
-        key:'3',
-        index: '1',
-        sku: 'Toyota3',
-        CategoryName: 'Toyota',
-        price: 10000,
-      },
-  ]);
+    const location=useLocation();
+    const [pageSize, setPageSize] = useState(10);
+    const [pageIndex, setPageIndex] = useState(1);
+    const [totalProducts, setTotalProduct] = useState(0);
+    const [dataSource, setDataSource] = useState([]);
 
-  const columns = [
-    {
-      title: 'STT',
-      dataIndex: 'index',
-      key: 'index',
-    },
-    {
-      title: 'Mã sản phẩm',
-      dataIndex: 'sku',
-      key: 'sku',
-    },
-    {
-      title: 'Tên sản phẩm',
-      dataIndex: 'CategoryName',
-      key: 'CategoryName',
-    },
-    {
-      title: 'Giá bán',
-      dataIndex: 'price',
-      key: 'price',
-    }
-  ];
+    const validateMessages = {
+        required: 'Nhập ${label}!',
+        types: {
+        email: '${label} không phải là email hợp lệ!',
+        number: '${label} không phải là số hợp lệ!',
+        },
+        number: {
+        min: "'${label}' không thể nhỏ hơn ${min}",
+        max: "'${label}' không thể lớn hơn ${max}",
+        range: '${label} phải ở giữa ${min} và ${max}',
+        },
+    };
 
-  dataSource.map((item, index) => (item.carNumber = index + 1));
+    useEffect(() => {
+        onGetListCatagorys({
+        pageIndex,
+        pageSize,
+        });
+    }, [location.pathname, pageIndex, pageSize]);
 
-  const validateMessages = {
-    required: 'Nhập ${label}!',
-    types: {
-      email: '${label} không phải là email hợp lệ!',
-      number: '${label} không phải là số hợp lệ!',
-    },
-    number: {
-      min: "'${label}' không thể nhỏ hơn ${min}",
-      max: "'${label}' không thể lớn hơn ${max}",
-      range: '${label} phải ở giữa ${min} và ${max}',
-    },
-  };
+    const onPageChange = (pageIndex, pageSize) => {
+        setPageIndex(pageIndex);
+        setPageSize(pageSize);
+    };
+    const onGetListCatagorys = async (pagination) => {
+        try {
+        const data = await actions.onGetListCatagorysRequest(pagination);
+        let lstTempCatagory = data.results;
+        let lstCatagory = lstTempCatagory.map((item, index) => {
+            return {
+            ...item,
+            key: index,
+            index: index + 1,
+            };
+        });
+        const panigionServer = data.pagination;
+        setDataSource(lstCatagory);
+        setTotalProduct(panigionServer.total);
+        } catch (e) {
+        alert('Đã có lỗi xảy ra vui lòng kiểm tra lại');
+        }
+    };
+    const onSearch = (values) => {
+        console.log(values);
+    };
 
-  const onFinishCreateTable = (values) => {
-    const { month, year } = values;
-    setDateData({ ...dateData, month: month, year: year });
-    setShowReportResult(true);
-  };
+    return (
+        <StyleManageCategory>
+        <HeaderLayout />
+        <Content style={{ margin: '0 16px' }}>
+            <BreadcrumbLayout root="Product" branch="manage" />
+            <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
+            <Title className="main-title" level={2}>
+                Danh sách loại sản phẩm
+            </Title>
 
-  const onFinishFailedCreateTable = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-    setShowReportResult(false);
-  };
-
-  const ResultTitle = () => (
-    <Title className="main-title-result" level={4}>
-      Kết quả báo cáo doanh thu tháng {dateData.month} năm {dateData.year}
-    </Title>
-  );
-
-  const TotalValues = () => {
-    const total = dataSource.reduce((a, b) => a + b.total, 0);
-    return <Text className="result-total">Tổng doanh thu tháng: {total} đồng</Text>;
-  };
-  
-  return (
-    <StyleManageCategory >
-      <HeaderLayout />
-      <Content style={{ margin: '0 16px' }}>
-        <BreadcrumbLayout root="Product" branch="manage" />
-        <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
-          <Title className="main-title" level={2}>
-            Danh sách sản phẩm
-          </Title>
-
-          <Form
-            name="basic"
-            className="filter-form"
-            initialValues={{
-              remember: true,
-            }}
-            onFinish={onFinishCreateTable}
-            onFinishFailed={onFinishFailedCreateTable}
-            autoComplete="off"
-            layout="inline"
-            validateMessages={validateMessages}
-          >
-            <Form.Item
-              name="keyword"
-              // rules={[
-              //   {
-              //     type: 'text',
-              //     min: 1,
-              //     max: 20,
-              //   },
-              // ]}
+            <Form
+                name="basic"
+                className="filter-form"
+                initialValues={{
+                remember: true,
+                }}
+                onFinish={onSearch}
+                autoComplete="off"
+                layout="inline"
+                validateMessages={validateMessages}
             >
-              <Input placeholder="Nhập mã/tên sản phẩm" style={{ width: '100%' }} />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Tìm kiếm 
-              </Button>
-            </Form.Item>
-          </Form>
+                <Form.Item
+                name="keyword"
+                // rules={[
+                //   {
+                //     type: 'text',
+                //     min: 1,
+                //     max: 20,
+                //   },
+                // ]}
+                >
+                <Input placeholder="Nhập mã/tên sản phẩm" style={{ width: '100%' }} />
+                </Form.Item>
+                <Form.Item>
+                <Button type="primary" htmlType="submit">
+                    Tìm kiếm
+                </Button>
+                </Form.Item>
+            </Form>
 
-          {/* <div className={showReportResult ? 'show' : 'hide'}> */}
-          <div>
-            <Divider plain>Danh sách sản phẩm hiện nay</Divider>
-            <ResultTitle />
-            <TotalValues />
-            <Table className="result-table" dataSource={dataSource} pagination={{current: 2,
-      pageSize: 10,total: 200}} >
-              <Column title="Số thứ tụ" dataIndex="index"/>
-              <Column title="Mã sản phẩm" dataIndex="sku" />
-              <Column title="Tên sản phẩm" dataIndex="productName"  />
-              <Column title="Giá bán" dataIndex="price"/>
-              <Column
+            {/* <div className={showReportResult ? 'show' : 'hide'}> */}
+            <div>
+                <Divider plain>Danh sách loại sản phẩm hiện nay</Divider>
+                <Text className="result-total">Tổng số loại sản phẩm hiện nay: {totalProducts} loại</Text>;
+                <Table
+                className="result-table"
+                dataSource={dataSource}
+                pagination={{
+                    current: pageIndex,
+                    pageSize: pageSize,
+                    total: totalProducts,
+                    showSizeChanger: true,
+                    pageSizeOptions: ['5', '10', '15'],
+                    onChange: onPageChange,
+                }}
+                >
+                <Column title="Số thứ tụ" dataIndex="index" />
+                <Column title="Mã loại sản phẩm" dataIndex="id" />
+                <Column title="Tên loại sản phẩm" dataIndex="name" />
+                <Column
                     title="Thực hiện"
                     key="action"
                     render={(item) => {
-                        return(
-                            <Space size="middle">
-                                <Button icon={<EyeOutlined />} onClick={()=>{console.log(item)}}/>
-                                <Button icon={<EditOutlined/>} onClick={()=>{console.log(item)}}/>
-                                <Button icon={<DeleteOutlined/>} onClick={()=>{console.log(item)}}/>
-                            </Space>
-                        )}
-                    }
-                    />
-            </Table>
-            <Button
-              className="button-finish"
-              icon={<DownloadOutlined />}
-              type="primary"
-              size="middle"
-            >
-              In excel danh sách sản phẩm
-            </Button>
-          </div>
-        </div>
-      </Content>
-      <FooterLayout />
-    </StyleManageCategory>
-  );
-};
+                    return (
+                        <Space size="middle">
+                        <Button
+                            icon={<EyeOutlined />}
+                            onClick={() => {
+                            console.log(item);
+                            }}
+                        />
+                        <Button
+                            icon={<EditOutlined />}
+                            onClick={() => {
+                            console.log(item);
+                            }}
+                        />
+                        <Button
+                            icon={<DeleteOutlined />}
+                            onClick={() => {
+                            console.log(item);
+                            }}
+                        />
+                        </Space>
+                    );
+                    }}
+                />
+                </Table>
+                <Button
+                className="button-finish"
+                icon={<DownloadOutlined />}
+                type="primary"
+                size="middle"
+                >
+                In excel danh sách sản phẩm
+                </Button>
+            </div>
+            </div>
+        </Content>
+        <FooterLayout />
+        </StyleManageCategory>
+    );
+    };
 
-export default ManageCategoryPage;
+    export default ManageCategoryPage;

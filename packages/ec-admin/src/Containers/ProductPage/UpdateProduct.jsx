@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import * as actions from './actions';
-import {useHistory} from 'react-router-dom'
+import {useHistory, useParams, useLocation} from 'react-router-dom'
 import {
   Layout as AntLayout,
   Breadcrumb,
@@ -20,13 +20,13 @@ import {
   Select,
 } from 'antd';
 
-import {HeaderLayout, BreadcrumbLayout,FooterLayout,ImageLayout} from './../../Components'
+import {HeaderLayout, BreadcrumbLayout,FooterLayout,ImageLayout,ImageCustomLayout} from './../../Components'
 import { generateSku, removeAccents} from '../../helper/generateSku';
 const { Content } = AntLayout;
 const { Title, Text } = Typography;
 const { Option } = Select;
 const { TextArea } = Input;
-const StyledCreateProductForm = styled(AntLayout)`
+const StyledUpdateProductForm = styled(AntLayout)`
   .main-title {
     margin-bottom: 30px;
     text-align: center;
@@ -68,7 +68,7 @@ const StyledCreateProductForm = styled(AntLayout)`
   }
 `;
 
-const CreateProductForm = () => {
+const UpdateProductForm = () => {
   const history=useHistory();
   const [slug,setSlug]=useState('');
   const [lstCategory,setListCategory]=useState([]);
@@ -79,7 +79,12 @@ const CreateProductForm = () => {
   const [optionM,setOptionM]=useState(false)
   const [optionL,setOptionL]=useState(false)
   const [optionXL,setOptionXL]=useState(false)
-
+  const [product,setProduct]=useState({});
+  const [grade,setGrade]=useState(0);
+  const [listOption,setListOption]=useState([]);
+  const location=useLocation();
+  const [form] = Form.useForm();
+  const [listImage,setListImage]=useState([]);
 
   const layout = {
     labelCol: {
@@ -102,26 +107,82 @@ const CreateProductForm = () => {
       range: '${label} phải ở giữa ${min} và ${max}',
     },
   };
+  const setForm=(product,options,grade)=>{
+    let txtInputM=null;
+    let txtInputS=null;
+    let txtInputL=null;
+    let txtInputXL=null;
+    options.forEach(item=>{
+      if(item.size==='S'){
+        setOptionS(true);
+        txtInputS=item.remaining
+      }
+      if(item.size==='M'){
+        setOptionM(true);
+        txtInputM=item.remaining
+      }
+      if(item.size==='L'){
+        setOptionL(true);
+        txtInputL=item.remaining
+      }
+      if(item.size==='XL'){
+        setOptionXL(true);
+        txtInputXL=item.remaining
+      }
+    })
+    setListOption(options);
+    form.setFieldsValue({
+      slug:product.slug,
+      name:product.name,
+      price:product.price,
+      grade:grade,
+      category:product.category,
+      tags:product.tags,
+      shortDesc:product.shortDesc,
+      fullDesc:product.fullDesc,
+      additionalInfo:product.additionalInfo,
+      quantityM:txtInputM?txtInputM:0,
+      quantityS:txtInputS?txtInputS:0,
+      quantityL:txtInputL?txtInputL:0,
+      quantityXL:txtInputXL?txtInputXL:0
+    });
+  }
 
   useEffect(()=>{
     getListCategoryRequest();
     getListTagRequest();
+    let id =location.state.id;
+    getProductById(id);
   },[])
+
+  const getProductById= async (slug)=>{
+    try{
+     let data = await actions.onGetProductByIdRequest(slug);
+     setGrade(data.rating.grade);
+     setListImage(data.images);
+     setProduct(data);
+     setForm(data,data.options,data.rating.grade);
+    }
+    catch(e){
+      console.log(e);
+      alert("Đã có lỗi trong quá trình lấy dữ liệu");
+    }
+  }
 
   const getListCategoryRequest=async()=>{
     const data= await actions.onGetListCategoryRequest();
     setListCategory(data.results);
   }
+
   const getListTagRequest=async()=>{
     const data= await actions.onGetListTagRequest();
     setListTag(data.results);
   }
   
-
   const onFinishAddItem = async (values) => {
     try{
-      console.log('file',fileList);
-      const lstOptions=convertObjOption(values);
+      let options=convertObjOption(values);
+      console.log(options);
       let data = new FormData();
       data.append('name',values.name);
       data.append('sku',generateSku('SP'));
@@ -131,18 +192,16 @@ const CreateProductForm = () => {
       data.append('tags',JSON.stringify(values.tags));
       data.append('category',values.category);
       data.append('status',0);
-      data.append('options',JSON.stringify(lstOptions));
+      data.append('options',JSON.stringify(options));
       data.append('shortDesc',values.shortDesc);
       data.append('fullDesc',values.fullDesc);
       data.append('additionalInfo',values.additionalInfo);
-      data.append('images','[]');
-      console.log('fileList',fileList);
+      data.append('images',JSON.stringify(listImage));
       fileList.forEach(item=>{
-        console.log('item',item);
        data.append("files.images",item.originFileObj);
       })
-      const result= await actions.onCreateProductRequest(data);
-      alert(`Thêm sản phẩm thành công. Bạn có thể tìm kiếm với mã ${result.id}`);
+      const result= await actions.onUpdateProductRequest(data,location.state.id);
+      alert(`Cập sản phẩm thành công. Bạn có thể tìm kiếm với mã ${result.id}`);
       history.push('/manage-products')
     }catch(e){
       console.log(e);
@@ -151,30 +210,76 @@ const CreateProductForm = () => {
      
   };
   const convertObjOption =(values)=>{
-    let lstOptions=[];
+    let lstOptions=listOption.map((item)=>{
+      return {
+        _id:item._id,
+        remaining:item.remaining,
+        size:item.size
+      }
+    });
     if(optionS){
-      let obj={
-        size: 'S', quantity: values.quantityS, remaining: values.quantityS
-      }
-      lstOptions.push(obj);
+      let index= lstOptions.findIndex(item=> item.size==='S');
+
+      if(index===-1){
+        let obj={
+          size: 'S', quantity: values.quantityS, remaining: values.quantityS
+        }
+        lstOptions.push(obj);
+
+      }else{
+        lstOptions.forEach(item=>{
+          if(item.size==='S'){
+            item.remaining=values.quantityS;
+          }
+        })
+      } 
     }
+
     if(optionM){
-      let obj={
-        size: 'M', quantity: values.quantityM, remaining: values.quantityM
-      }
-      lstOptions.push(obj);
+      let index= lstOptions.findIndex(item=> item.size==='M');
+      if(index===-1){
+        let obj={
+          size: 'M', quantity: values.quantityM, remaining: values.quantityM
+        }
+        lstOptions.push(obj);
+      }else{
+        lstOptions.forEach(item=>{
+          if(item.size==='M'){
+            item.remaining=values.quantityM;
+          }
+        })
+      } 
     }
     if(optionL){
-      let obj={
-        size: 'L', quantity: values.quantityL, remaining: values.quantityL
-      }
-      lstOptions.push(obj);
+      let index= lstOptions.findIndex(item=> item.size==='L');
+
+      if(index===-1){
+        let obj={
+          size: 'L', quantity: values.quantityL, remaining: values.quantityL
+        }
+        lstOptions.push(obj);
+      }else{
+        lstOptions.forEach(item=>{
+          if(item.size==='L'){
+            item.remaining=values.quantityL;
+          }
+        })
+      } 
     }
     if(optionXL){
-      let obj={
-        size: 'XL', quantity: values.quantityXL, remaining: values.quantityXL
-      }
-      lstOptions.push(obj);
+      let index= lstOptions.findIndex(item=> item.size==='XL');
+      if(index===-1){
+        let obj={
+          size: 'XL', quantity: values.quantityXL, remaining: values.quantityXL
+        }
+        lstOptions.push(obj);
+      }else{
+        lstOptions.forEach(item=>{
+          if(item.size==='XL'){
+            item.remaining=values.quantityXL;
+          }
+        })
+      } 
     }
     return lstOptions;
   }
@@ -187,6 +292,7 @@ const CreateProductForm = () => {
 
   }
   const handleSizeS = (event) => {
+
     if(!event.target.checked){
       setOptionS(false);
     }else{
@@ -218,21 +324,21 @@ const CreateProductForm = () => {
     }
   }
   return (
-    <StyledCreateProductForm >
+    <StyledUpdateProductForm >
       <HeaderLayout />
       <Content style={{ margin: '0 16px' }}>
       <BreadcrumbLayout root="Product" branch="create" />
 
         <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
           <Title className="main-title" level={2}>
-           Quản lý sản phẩm
+           Cập nhật sản phẩm
           </Title>
-          
-          <Divider plain>Thêm hình ảnh sản phẩm</Divider>
+          < Divider plain style={{width:"60%"}}>Hình ảnh sản phẩm đã tạo</Divider>
           <div className="mt-2 text-center">
-            <ImageLayout fileList={fileList} setFileList={setFileList}/>
+            <ImageCustomLayout listImage={listImage} setListImage={setListImage} fileList={fileList} setFileList={setFileList}/>
           </div>
           <Form
+            form={form}
             {...layout}
             name="nest-messages"
             onFinish={onFinishAddItem}
@@ -240,9 +346,9 @@ const CreateProductForm = () => {
             fields={[
               {
                 name: ["slug"],
-                value: slug,
-              },
-            ]}
+                value: product.slug,
+              }]
+            }
           >
             <Form.Item
               name="slug"
@@ -254,7 +360,7 @@ const CreateProductForm = () => {
                 },
               ]}
             >
-              <Input disabled={true}/>
+              <Input  disabled={true}/>
             </Form.Item>
             <Form.Item
               name="name"
@@ -284,7 +390,7 @@ const CreateProductForm = () => {
                   <div className="border size-listing px-3 pt-2 pb-3" style={{width:'70%',margin:'0px auto'}}>
                   <Row>
                     <Col span={9}>
-                        <Checkbox onChange={handleSizeS}>Size S</Checkbox>
+                        <Checkbox checked={optionS} onChange={handleSizeS}>Size S</Checkbox>
                     </Col>
                     <Col span={12}>
                       <Form.Item name="quantityS" label ="Số lượng">
@@ -295,7 +401,7 @@ const CreateProductForm = () => {
                   <Row>
                     <Col span={9}>
                       
-                      <Checkbox onChange={handleSizeM}>Size M</Checkbox>
+                      <Checkbox checked={optionM} onChange={handleSizeM}>Size M</Checkbox>
                       
                     </Col>
                     <Col span={12}>
@@ -307,7 +413,7 @@ const CreateProductForm = () => {
                   <Row>
                     <Col span={9}>
                       
-                      <Checkbox onChange={handleSizeL}>Size L</Checkbox>
+                      <Checkbox checked={optionL} onChange={handleSizeL}>Size L</Checkbox>
                       
                     </Col>
                     <Col span={12}>
@@ -319,7 +425,7 @@ const CreateProductForm = () => {
                   <Row>
                     <Col span={9}>
                       
-                      <Checkbox onChange={handleSizeXL}>Size XL</Checkbox>
+                      <Checkbox checked={optionXL} onChange={handleSizeXL}>Size XL</Checkbox>
                       
                     </Col>
                     <Col span={12}>
@@ -343,7 +449,6 @@ const CreateProductForm = () => {
                     optionFilterProp="children"
                     optionLabelProp="label"
                     filterOption={(input, option) =>{
-                      console.log(option);
                       return Number(option.value)===Number(input);
                     }
                   }
@@ -418,7 +523,7 @@ const CreateProductForm = () => {
                 },
               ]}
             >
-              <TextArea rows={5} />
+              <TextArea rows={3}/>
             </Form.Item>
             <Form.Item
               name="fullDesc"
@@ -429,7 +534,7 @@ const CreateProductForm = () => {
                 },
               ]}
             >
-              <TextArea rows={7}/>
+              <TextArea rows={7} />
             </Form.Item>
             <Form.Item
               name="additionalInfo"
@@ -444,15 +549,15 @@ const CreateProductForm = () => {
             </Form.Item>
             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 10 }}>
               <Button type="primary" htmlType="submit">
-                Thêm sản phẩm
+                Cập nhật sản phẩm
               </Button>
             </Form.Item>
           </Form>
         </div>
       </Content>
       <FooterLayout />
-    </StyledCreateProductForm>
+    </StyledUpdateProductForm>
   );
 };
 
-export default CreateProductForm;
+export default UpdateProductForm;

@@ -129,7 +129,7 @@ const CreateCategoryForm = () => {
               <Input />
             </Form.Item>
             <Form.Item
-              name="ratio"
+              name="price"
               label="Giá cả"
               rules={[
                 {

@@ -2,18 +2,14 @@ import React, { useState } from 'react';
 import { Upload } from 'antd';
 import ImgCrop from 'antd-img-crop';
 
-const Demo = () => {
-  const [fileList, setFileList] = useState([
-    {
-      uid: '-1',
-      name: 'image.png',
-      status: 'done',
-      url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-    },
-  ]);
+const ImageLayout = (props) => {
+  const {fileList, setFileList}=props;
 
-  const onChange = ({ fileList: newFileList }) => {
+
+  const onChange = ({ file,fileList: newFileList }) => {
     setFileList(newFileList);
+    
+
   };
 
   const onPreview = async file => {
@@ -31,19 +27,25 @@ const Demo = () => {
     imgWindow.document.write(image.outerHTML);
   };
 
+  const onChangeFile=(e)=>{
+    const lst=[];
+    lst.push(e.target.files[0]);
+    setFileList(lst);
+  }
   return (
     <ImgCrop rotate >
       <Upload
-        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
         listType="picture-card"
         fileList={fileList}
         onChange={onChange}
+        beforeUpload={() => false} 
         onPreview={onPreview}
       >
-        {fileList.length < 5 && '+ Upload'}
+       {fileList.length < 5 && '+ Upload'}
       </Upload>
     </ImgCrop>
+    
   );
 };
 
-export default Demo;
+export default ImageLayout;

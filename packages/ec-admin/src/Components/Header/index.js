@@ -10,19 +10,11 @@ import { DownloadOutlined } from '@ant-design/icons';
 const { Header } = AntLayout;
 const { Text } = Typography;
 const HeaderLayout=()=>{
-    const HeaderStyled = styled(Header)`
-    .info-login{
-        margin: 10px;
-    }
-    .btn-logout{
-        background:	#00FF00;
-        color:#FFFFFF;
-    }`;
     return(
-        <HeaderStyled className="site-layout-background" style={{padding:'0 20px',textAlign: 'right'}}>
-            <Text className="info-login" >Hello Quốc đẹp trai</Text>
+        <Header className="site-layout-background" style={{padding:'0 20px',textAlign: 'right'}}>
+            <Text style={{margin:'10px'}} className="info-login" >Chúc mừng sinh nhật Quốc đẹp trai</Text>
             <Button className="btn-success" >Đăng xuất</Button>
-        </HeaderStyled>
+        </Header>
     )
     
 }

@@ -1,7 +1,8 @@
 /* eslint-disable no-template-curly-in-string */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import * as actions from './actions'
 import {
   Layout as AntLayout,
   Breadcrumb,
@@ -16,6 +17,7 @@ import {
 
 import { DownloadOutlined, EditOutlined, EyeOutlined,DeleteOutlined } from '@ant-design/icons';
 import {HeaderLayout, BreadcrumbLayout,FooterLayout} from './../../Components'
+import {useLocation, useHistory} from 'react-router-dom'
 const { Title, Text } = Typography;
 const { Column } = Table;
 const { Content } = AntLayout;
@@ -67,56 +69,20 @@ const StyleManageProduct = styled(AntLayout)`
 `;
 
 const ManageProductPage = () => {
-  const [showReportResult, setShowReportResult] = useState(false);
-  const [dateData, setDateData] = useState({ month: '', year: '' });
-  const [dataSource] = useState([
-    {
-        key:'1',
-        index: '1',
-        sku: 'Toyota1',
-        productName: 'Toyota',
-        price: 10000,
-    },
-    {   
-        key:'2',
-        index: '1',
-        sku: 'Toyota2',
-        productName: 'Toyota',
-        price: 10000,
-      },
-      { 
-        key:'3',
-        index: '1',
-        sku: 'Toyota3',
-        productName: 'Toyota',
-        price: 10000,
-      },
-  ]);
 
-  const columns = [
-    {
-      title: 'STT',
-      dataIndex: 'index',
-      key: 'index',
-    },
-    {
-      title: 'Mã sản phẩm',
-      dataIndex: 'sku',
-      key: 'sku',
-    },
-    {
-      title: 'Tên sản phẩm',
-      dataIndex: 'productName',
-      key: 'productName',
-    },
-    {
-      title: 'Giá bán',
-      dataIndex: 'price',
-      key: 'price',
-    }
-  ];
+  const location=useLocation();
+  const [dataSource, setDataSource] = useState([]);
+  const [pageSize, setPageSize] = useState(10);
+  const [pageIndex, setPageIndex] = useState(1);
+  const [totalProducts, setTotalProduct] = useState(0);
+  const history=useHistory();
 
-  dataSource.map((item, index) => (item.carNumber = index + 1));
+  useEffect( ()=>{
+    onGetListProduct({
+      pageIndex,
+      pageSize
+    })
+  },[location.pathname,pageIndex,pageSize])
 
   const validateMessages = {
     required: 'Nhập ${label}!',
@@ -131,28 +97,57 @@ const ManageProductPage = () => {
     },
   };
 
-  const onFinishCreateTable = (values) => {
-    const { month, year } = values;
-    setDateData({ ...dateData, month: month, year: year });
-    setShowReportResult(true);
-  };
+  const onGetListProduct =async(pagination)=>{
+        try {
+            const data = await actions.onGetListProductRequest(pagination);
+            let lstTempProduct = data.results;
+            let lstProduct = lstTempProduct.map((item, index) => {
+            return {
+                ...item,
+                key: index,
+                index: index + 1,
+            };
+            });
+            const panigionServer = data.pagination;
+            setDataSource(lstProduct);
+            setTotalProduct(panigionServer.total);
+        } catch (e) {
+            alert('Đã có lỗi xảy ra vui lòng kiểm tra lại');
+        }
+    
+    }
+    const onPageChange = (pageIndex, pageSize) => {
+        setPageIndex(pageIndex);
+        setPageSize(pageSize);
+    }
+    const onSearch=(values)=>{
+        console.log(values);
+    }
 
-  const onFinishFailedCreateTable = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-    setShowReportResult(false);
-  };
+  const onDeleteProduct=async(item)=>{
+    try{
+      const check=window.confirm(`Bạn có muốn xóa sản phẩm ${item.id}`);
+      if(check){
+        await actions.onDeleletProductRequest(item.id);
+        alert('Đã xóa sản phẩm thành công');
+        setPageIndex(1);
+        onGetListProduct({
+          pageIndex:1,
+          pageSize
+        })
+      }
+    }catch(e){
+      alert('Đã có lỗi xảy ra vui lòng thử lại!');
+    }
+  }
 
-  const ResultTitle = () => (
-    <Title className="main-title-result" level={4}>
-      Kết quả báo cáo doanh thu tháng {dateData.month} năm {dateData.year}
-    </Title>
-  );
+  const onRedirectUpdate=(item)=>{
+    history.push({pathname:`/update-product/${item.slug}`,
+    state:{
+      id:item.id
+    }})
+  }
 
-  const TotalValues = () => {
-    const total = dataSource.reduce((a, b) => a + b.total, 0);
-    return <Text className="result-total">Tổng doanh thu tháng: {total} đồng</Text>;
-  };
-  
   return (
     <StyleManageProduct >
       <HeaderLayout />
@@ -169,8 +164,7 @@ const ManageProductPage = () => {
             initialValues={{
               remember: true,
             }}
-            onFinish={onFinishCreateTable}
-            onFinishFailed={onFinishFailedCreateTable}
+            onFinish={onSearch}
             autoComplete="off"
             layout="inline"
             validateMessages={validateMessages}
@@ -197,13 +191,14 @@ const ManageProductPage = () => {
           {/* <div className={showReportResult ? 'show' : 'hide'}> */}
           <div>
             <Divider plain>Danh sách sản phẩm hiện nay</Divider>
-            <ResultTitle />
-            <TotalValues />
-            <Table className="result-table" dataSource={dataSource} pagination={{current: 2,
-      pageSize: 10,total: 200}} >
+            <Text className="result-total">Tổng sản phẩm hiện nay: {totalProducts} sản phẩm</Text>;
+            <Table className="result-table" dataSource={dataSource} 
+            pagination={{current:pageIndex,pageSize: pageSize,total: totalProducts,
+             showSizeChanger: true, pageSizeOptions: ['5', '10', '15'],
+             onChange:onPageChange}} >
               <Column title="Số thứ tụ" dataIndex="index"/>
-              <Column title="Mã sản phẩm" dataIndex="sku" />
-              <Column title="Tên sản phẩm" dataIndex="productName"  />
+              <Column title="Mã sản phẩm" dataIndex="id" />
+              <Column title="Tên sản phẩm" dataIndex="name"  />
               <Column title="Giá bán" dataIndex="price"/>
               <Column
                     title="Thực hiện"
@@ -212,8 +207,8 @@ const ManageProductPage = () => {
                         return(
                             <Space size="middle">
                                 <Button icon={<EyeOutlined />} onClick={()=>{console.log(item)}}/>
-                                <Button icon={<EditOutlined/>} onClick={()=>{console.log(item)}}/>
-                                <Button icon={<DeleteOutlined/>} onClick={()=>{console.log(item)}}/>
+                                <Button icon={<EditOutlined/>} onClick={()=>{onRedirectUpdate(item)}}/>
+                                <Button icon={<DeleteOutlined/>} onClick={()=>onDeleteProduct(item)}/>
                             </Space>
                         )}
                     }

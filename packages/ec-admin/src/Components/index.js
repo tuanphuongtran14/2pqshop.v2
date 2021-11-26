@@ -5,6 +5,7 @@ import HeaderLayout from './Header';
 import BreadcrumbLayout from './Breadcrumb';
 import FooterLayout from './Footer';
 import ImageLayout from './Image';
+import ImageCustomLayout from './ImageCustom';
 
 export {
     Layout,
@@ -12,5 +13,6 @@ export {
     HeaderLayout,
     BreadcrumbLayout,
     FooterLayout,
-    ImageLayout
+    ImageLayout,
+    ImageCustomLayout
 }

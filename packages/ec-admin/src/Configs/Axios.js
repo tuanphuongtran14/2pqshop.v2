@@ -8,9 +8,12 @@ var axiosClient = axios.create({
     headers: {},
     });
     axiosClient.interceptors.request.use(async (config)=>{
-        // Do something before request is sent
-        // config.headers["Authorization"] = "bearer " + JSON.parse(localStorage.getItem('token'));
-        config.headers["Authorization"] = "Bearer eyJhybGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxOGUzYTcwYmVhYzEwZDRjOTAyN2VhOCIsImlhdCI6MTYzNzk3NzA3MSwiZXhwIjoxNjQwNTY5MDcxfQ.ZcIbtEXbbQYa4wkOq9aBZ4NFXrOpWFYdUJVP53ID-pY" ;
+        //handle token here 
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers["Authorization"] = `Bearer ${token}`;
+        }
+        
         return config;
       },
       error => {

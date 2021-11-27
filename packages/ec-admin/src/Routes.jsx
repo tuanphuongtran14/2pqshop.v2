@@ -25,7 +25,7 @@ function Routes({ isLoggedIn, isLoading }) {
 
   return (
     <BrowserRouter>
-      {true ?
+      {isLoggedIn ?
         <Layout>
           <Switch>
             <Route path="/" exact component={HomePage} />

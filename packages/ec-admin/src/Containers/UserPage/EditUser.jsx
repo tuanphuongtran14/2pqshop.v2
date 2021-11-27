@@ -286,7 +286,7 @@ const EditUser = ({ fetchUserById, fetchRoles, updateUserById, fetchUsers }) => 
               </Col>
               <Col span={2} />
               <Col span={11}>
-                <Form.Item name="isConfirmed" label="Đã xác thực" valuePropName="checked" rules={[{ required: true }]}>
+                <Form.Item name="isConfirmed" label="Đã xác thực" valuePropName="checked">
                   <Switch />
                 </Form.Item>
               </Col>
@@ -294,7 +294,7 @@ const EditUser = ({ fetchUserById, fetchRoles, updateUserById, fetchUsers }) => 
 
             <Row>
               <Col span={11}>
-                <Form.Item name="blocked" label="Đã chặn" valuePropName="checked" rules={[{ required: true }]}>
+                <Form.Item name="blocked" label="Đã chặn" valuePropName="checked">
                   <Switch />
                 </Form.Item>
               </Col>

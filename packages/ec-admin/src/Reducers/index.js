@@ -4,7 +4,7 @@ import users from "../Containers/UserPage/reducers/users";
 
 const AppReducer=combineReducers({
     auth,
-    users
+    users,
 })
 
 export default AppReducer;

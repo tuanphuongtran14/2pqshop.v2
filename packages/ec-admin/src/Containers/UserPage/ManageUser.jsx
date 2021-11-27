@@ -314,7 +314,7 @@ const ManageOrderPage = ({ users, pagination, fetchUsers, history }) => {
     setLoading(false);
    }
    fetchData();
-  }, [fetchUsers]);
+  }, [fetchUsers, page, pageSize]);
 
   return (
     <StyleManageOrder>

@@ -34,6 +34,18 @@ module.exports = (modelName) => ({
     };
   },
 
+  find: (queryParams, populates = []) => {
+    const { _sort = {} } = queryParams;
+    if (!_.isEmpty(_sort)) {
+      _sort.created_at = 'desc';
+    }
+
+    return db[modelName]
+      .find(queryParams)
+      .sort(_sort)
+      .populate(populates);
+  },
+
   create: async (params, populates) => {
     const entity = new db[modelName](params);
     await entity.save();

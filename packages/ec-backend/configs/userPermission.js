@@ -113,7 +113,7 @@ module.exports = {
         { method: '*', path: '/categories', isExactly: false },
         { method: '*', path: '/tags', isExactly: false },
         { method: '*', path: '/carts', isExactly: false },
-        { method: 'POST', path: '/orders', isExactly: true },
+        { method: '*', path: '/orders', isExactly: false },
         { method: 'GET', path: '/users/me/orders', isExactly: true },
         { method: 'POST', path: '/users/me/cart/apply-coupon', isExactly: true },
         { method: 'GET', path: '/users/me/cart/remove-coupon', isExactly: true },

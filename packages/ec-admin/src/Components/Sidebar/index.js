@@ -33,6 +33,13 @@ const Sidebar = () => {
             <span>Home Page</span>
             <Link to="/"></Link>
         </Menu.Item>
+        <SubMenu key="order" icon={<UserOutlined />} title="Người dùng">
+          <Menu.Item key="/manage-orders">
+            <span>Quản lý người dùng</span>
+            <Link to="/nguoi-dung/danh-sach">
+            </Link>
+          </Menu.Item>
+        </SubMenu>
         <SubMenu key="product" icon={<SkinOutlined  />} title="products">
           <Menu.Item key="/manage-products">
                 <span>Manage products</span>
@@ -81,10 +88,6 @@ const Sidebar = () => {
             </Link>
           </Menu.Item>
         </SubMenu>
-        <Menu.Item key="/register-admin" icon={<UserOutlined />}>
-            <span>Register new admin</span>
-            <Link to="/register-admin"></Link>
-        </Menu.Item>
       </Menu>
     </StyledSider>
   );

@@ -1,12 +1,10 @@
 import { combineReducers } from "redux";
-import auth from '../Containers/LoginPage/Reducers/auth';
-// import status from '../Containers/TestPage/reducers/status'
-// import lstProduct from '../Containers/TestPage/reducers/lstProduct'
+import auth from "../Containers/LoginPage/Reducers/auth";
+import users from "../Containers/UserPage/reducers/users";
 
 const AppReducer=combineReducers({
-    auth
-    // status,
-    // lstProduct
+    auth,
+    users
 })
 
 export default AppReducer;

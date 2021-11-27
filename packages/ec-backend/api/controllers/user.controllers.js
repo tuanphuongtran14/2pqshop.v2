@@ -4,8 +4,27 @@ const { sendEmailConfirmation, sendResetPasswordEmail } = require('../../utils/m
 const validate = require('../validations/user.validations');
 const jwt = require('../../utils/jwt');
 const nanoid = require('../../utils/nanoid');
+const query = require('../../utils/query');
+
+const MODEL_NAME = 'User';
 
 module.exports = {
+  findUsers: async (req, res) => {
+    try {
+      const queryParams = req.query;
+      const populates = [
+        {
+          path: 'role',
+          model: 'Role',
+        },
+      ];
+      const page = await query(MODEL_NAME).findPage(queryParams, populates);
+      return res.status(200).json(page);
+    } catch (ex) {
+      return handleError.badGateway(res, `Error: ${ex}`);
+    }
+  },
+
   signIn: async (req, res) => {
     try {
       const { error } = validate.signInSchema(req.body);

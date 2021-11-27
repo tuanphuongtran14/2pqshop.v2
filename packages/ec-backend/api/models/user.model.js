@@ -12,58 +12,66 @@ exports.PRIVATE_ATTRIBUTES = PRIVATE_ATTRIBUTES;
 
 exports.initializeModel = (mongoose) => {
   const { Schema } = mongoose;
-  const UserSchema = new Schema({
-    firstName: {
-      type: String,
-      required: true,
+  const UserSchema = new Schema(
+    {
+      firstName: {
+        type: String,
+        required: true,
+      },
+      lastName: {
+        type: String,
+        required: true,
+      },
+      password: {
+        type: String,
+        required: true,
+      },
+      email: {
+        type: String,
+        required: true,
+      },
+      phone: {
+        type: String,
+        required: true,
+      },
+      birthday: {
+        type: Date,
+      },
+      gender: {
+        type: String,
+        enum: ['MALE', 'FEMALE'],
+        default: 'MALE',
+        required: true,
+      },
+      addressLine1: {
+        type: String,
+      },
+      district: {
+        type: String,
+      },
+      province: {
+        type: String,
+      },
+      joinDate: {
+        type: Date,
+        required: true,
+      },
+      role: { type: Schema.Types.ObjectId, ref: 'Role' },
+      isConfirmed: {
+        type: Boolean,
+        required: true,
+        default: false,
+      },
+      confirmToken: String,
+      resetPwToken: String,
     },
-    lastName: {
-      type: String,
-      required: true,
+    {
+      timestamps: {
+        createdAt: 'created_at',
+        updatedAt: 'updated_at',
+      },
     },
-    password: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-    },
-    phone: {
-      type: String,
-      required: true,
-    },
-    birthday: {
-      type: Date,
-    },
-    gender: {
-      type: String,
-      enum: ['MALE', 'FEMALE'],
-      default: 'MALE',
-      required: true,
-    },
-    addressLine1: {
-      type: String,
-    },
-    district: {
-      type: String,
-    },
-    province: {
-      type: String,
-    },
-    joinDate: {
-      type: Date,
-      required: true,
-    },
-    role: { type: Schema.Types.ObjectId, ref: 'Role' },
-    isConfirmed: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    confirmToken: String,
-    resetPwToken: String,
-  });
+  );
 
   // eslint-disable-next-line func-names
   UserSchema.pre('save', async function (next) {

@@ -4,6 +4,7 @@ import HomePage from './Containers/HomePage';
 import ManageProductPage from './Containers/ProductPage/ManageProduct';
 import CreateProductPage from './Containers/ProductPage/CreateProduct';
 import UpdateProductPage from './Containers/ProductPage/UpdateProduct';
+import ShowProductPage from './Containers/ProductPage/ShowProduct';
 import ManageCategoryPage from './Containers/CategoryPage/ManageCategory';
 import CreateCategoryPage from './Containers/CategoryPage/CreateCategory';
 import ManageTagPage from './Containers/TagPage/ManageTag';
@@ -32,6 +33,7 @@ function Routes({ isLoggedIn, isLoading }) {
             <Route path="/manage-products" component={ManageProductPage} />
             <Route path="/create-product" component={CreateProductPage} />
             <Route path="/update-product/:slug" component={UpdateProductPage} />
+            <Route path="/show-product/:slug" component={ShowProductPage} />
             <Route path="/manage-categorys" component={ManageCategoryPage} />
             <Route path="/create-category" component={CreateCategoryPage} />
             <Route path="/manage-tags" component={ManageTagPage} />

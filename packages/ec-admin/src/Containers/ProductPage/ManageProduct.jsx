@@ -14,9 +14,9 @@ import {
   Table,
   Space,
 } from 'antd';
-
+import {convertNumberToMoney} from './../../helper/convertNumberToMoney'
 import { DownloadOutlined, EditOutlined, EyeOutlined,DeleteOutlined } from '@ant-design/icons';
-import {HeaderLayout, BreadcrumbLayout,FooterLayout} from './../../Components'
+import {HeaderLayout, BreadcrumbLayout,FooterLayout,LoadingScreenCustom} from './../../Components'
 import {useLocation, useHistory} from 'react-router-dom'
 const { Title, Text } = Typography;
 const { Column } = Table;
@@ -76,6 +76,7 @@ const ManageProductPage = () => {
   const [pageIndex, setPageIndex] = useState(1);
   const [totalProducts, setTotalProduct] = useState(0);
   const history=useHistory();
+  const [isLoading,setIsLoading] = useState(false);
 
   useEffect( ()=>{
     onGetListProduct({
@@ -99,19 +100,23 @@ const ManageProductPage = () => {
 
   const onGetListProduct =async(pagination)=>{
         try {
+            setIsLoading(true);
             const data = await actions.onGetListProductRequest(pagination);
+            setIsLoading(false);
             let lstTempProduct = data.results;
             let lstProduct = lstTempProduct.map((item, index) => {
             return {
                 ...item,
                 key: index,
                 index: index + 1,
+                price:convertNumberToMoney(item.price)
             };
             });
             const panigionServer = data.pagination;
             setDataSource(lstProduct);
             setTotalProduct(panigionServer.total);
         } catch (e) {
+          setIsLoading(false);
             alert('Đã có lỗi xảy ra vui lòng kiểm tra lại');
         }
     
@@ -128,7 +133,9 @@ const ManageProductPage = () => {
     try{
       const check=window.confirm(`Bạn có muốn xóa sản phẩm ${item.id}`);
       if(check){
+        setIsLoading(true);
         await actions.onDeleletProductRequest(item.id);
+        setIsLoading(false);
         alert('Đã xóa sản phẩm thành công');
         setPageIndex(1);
         onGetListProduct({
@@ -137,6 +144,7 @@ const ManageProductPage = () => {
         })
       }
     }catch(e){
+      setIsLoading(false);
       alert('Đã có lỗi xảy ra vui lòng thử lại!');
     }
   }
@@ -148,12 +156,20 @@ const ManageProductPage = () => {
     }})
   }
 
+  const onRedirectShow=(item)=>{
+    history.push({pathname:`/show-product/${item.slug}`,
+    state:{
+      id:item.id
+    }})
+  }
+
   return (
+    <>
     <StyleManageProduct >
       <HeaderLayout />
       <Content style={{ margin: '0 16px' }}>
         <BreadcrumbLayout root="Product" branch="manage" />
-        <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
+        <div className="site-layout-background" style={{ padding: 24, minHeight: 360, position: 'relative' }}>
           <Title className="main-title" level={2}>
             Danh sách sản phẩm
           </Title>
@@ -197,7 +213,7 @@ const ManageProductPage = () => {
              showSizeChanger: true, pageSizeOptions: ['5', '10', '15'],
              onChange:onPageChange}} >
               <Column title="Số thứ tụ" dataIndex="index"/>
-              <Column title="Mã sản phẩm" dataIndex="id" />
+              <Column title="Mã sản phẩm" dataIndex="sku" />
               <Column title="Tên sản phẩm" dataIndex="name"  />
               <Column title="Giá bán" dataIndex="price"/>
               <Column
@@ -206,7 +222,7 @@ const ManageProductPage = () => {
                     render={(item) => {
                         return(
                             <Space size="middle">
-                                <Button icon={<EyeOutlined />} onClick={()=>{console.log(item)}}/>
+                                <Button icon={<EyeOutlined />} onClick={()=>{onRedirectShow(item)}}/>
                                 <Button icon={<EditOutlined/>} onClick={()=>{onRedirectUpdate(item)}}/>
                                 <Button icon={<DeleteOutlined/>} onClick={()=>onDeleteProduct(item)}/>
                             </Space>
@@ -223,10 +239,15 @@ const ManageProductPage = () => {
               In excel danh sách sản phẩm
             </Button>
           </div>
+          <LoadingScreenCustom isLoading={isLoading} setIsLoading={setIsLoading}/>
         </div>
+        
       </Content>
       <FooterLayout />
     </StyleManageProduct>
+    
+    </>
+    
   );
 };
 

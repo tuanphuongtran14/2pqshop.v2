@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import * as actions from './actions';
-import {useHistory, useLocation} from 'react-router-dom'
+import {useHistory, useLocation, useParams} from 'react-router-dom'
 import {
   Layout as AntLayout,
   Typography,
@@ -14,6 +14,7 @@ import {
   InputNumber,
   Row, Col,
   Select,
+  Space
 } from 'antd';
 
 import {HeaderLayout, BreadcrumbLayout,FooterLayout,ImageLayout,ImageCustomLayout} from './../../Components'
@@ -22,7 +23,7 @@ const { Content } = AntLayout;
 const { Title, Text } = Typography;
 const { Option } = Select;
 const { TextArea } = Input;
-const StyledUpdateProductForm = styled(AntLayout)`
+const StyledShowProductForm = styled(AntLayout)`
   .main-title {
     margin-bottom: 30px;
     text-align: center;
@@ -77,9 +78,8 @@ const validateMessages = {
   },
 };
 
-const UpdateProductForm = () => {
+const ShowProductForm = () => {
   const history=useHistory();
-  const [slug,setSlug]=useState('');
   const [lstCategory,setListCategory]=useState([]);
   const [lstTag,setListTag]=useState([]);
   const lstGrade=[1,2,3,4,5];
@@ -94,6 +94,7 @@ const UpdateProductForm = () => {
   const location=useLocation();
   const [form] = Form.useForm();
   const [listImage,setListImage]=useState([]);
+  const params=useParams();
 
   const layout = {
     labelCol: {
@@ -118,19 +119,19 @@ const UpdateProductForm = () => {
     let txtInputXL=null;
     options.forEach(item=>{
       if(item.size==='S'){
-        setOptionS(true);
+        
         txtInputS=item.remaining
       }
       if(item.size==='M'){
-        setOptionM(true);
+        
         txtInputM=item.remaining
       }
       if(item.size==='L'){
-        setOptionL(true);
+        
         txtInputL=item.remaining
       }
       if(item.size==='XL'){
-        setOptionXL(true);
+        
         txtInputXL=item.remaining
       }
     })
@@ -192,169 +193,64 @@ const UpdateProductForm = () => {
   }
   
   const onFinishAddItem = async (values) => {
-    try{
-      let options=convertObjOption(values);
-      let data = new FormData();
-      data.append('name',values.name);
-      data.append('sku',generateSku('SP'));
-      data.append('slug',values.slug);
-      data.append('price',values.price);
-      data.append('rating',values.grade);
-      data.append('tags',JSON.stringify(values.tags));
-      data.append('category',values.category);
-      data.append('status',0);
-      data.append('options',JSON.stringify(options));
-      data.append('shortDesc',values.shortDesc);
-      data.append('fullDesc',values.fullDesc);
-      data.append('additionalInfo',values.additionalInfo);
-      data.append('images',JSON.stringify(listImage));
-      let list = filterListFileImages(fileList);
-      list.forEach(item=>{
-       data.append("files.images",item.originFileObj);
-      })
-      console.log("file",list);
-      const result= await actions.onUpdateProductRequest(data,location.state.id);
-      alert(`Cập sản phẩm thành công. Bạn có thể tìm kiếm với mã ${result.id}`);
-      history.push('/manage-products')
-    }catch(e){
-      console.log(e);
-      alert("Đã có lỗi xảy ra vui lòng kiểm tra lại");
-    }
-     
   };
 
-  const filterListFileImages=(listFile)=>{
-    let list=[...listFile];
-    return list.filter(item=>item.originFileObj);
-    
-  }
-  const convertObjOption =(values)=>{
-    let lstOptions=listOption.map((item)=>{
-      return {
-        _id:item._id,
-        remaining:item.remaining,
-        size:item.size
-      }
-    });
-    if(optionS){
-      let index= lstOptions.findIndex(item=> item.size==='S');
-
-      if(index===-1){
-        let obj={
-          size: 'S', quantity: values.quantityS, remaining: values.quantityS
-        }
-        lstOptions.push(obj);
-
-      }else{
-        lstOptions.forEach(item=>{
-          if(item.size==='S'){
-            item.remaining=values.quantityS;
-          }
-        })
-      } 
-    }
-
-    if(optionM){
-      let index= lstOptions.findIndex(item=> item.size==='M');
-      if(index===-1){
-        let obj={
-          size: 'M', quantity: values.quantityM, remaining: values.quantityM
-        }
-        lstOptions.push(obj);
-      }else{
-        lstOptions.forEach(item=>{
-          if(item.size==='M'){
-            item.remaining=values.quantityM;
-          }
-        })
-      } 
-    }
-    if(optionL){
-      let index= lstOptions.findIndex(item=> item.size==='L');
-
-      if(index===-1){
-        let obj={
-          size: 'L', quantity: values.quantityL, remaining: values.quantityL
-        }
-        lstOptions.push(obj);
-      }else{
-        lstOptions.forEach(item=>{
-          if(item.size==='L'){
-            item.remaining=values.quantityL;
-          }
-        })
-      } 
-    }
-    if(optionXL){
-      let index= lstOptions.findIndex(item=> item.size==='XL');
-      if(index===-1){
-        let obj={
-          size: 'XL', quantity: values.quantityXL, remaining: values.quantityXL
-        }
-        lstOptions.push(obj);
-      }else{
-        lstOptions.forEach(item=>{
-          if(item.size==='XL'){
-            item.remaining=values.quantityXL;
-          }
-        })
-      } 
-    }
-    return lstOptions;
-  }
+  
 
   const onChangeName= (e)=>{
-    let name=e.target.value;
-    name=removeAccents(name);
-    let slug=name.toLowerCase().split(' ').join('-');
-    setSlug(slug);
-
   }
   const handleSizeS = (event) => {
 
-    if(!event.target.checked){
-      setOptionS(false);
-    }else{
-      setOptionS(true);
-    }
+    // if(!event.target.checked){
+    //   setOptionS(false);
+    // }else{
+    //   setOptionS(true);
+    // }
 }
 
   const handleSizeM = (event) => {
-    if(!event.target.checked){
-      setOptionM(false);
-    }else{
-      setOptionM(true);
-    }
+    // if(!event.target.checked){
+    //   setOptionM(false);
+    // }else{
+    //   setOptionM(true);
+    // }
   }
 
   const handleSizeL = (event) => {
-    if(!event.target.checked){
-      setOptionL(false);
-    }else{
-      setOptionL(true);
-    }
+    // if(!event.target.checked){
+    //   setOptionL(false);
+    // }else{
+    //   setOptionL(true);
+    // }
   }
 
   const handleSizeXL = (event) => {
-    if(!event.target.checked){
-      setOptionXL(false);
-    }else{
-      setOptionXL(true);
-    }
+    // if(!event.target.checked){
+    //   setOptionXL(false);
+    // }else{
+    //   setOptionXL(true);
+    // }
+  }
+
+  const onRedirectUpdate=()=>{
+    history.push({pathname:`/update-product/${params.slug}`,
+    state:{
+      id:location.state.id,
+    }})
   }
   return (
-    <StyledUpdateProductForm >
+    <StyledShowProductForm >
       <HeaderLayout />
       <Content style={{ margin: '0 16px' }}>
-      <BreadcrumbLayout root="Product" branch="update" />
+      <BreadcrumbLayout root="Product" branch="show" />
 
         <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
           <Title className="main-title" level={2}>
-           Cập nhật sản phẩm
+           Hiển thị sản phẩm
           </Title>
           < Divider plain style={{width:"60%"}}>Hình ảnh sản phẩm đã tạo</Divider>
           <div className="mt-2 text-center">
-            <ImageLayout listImage={listImage} setListImage={setListImage} fileList={fileList} setFileList={setFileList}/>
+            <ImageCustomLayout listImage={listImage} />
           </div>
           <Form
             form={form}
@@ -390,7 +286,7 @@ const UpdateProductForm = () => {
                 },
               ]}
             >
-              <Input onChange={onChangeName}/>
+              <Input disabled={true} onChange={onChangeName}/>
             </Form.Item>
             <Form.Item name="price" label="Giá cả"
               rules={[
@@ -400,7 +296,7 @@ const UpdateProductForm = () => {
                   min: 10000,
                 },
               ]}>
-                <InputNumber style={{ width: '100%' }} />
+                <InputNumber disabled={true} style={{ width: '100%' }} />
             </Form.Item>
             <div className="form-group col-12 mx-0 px-0 mb-2 mt-2" style={{ zIndex: "0" }}>
                   <div style={{width:'70%',margin:'0px auto'}}>
@@ -463,6 +359,7 @@ const UpdateProductForm = () => {
               ]}>
                 <Select
                     showSearch
+                    disabled={true}
                     style={{ width: '100%' }}
                     placeholder="Đánh giá sản phẩm"
                     optionFilterProp="children"
@@ -489,6 +386,7 @@ const UpdateProductForm = () => {
                 <Select
                     showSearch
                     style={{ width: '100%' }}
+                    disabled={true} 
                     placeholder="Chọn thể loại"
                     optionFilterProp="children"
                     optionLabelProp="label"
@@ -521,6 +419,7 @@ const UpdateProductForm = () => {
                     style={{ width: '100%' }}
                     placeholder="Chọn nhãn"
                     optionLabelProp="label"
+                    disabled={true}
                   >
                     {
                     lstTag.map((item,index)=>(
@@ -542,7 +441,7 @@ const UpdateProductForm = () => {
                 },
               ]}
             >
-              <TextArea rows={3}/>
+              <TextArea disabled={true} rows={3}/>
             </Form.Item>
             <Form.Item
               name="fullDesc"
@@ -553,7 +452,7 @@ const UpdateProductForm = () => {
                 },
               ]}
             >
-              <TextArea rows={7} />
+              <TextArea disabled={true} rows={7} />
             </Form.Item>
             <Form.Item
               name="additionalInfo"
@@ -564,19 +463,20 @@ const UpdateProductForm = () => {
                 },
               ]}
             >
-              <TextArea rows={5}/>
-            </Form.Item>
-            <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 10 }}>
-              <Button type="primary" htmlType="submit">
-                Cập nhật sản phẩm
-              </Button>
+              <TextArea disabled={true} rows={5}/>
             </Form.Item>
           </Form>
+          <Space align="center">
+            <Button type="primary" className="text-center" onClick={onRedirectUpdate}>
+              Chỉnh sửa sản phẩm
+            </Button>
+          </Space>
+          
         </div>
       </Content>
       <FooterLayout />
-    </StyledUpdateProductForm>
+    </StyledShowProductForm>
   );
 };
 
-export default UpdateProductForm;
+export default ShowProductForm;

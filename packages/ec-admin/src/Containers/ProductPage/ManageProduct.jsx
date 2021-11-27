@@ -171,7 +171,7 @@ const ManageProductPage = () => {
       <HeaderLayout />
       <Content style={{ margin: '0 16px' }}>
         <BreadcrumbLayout root="Product" branch="manage" />
-        <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
+        <div className="site-layout-background" style={{ padding: 24, minHeight: 360, position: 'relative' }}>
           <Title className="main-title" level={2}>
             Danh sách sản phẩm
           </Title>

@@ -240,6 +240,7 @@ const UpdateProductForm = () => {
       list.forEach(item=>{
        data.append("files.images",item.originFileObj);
       })
+      console.log("file",list);
       const result= await actions.onUpdateProductRequest(data,location.state.id);
       setIsLoading(false);
       Toast.notifySuccess(`Cập sản phẩm thành công. Bạn có thể tìm kiếm với mã ${result.id}`);

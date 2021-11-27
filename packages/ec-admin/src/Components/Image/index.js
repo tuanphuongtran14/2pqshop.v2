@@ -3,12 +3,10 @@ import { Upload } from 'antd';
 import ImgCrop from 'antd-img-crop';
 
 const ImageLayout = (props) => {
-  const {fileList, setFileList}=props;
+  const {listImage, setListImage, fileList,setFileList}=props;
 
   const onChange = ({ file,fileList: newFileList }) => {
     setFileList(newFileList);
-    
-
   };
 
   const onPreview = async file => {
@@ -26,10 +24,12 @@ const ImageLayout = (props) => {
     imgWindow.document.write(image.outerHTML);
   };
 
-  const onChangeFile=(e)=>{
-    const lst=[];
-    lst.push(e.target.files[0]);
-    setFileList(lst);
+  const onRemove=(item)=>{
+    let list=[...listImage];
+    if(list.length>0){
+      list =list.filter(data=>data!==item.name);
+    }
+    setListImage(list);
   }
   return (
     <ImgCrop rotate >
@@ -39,6 +39,7 @@ const ImageLayout = (props) => {
         onChange={onChange}
         beforeUpload={() => false} 
         onPreview={onPreview}
+        onRemove={onRemove}
       >
        {fileList.length < 5 && '+ Upload'}
       </Upload>

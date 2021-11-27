@@ -20,7 +20,8 @@ const styles = {
     display: 'flex', 
     justifyContent: 'center', 
     alignItems: 'center', 
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    zIndex: 999999,
   }
 }
 

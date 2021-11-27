@@ -9,6 +9,8 @@ const {
   resetPassword,
   changePassword,
   findUsers,
+  findUserById,
+  updateUserById,
 } = require('../controllers/user.controllers');
 const {
   getMyCart,
@@ -53,6 +55,8 @@ router.post('/auth/change-password', changePassword);
 router.get('/me', me);
 
 // Admin page
+router.put('/:id', updateUserById);
+router.get('/:id', findUserById);
 router.get('/', findUsers);
 
 module.exports = router;

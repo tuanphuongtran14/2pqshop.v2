@@ -64,6 +64,7 @@ exports.initializeModel = (mongoose) => {
       },
       confirmToken: String,
       resetPwToken: String,
+      blocked: Boolean,
     },
     {
       timestamps: {

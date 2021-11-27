@@ -33,8 +33,8 @@ const Sidebar = () => {
             <span>Home Page</span>
             <Link to="/"></Link>
         </Menu.Item>
-        <SubMenu key="order" icon={<UserOutlined />} title="Người dùng">
-          <Menu.Item key="/manage-orders">
+        <SubMenu key="users" icon={<UserOutlined />} title="Người dùng">
+          <Menu.Item key="/nguoi-dung/danh-sach">
             <span>Quản lý người dùng</span>
             <Link to="/nguoi-dung/danh-sach">
             </Link>

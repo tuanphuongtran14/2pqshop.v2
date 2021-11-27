@@ -8,7 +8,6 @@ const App = ({ jwt, me }) => {
     me();
   }, [jwt, me]);
 
-  console.log('Hello 2')
   return <Routes />;
 };
 

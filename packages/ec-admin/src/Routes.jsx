@@ -11,6 +11,7 @@ import CreateTagPage from './Containers/TagPage/CreateTag';
 import ManageOrderPage from './Containers/OrderPage/ManageOrder';
 import CreateOrderPage from './Containers/OrderPage/CreateOrder';
 import ManageUserPage from './Containers/UserPage/ManageUser';
+import EditUserPage from './Containers/UserPage/EditUser';
 import LoginPage from './Containers/LoginPage/LoginPage';
 import ForgetPasswordPage from './Containers/LoginPage/ForgetPasswordPage';
 import ResetPasswordPage from './Containers/LoginPage/ResetPasswordPage';
@@ -38,6 +39,7 @@ function Routes({ isLoggedIn, isLoading }) {
             <Route path="/manage-orders" component={ManageOrderPage} />
             <Route path="/create-order" component={CreateOrderPage} />
             <Route path="/nguoi-dung/danh-sach" component={ManageUserPage} />
+            <Route path="/nguoi-dung/:id" component={EditUserPage} />
             <Redirect from="/dang-nhap" to="/" />
             <Redirect from="/quen-mat-khau" to="/" />
             <Redirect from="/dat-lai-mat-khau" to="/" />

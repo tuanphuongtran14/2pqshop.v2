@@ -25,6 +25,24 @@ module.exports = {
     }
   },
 
+  findUserById: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const user = await query('User').findById(id, 'role');
+      if (!user) {
+        return handleError.notFound(
+          res,
+          'User not found',
+          'User.not.found',
+        );
+      }
+
+      return res.status(200).json(user);
+    } catch (ex) {
+      return handleError.badGateway(res, `Error: ${ex}`);
+    }
+  },
+
   signIn: async (req, res) => {
     try {
       const { error } = validate.signInSchema(req.body);
@@ -51,6 +69,15 @@ module.exports = {
           res,
           'Password wrongs',
           'Password.wrongs',
+        );
+      }
+
+      // Check if email confirmed
+      if (user.blocked) {
+        return handleError.forbidden(
+          res,
+          'You are blocked',
+          'You.are.blocked',
         );
       }
 
@@ -271,7 +298,29 @@ module.exports = {
     }
   },
 
-  getAddresses: async (req, res) => {
+  updateUserById: async (req, res) => {
+    try {
+      const { error } = validate.updateSchema(req.body);
+      if (error) {
+        const message = error.message || 'Params is not valid';
+        const data = message.replace(/ /g, '.');
+        return handleError.badRequest(res, message, data);
+      }
 
+      const { id } = req.params;
+      let user = await query('User').updateById(id, req.body);
+      if (!user) {
+        return handleError.notFound(
+          res,
+          'User not found',
+          'User.not.found',
+        );
+      }
+
+      user = await query('User').findById(id, 'role');
+      return res.status(200).json(user);
+    } catch (ex) {
+      return handleError.badGateway(res, `Error: ${ex}`);
+    }
   },
 };

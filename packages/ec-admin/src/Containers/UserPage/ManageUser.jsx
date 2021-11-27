@@ -1,5 +1,4 @@
 /* eslint-disable no-template-curly-in-string */
-
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
@@ -66,7 +65,7 @@ const StyleManageOrder = styled(AntLayout)`
   }
 `;
 
-const ManageOrderPage = ({ users, pagination, fetchUsers }) => {
+const ManageOrderPage = ({ users, pagination, fetchUsers, history }) => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [loading, setLoading] = useState(true);
@@ -290,7 +289,12 @@ const ManageOrderPage = ({ users, pagination, fetchUsers }) => {
         return(
             <Space size="middle">
                 <Button icon={<EyeOutlined />} onClick={()=>{console.log(item)}}/>
-                <Button icon={<EditOutlined/>} onClick={()=>{console.log(item)}}/>
+                <Button icon={<EditOutlined/>} onClick={()=>{
+                  history.push({pathname:`/nguoi-dung/${item.id}`,
+                  state:{
+                    id:item.id
+                  }})
+                }}/>
             </Space>
         )},
       fixed: "right",

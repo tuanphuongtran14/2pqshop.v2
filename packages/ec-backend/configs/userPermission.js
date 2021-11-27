@@ -107,6 +107,7 @@ module.exports = {
         { method: '*', path: '/users/me/cart', isExactly: false },
         { method: 'POST', path: '/users/auth/change-password', isExactly: true },
         { method: 'GET', path: '/users/me', isExactly: true },
+        { method: 'GET', path: '/users', isExactly: true },
         { method: '*', path: '/roles', isExactly: false },
         { method: '*', path: '/products', isExactly: false },
         { method: '*', path: '/categories', isExactly: false },

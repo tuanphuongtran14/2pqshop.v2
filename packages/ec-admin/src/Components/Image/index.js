@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect} from 'react';
 import { Upload } from 'antd';
 import ImgCrop from 'antd-img-crop';
 
 const ImageLayout = (props) => {
   const {fileList, setFileList}=props;
-
 
   const onChange = ({ file,fileList: newFileList }) => {
     setFileList(newFileList);

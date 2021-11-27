@@ -2,21 +2,17 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import * as actions from './actions';
-import {useHistory, useParams, useLocation} from 'react-router-dom'
+import {useHistory, useLocation} from 'react-router-dom'
 import {
   Layout as AntLayout,
-  Breadcrumb,
   Typography,
   Form,
   Input,
   Button,
   Divider,
   Checkbox,
-  Table,
-  Popconfirm,
-  message,
   InputNumber,
-  Row, Col,Space,
+  Row, Col,
   Select,
 } from 'antd';
 
@@ -68,6 +64,19 @@ const StyledUpdateProductForm = styled(AntLayout)`
   }
 `;
 
+const validateMessages = {
+  required: 'Nhập ${label}!',
+  types: {
+    email: '${label} không phải là email hợp lệ!',
+    number: '${label} không phải là số hợp lệ!',
+  },
+  number: {
+    min: "'${label}' không thể nhỏ hơn ${min}",
+    max: "'${label}' không thể lớn hơn ${max}",
+    range: '${label} phải ở giữa ${min} và ${max}',
+  },
+};
+
 const UpdateProductForm = () => {
   const history=useHistory();
   const [slug,setSlug]=useState('');
@@ -95,18 +104,13 @@ const UpdateProductForm = () => {
     },
   };
 
-  const validateMessages = {
-    required: 'Nhập ${label}!',
-    types: {
-      email: '${label} không phải là email hợp lệ!',
-      number: '${label} không phải là số hợp lệ!',
-    },
-    number: {
-      min: "'${label}' không thể nhỏ hơn ${min}",
-      max: "'${label}' không thể lớn hơn ${max}",
-      range: '${label} phải ở giữa ${min} và ${max}',
-    },
-  };
+  useEffect(()=>{
+    getListCategoryRequest();
+    getListTagRequest();
+    let id =location.state.id;
+    getProductById(id);
+  },[])
+
   const setForm=(product,options,grade)=>{
     let txtInputM=null;
     let txtInputS=null;
@@ -147,14 +151,20 @@ const UpdateProductForm = () => {
       quantityXL:txtInputXL?txtInputXL:0
     });
   }
-
-  useEffect(()=>{
-    getListCategoryRequest();
-    getListTagRequest();
-    let id =location.state.id;
-    getProductById(id);
-  },[])
-
+  const mapImageInData=(list,ListImage)=>{
+    let listData=[...ListImage]
+    list.forEach((item,index)=>{
+      let data=
+        {
+          uid: `-${index}`,
+          name: `image.png${index}`,
+          status: 'done',
+          url: item,
+        }
+        listData.push(data);
+    })
+    return listData;
+  }
   const getProductById= async (slug)=>{
     try{
      let data = await actions.onGetProductByIdRequest(slug);
@@ -335,7 +345,7 @@ const UpdateProductForm = () => {
           </Title>
           < Divider plain style={{width:"60%"}}>Hình ảnh sản phẩm đã tạo</Divider>
           <div className="mt-2 text-center">
-            <ImageCustomLayout listImage={listImage} setListImage={setListImage} fileList={fileList} setFileList={setFileList}/>
+            <ImageLayout listImage={listImage} setListImage={setListImage} fileList={fileList} setFileList={setFileList}/>
           </div>
           <Form
             form={form}

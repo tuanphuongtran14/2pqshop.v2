@@ -20,7 +20,7 @@ import {
   Select,
 } from 'antd';
 
-import {HeaderLayout, BreadcrumbLayout,FooterLayout,ImageLayout} from './../../Components'
+import {HeaderLayout, BreadcrumbLayout,FooterLayout,ImageLayout, LoadingScreenCustom, Toast} from './../../Components'
 import { generateSku, removeAccents} from '../../helper/generateSku';
 const { Content } = AntLayout;
 const { Title, Text } = Typography;
@@ -66,6 +66,11 @@ const StyledCreateProductForm = styled(AntLayout)`
     border-color: #058d23;
     background-color: #058d23;
   }
+  .site-layout-background {
+    background: #fff;
+    position: relative;
+    z-index:0
+  }
 `;
 
 const CreateProductForm = () => {
@@ -79,6 +84,7 @@ const CreateProductForm = () => {
   const [optionM,setOptionM]=useState(false)
   const [optionL,setOptionL]=useState(false)
   const [optionXL,setOptionXL]=useState(false)
+  const [isLoading,setIsLoading] = useState(false);
 
 
   const layout = {
@@ -120,7 +126,7 @@ const CreateProductForm = () => {
 
   const onFinishAddItem = async (values) => {
     try{
-      console.log('file',fileList);
+      setIsLoading(true);
       const lstOptions=convertObjOption(values);
       let data = new FormData();
       data.append('name',values.name);
@@ -142,11 +148,13 @@ const CreateProductForm = () => {
        data.append("files.images",item.originFileObj);
       })
       const result= await actions.onCreateProductRequest(data);
-      alert(`Thêm sản phẩm thành công. Bạn có thể tìm kiếm với mã ${result.id}`);
+      setIsLoading(false);
+      Toast.notifySuccess(`Thêm sản phẩm thành công. Bạn có thể tìm kiếm với mã ${result.id}`);
       history.push('/manage-products')
     }catch(e){
+      setIsLoading(false);
       console.log(e);
-      alert("Đã có lỗi xảy ra vui lòng kiểm tra lại");
+      Toast.notifyError("Đã có lỗi xảy ra vui lòng kiểm tra lại");
     }
      
   };
@@ -448,6 +456,7 @@ const CreateProductForm = () => {
               </Button>
             </Form.Item>
           </Form>
+          <LoadingScreenCustom isLoading={isLoading} setIsLoading={setIsLoading}/>
         </div>
       </Content>
       <FooterLayout />

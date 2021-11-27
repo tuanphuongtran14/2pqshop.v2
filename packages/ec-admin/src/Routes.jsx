@@ -4,6 +4,7 @@ import HomePage from './Containers/HomePage';
 import ManageProductPage from './Containers/ProductPage/ManageProduct';
 import CreateProductPage from './Containers/ProductPage/CreateProduct';
 import UpdateProductPage from './Containers/ProductPage/UpdateProduct';
+import ShowProductPage from './Containers/ProductPage/ShowProduct';
 import ManageCategoryPage from './Containers/CategoryPage/ManageCategory';
 import CreateCategoryPage from './Containers/CategoryPage/CreateCategory';
 import ManageTagPage from './Containers/TagPage/ManageTag';
@@ -11,7 +12,6 @@ import CreateTagPage from './Containers/TagPage/CreateTag';
 import ManageOrderPage from './Containers/OrderPage/ManageOrder';
 import CreateOrderPage from './Containers/OrderPage/CreateOrder';
 import ManageUserPage from './Containers/UserPage/ManageUser';
-import EditUserPage from './Containers/UserPage/EditUser';
 import LoginPage from './Containers/LoginPage/LoginPage';
 import ForgetPasswordPage from './Containers/LoginPage/ForgetPasswordPage';
 import ResetPasswordPage from './Containers/LoginPage/ResetPasswordPage';
@@ -32,6 +32,7 @@ function Routes({ isLoggedIn, isLoading }) {
             <Route path="/manage-products" component={ManageProductPage} />
             <Route path="/create-product" component={CreateProductPage} />
             <Route path="/update-product/:slug" component={UpdateProductPage} />
+            <Route path="/show-product/:slug" component={ShowProductPage} />
             <Route path="/manage-categorys" component={ManageCategoryPage} />
             <Route path="/create-category" component={CreateCategoryPage} />
             <Route path="/manage-tags" component={ManageTagPage} />
@@ -39,7 +40,6 @@ function Routes({ isLoggedIn, isLoading }) {
             <Route path="/manage-orders" component={ManageOrderPage} />
             <Route path="/create-order" component={CreateOrderPage} />
             <Route path="/nguoi-dung/danh-sach" component={ManageUserPage} />
-            <Route path="/nguoi-dung/:id" component={EditUserPage} />
             <Redirect from="/dang-nhap" to="/" />
             <Redirect from="/quen-mat-khau" to="/" />
             <Redirect from="/dat-lai-mat-khau" to="/" />

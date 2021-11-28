@@ -76,6 +76,46 @@ module.exports = {
   findOrders: async (req, res) => {
     try {
       const queryParams = req.query;
+      if (queryParams.orderDate) {
+        queryParams.orderDate = {
+          $gte: `${queryParams.orderDate}T00:00:00`,
+          $lte: `${queryParams.orderDate}T23:59:59`,
+        };
+      }
+
+      if (!queryParams.orderDate) {
+        if (queryParams.orderDate_gte) {
+          queryParams.orderDate = {
+            $gte: `${queryParams.orderDate_gte}T00:00:00`,
+          };
+          delete queryParams.orderDate_gte;
+        }
+
+        if (queryParams.orderDate_lte) {
+          queryParams.orderDate = {
+            ...queryParams.orderDate,
+            $lte: `${queryParams.orderDate_lte}T00:00:00`,
+          };
+          delete queryParams.orderDate_lte;
+        }
+
+        if (queryParams.orderDate_gt) {
+          queryParams.orderDate = {
+            ...queryParams.orderDate,
+            $gt: `${queryParams.orderDate_gt}T00:00:00`,
+          };
+          delete queryParams.orderDate_gt;
+        }
+
+        if (queryParams.orderDate_lt) {
+          queryParams.orderDate = {
+            ...queryParams.orderDate,
+            $lt: `${queryParams.orderDate_lt}T00:00:00`,
+          };
+          delete queryParams.orderDate_lt;
+        }
+      }
+
       const page = await query(ORDER_MODEL_NAME).findPage(queryParams);
       return res.status(200).json(page);
     } catch (ex) {

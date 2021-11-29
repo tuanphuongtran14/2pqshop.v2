@@ -1,10 +1,23 @@
 import * as types from './Constants'
 import axios from './../../Configs/Axios'
 
+
 export const onGetListProductRequest=({pageIndex,pageSize})=>{
     return new Promise( async(resolve, reject) => {
         try{
             const data= await axios.get(`/products?page=${pageIndex}&pageSize=${pageSize}`);
+            resolve(data);
+        
+        }catch(e){
+            reject(e.response)
+        }
+    })
+}
+
+export const onSearchProductRequest=(keyword,{pageIndex,pageSize})=>{
+    return new Promise( async(resolve, reject) => {
+        try{
+            const data= await axios.get(`/products/search?_q=${keyword}?page=${pageIndex}&pageSize=${pageSize}`);
             resolve(data);
         
         }catch(e){

@@ -5,25 +5,21 @@ import * as actions from './actions';
 import {useHistory} from 'react-router-dom'
 import {
   Layout as AntLayout,
-  Breadcrumb,
   Typography,
   Form,
   Input,
   Button,
   Divider,
   Checkbox,
-  Table,
-  Popconfirm,
-  message,
   InputNumber,
-  Row, Col,Space,
+  Row, Col,
   Select,
 } from 'antd';
 
 import {HeaderLayout, BreadcrumbLayout,FooterLayout,ImageLayout, LoadingScreenCustom, Toast} from './../../Components'
 import { generateSku, removeAccents} from '../../helper/generateSku';
 const { Content } = AntLayout;
-const { Title, Text } = Typography;
+const { Title} = Typography;
 const { Option } = Select;
 const { TextArea } = Input;
 const StyledCreateProductForm = styled(AntLayout)`
@@ -351,7 +347,6 @@ const CreateProductForm = () => {
                     optionFilterProp="children"
                     optionLabelProp="label"
                     filterOption={(input, option) =>{
-                      console.log(option);
                       return Number(option.value)===Number(input);
                     }
                   }

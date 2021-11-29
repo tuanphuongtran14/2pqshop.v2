@@ -1,25 +1,44 @@
 import * as types from './Constants'
 import axios from './../../Configs/Axios'
+import qs from "qs";
 
-//xu lý status
-export const onToggleStatus=()=>{
-    return {
-        type:types.TOGGLE_STATUS
-    }
+export const onGetOrderByIdRequest=(id)=>{
+    return new Promise( async(resolve, reject) => {
+        try{
+            const data= await axios.get(`/orders/${id}`)
+            resolve(data);
+        
+        }catch(e){
+            reject(e.response)
+        }
+    })
 }
 
-
-//xử lý listProduct
-export const onFetchListProduct=(list)=>{
-    return {
-        type:types.FETCH_LSTPRODUCT,
-        listProduct:list
-    }
+export const onUpdateOrderStatusByIdRequest=(objOrderStatus)=>{
+    return new Promise( async(resolve, reject) => {
+        try{
+            const data= await axios.put(`/orders/update-status`,objOrderStatus);
+            resolve(data);
+        
+        }catch(e){
+            reject(e.response)
+        }
+    })
 }
 
-export const onFetchListProductRequest=()=>{
-    return async (dispatch)=>{
-        const data= await axios.get('/products');
-        dispatch(onFetchListProduct(data));
-    }
+export const onGetListOrderRequest=(objSearch,{pageIndex,pageSize})=>{
+    return new Promise( async(resolve, reject) => {
+        try{
+            const query = qs.stringify({
+                ...objSearch,
+                page:pageIndex,
+                pageSize,
+              });
+            const data= await axios.get(`/orders?${query}`)
+            resolve(data);
+        
+        }catch(e){
+            reject(e.response)
+        }
+    })
 }

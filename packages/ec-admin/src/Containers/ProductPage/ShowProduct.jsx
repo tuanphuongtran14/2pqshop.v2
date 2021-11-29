@@ -116,6 +116,7 @@ const ShowProductForm = () => {
     getListCategoryRequest();
     getListTagRequest();
     let id =location.state.id;
+    console.log(id);
     getProductById(id);
   },[])
 
@@ -153,10 +154,10 @@ const ShowProductForm = () => {
       shortDesc:product.shortDesc,
       fullDesc:product.fullDesc,
       additionalInfo:product.additionalInfo,
-      quantityM:txtInputM?txtInputM:0,
-      quantityS:txtInputS?txtInputS:0,
-      quantityL:txtInputL?txtInputL:0,
-      quantityXL:txtInputXL?txtInputXL:0
+      quantityM:txtInputM?txtInputM:'',
+      quantityS:txtInputS?txtInputS:'',
+      quantityL:txtInputL?txtInputL:'',
+      quantityXL:txtInputXL?txtInputXL:''
     });
   }
   const getProductById= async (slug)=>{
@@ -220,6 +221,10 @@ const ShowProductForm = () => {
   }
   
   const onFinishAddItem = async (values) => {
+    history.push({pathname:`/products/${values.slug}/update`,
+    state:{
+      id:location.state.id
+    }})
   };
 
   
@@ -257,13 +262,6 @@ const ShowProductForm = () => {
     // }else{
     //   setOptionXL(true);
     // }
-  }
-
-  const onRedirectUpdate=()=>{
-    history.push({pathname:`/update-product/${params.slug}`,
-    state:{
-      id:location.state.id,
-    }})
   }
   return (
     <StyledShowProductForm >
@@ -492,12 +490,12 @@ const ShowProductForm = () => {
             >
               <TextArea disabled={true} rows={5}/>
             </Form.Item>
+            <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 10 }}>
+              <Button type="primary" htmlType="submit">
+                Cập nhật sản phẩm
+              </Button>
+            </Form.Item>
           </Form>
-          <Space align="center">
-            <Button type="primary" className="text-center" onClick={onRedirectUpdate}>
-              Chỉnh sửa sản phẩm
-            </Button>
-          </Space>
           <LoadingScreenCustom isLoading={isLoading} setIsLoading={setIsLoading}/>
         </div>
       </Content>

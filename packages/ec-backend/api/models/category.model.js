@@ -10,7 +10,7 @@ exports.initializeModel = (mongoose) => {
         type: String,
         required: true,
       },
-      desc: {
+      description: {
         type: String,
         required: true,
       },

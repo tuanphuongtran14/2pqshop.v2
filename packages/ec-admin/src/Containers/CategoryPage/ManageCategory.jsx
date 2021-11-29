@@ -16,7 +16,7 @@ import {
 import * as actions from './actions';
 import { DownloadOutlined, EditOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
 import { HeaderLayout, BreadcrumbLayout, FooterLayout } from './../../Components';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 const { Title, Text } = Typography;
 const { Column } = Table;
 const { Content } = AntLayout;
@@ -73,6 +73,8 @@ const ManageCategoryPage = () => {
     const [pageIndex, setPageIndex] = useState(1);
     const [totalProducts, setTotalProduct] = useState(0);
     const [dataSource, setDataSource] = useState([]);
+    const history=useHistory();
+    const [form] = Form.useForm();
 
     const validateMessages = {
         required: 'Nhập ${label}!',
@@ -92,6 +94,7 @@ const ManageCategoryPage = () => {
         pageIndex,
         pageSize,
         });
+        
     }, [location.pathname, pageIndex, pageSize]);
 
     const onPageChange = (pageIndex, pageSize) => {
@@ -120,6 +123,14 @@ const ManageCategoryPage = () => {
         console.log(values);
     };
 
+    const onRedirectUpdate=(item)=>{
+      history.push(`/categories/${item.id}/update`)
+    }
+
+    const onRedirectShow=(item)=>{
+      history.push(`/categories/${item.id}`)
+    }
+
     return (
         <StyleManageCategory>
         <HeaderLayout />
@@ -129,37 +140,6 @@ const ManageCategoryPage = () => {
             <Title className="main-title" level={2}>
                 Danh sách loại sản phẩm
             </Title>
-
-            <Form
-                name="basic"
-                className="filter-form"
-                initialValues={{
-                remember: true,
-                }}
-                onFinish={onSearch}
-                autoComplete="off"
-                layout="inline"
-                validateMessages={validateMessages}
-            >
-                <Form.Item
-                name="keyword"
-                // rules={[
-                //   {
-                //     type: 'text',
-                //     min: 1,
-                //     max: 20,
-                //   },
-                // ]}
-                >
-                <Input placeholder="Nhập mã/tên sản phẩm" style={{ width: '100%' }} />
-                </Form.Item>
-                <Form.Item>
-                <Button type="primary" htmlType="submit">
-                    Tìm kiếm
-                </Button>
-                </Form.Item>
-            </Form>
-
             {/* <div className={showReportResult ? 'show' : 'hide'}> */}
             <div>
                 <Divider plain>Danh sách loại sản phẩm hiện nay</Divider>
@@ -188,13 +168,13 @@ const ManageCategoryPage = () => {
                         <Button
                             icon={<EyeOutlined />}
                             onClick={() => {
-                            console.log(item);
+                              onRedirectShow(item);
                             }}
                         />
                         <Button
                             icon={<EditOutlined />}
                             onClick={() => {
-                            console.log(item);
+                            onRedirectUpdate(item);
                             }}
                         />
                         <Button

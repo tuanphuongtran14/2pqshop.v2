@@ -152,10 +152,10 @@ const UpdateProductForm = () => {
       shortDesc:product.shortDesc,
       fullDesc:product.fullDesc,
       additionalInfo:product.additionalInfo,
-      quantityM:txtInputM?txtInputM:0,
-      quantityS:txtInputS?txtInputS:0,
-      quantityL:txtInputL?txtInputL:0,
-      quantityXL:txtInputXL?txtInputXL:0
+      quantityM:txtInputM?txtInputM:'',
+      quantityS:txtInputS?txtInputS:'',
+      quantityL:txtInputL?txtInputL:'',
+      quantityXL:txtInputXL?txtInputXL:''
     });
   }
   const getProductById= async (slug)=>{
@@ -244,7 +244,7 @@ const UpdateProductForm = () => {
       const result= await actions.onUpdateProductRequest(data,location.state.id);
       setIsLoading(false);
       Toast.notifySuccess(`Cập sản phẩm thành công. Bạn có thể tìm kiếm với mã ${result.id}`);
-      history.push('/manage-products')
+      history.push('/products')
     }catch(e){
       setIsLoading(false);
       console.log(e);
@@ -344,6 +344,9 @@ const UpdateProductForm = () => {
 
     if(!event.target.checked){
       setOptionS(false);
+      form.setFieldsValue({
+        quantityS:''
+      })
     }else{
       setOptionS(true);
     }
@@ -352,6 +355,9 @@ const UpdateProductForm = () => {
   const handleSizeM = (event) => {
     if(!event.target.checked){
       setOptionM(false);
+      form.setFieldsValue({
+        quantityM:''
+      })
     }else{
       setOptionM(true);
     }
@@ -360,6 +366,9 @@ const UpdateProductForm = () => {
   const handleSizeL = (event) => {
     if(!event.target.checked){
       setOptionL(false);
+      form.setFieldsValue({
+        quantityL:''
+      })
     }else{
       setOptionL(true);
     }
@@ -368,6 +377,9 @@ const UpdateProductForm = () => {
   const handleSizeXL = (event) => {
     if(!event.target.checked){
       setOptionXL(false);
+      form.setFieldsValue({
+        quantityXL:''
+      })
     }else{
       setOptionXL(true);
     }

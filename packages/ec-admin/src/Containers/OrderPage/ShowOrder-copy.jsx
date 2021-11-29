@@ -1,8 +1,8 @@
 /* eslint-disable no-template-curly-in-string */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import * as actions from './actions';
-import {useHistory} from 'react-router-dom'
+import {useHistory, useParams} from 'react-router-dom'
 import {
   Layout as AntLayout,
   Typography,
@@ -12,10 +12,10 @@ import {
   Divider,
 } from 'antd';
 
-import {HeaderLayout, BreadcrumbLayout,FooterLayout,LoadingScreenCustom, Toast} from './../../Components'
+import {HeaderLayout, BreadcrumbLayout,FooterLayout, LoadingScreenCustom, Toast} from './../../Components'
 import { removeAccents} from '../../helper/generateSku';
 const { Content } = AntLayout;
-const { Title} = Typography;
+const { Title } = Typography;
 const { TextArea } = Input;
 const StyledCreateCategoryForm = styled(AntLayout)`
   .main-title {
@@ -68,6 +68,8 @@ const CreateCategoryForm = () => {
   const history=useHistory();
   const [slug,setSlug]=useState('');
   const [isLoading,setIsLoading] = useState(false);
+  const params=useParams();
+  const [form] = Form.useForm();
 
 
   const layout = {
@@ -92,14 +94,40 @@ const CreateCategoryForm = () => {
     },
   };
 
+  useEffect(()=>{
+    console.log(params.id)
+    onGetOrderById(params.id);
+  },[])
+
+  const onGetOrderById=async (id)=>{
+    try{
+      setIsLoading(true);
+      const data= await actions.onGetOrderByIdRequest(id);
+      console.log(data);
+      mapObjectToFrom(data);
+      setIsLoading(false);
+    }
+    catch(e){
+      setIsLoading(false);
+      Toast.notifyError("Lỗi khi lấy dữ liệu thể loại sản phẩm này.")
+    }
+  }
+
+  const mapObjectToFrom=(obj)=>{
+    form.setFieldsValue({
+      name:obj.name,
+      description:obj.description,
+    });
+    setSlug(obj.slug);
+
+  }
   const onFinishAddItem = async (values) => {
     try{
       setIsLoading(true);
-      console.log('value',values);
-      const result= await actions.onCreateCategoryRequest(values);
+     // const result= await actions.onUpdateCategoryRequest(params.id,values);
       setIsLoading(false);
-      Toast.notifySuccess(`Thêm thể loại thành công. Bạn có thể tìm kiếm với mã ${result.id}`);
-      history.push('/manage-categories')
+      //Toast.notifySuccess(`Cập nhật thể loại sản phẩm thành công. Bạn có thể tìm kiếm với mã ${result.id}`);
+      history.push('/categories');
       setIsLoading(false);
     }catch(e){
       setIsLoading(false);
@@ -124,25 +152,20 @@ const CreateCategoryForm = () => {
 
         <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
           <Title className="main-title" level={2}>
-           Quản lý thể loại sản phẩm
+           Quản lý hóa đơn
           </Title>
           
-          <Divider plain>Thêm thể loại sản phẩm</Divider>
+          <Divider plain>Hiển thị hóa đơn</Divider>
           <Form
             {...layout}
+            form={form}
             name="nest-messages"
             onFinish={onFinishAddItem}
             validateMessages={validateMessages}
-            fields={[
-              {
-                name: ["slug"],
-                value: slug,
-              },
-            ]}
           >
             <Form.Item
               name="slug"
-              label="Slug"
+              label="Tên khách hàng"
               disabled={true}
               rules={[
                 {
@@ -154,7 +177,7 @@ const CreateCategoryForm = () => {
             </Form.Item>
             <Form.Item
               name="name"
-              label="Tên thể loại"
+              label="Địa chỉ"
               rules={[
                 {
                   required: true,
@@ -165,14 +188,36 @@ const CreateCategoryForm = () => {
             </Form.Item>
             <Form.Item
               name="description"
-              label="Mô tả"
+              label="Số điện thoại"
               rules={[
                 {
                   required: true,
                 },
               ]}
             >
-              <TextArea rows={5} />
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="description"
+              label="Chi phí thanh toán"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="description"
+              label="Ngày đặt hàng"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Input />
             </Form.Item>
             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 10 }}>
               <Button type="primary" htmlType="submit">

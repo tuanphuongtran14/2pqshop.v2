@@ -17,7 +17,7 @@ import {
 import {convertNumberToMoney} from './../../helper/convertNumberToMoney'
 import { DownloadOutlined, EditOutlined, EyeOutlined,DeleteOutlined } from '@ant-design/icons';
 import {HeaderLayout, BreadcrumbLayout,FooterLayout,LoadingScreenCustom, Toast} from './../../Components'
-import {useLocation, useHistory} from 'react-router-dom'
+import {useLocation, useHistory, useParams} from 'react-router-dom'
 const { Title, Text } = Typography;
 const { Column } = Table;
 const { Content } = AntLayout;
@@ -70,7 +70,17 @@ const StyleManageProduct = styled(AntLayout)`
   }
 `;
 
-const ManageProductPage = () => {
+const layout = {
+  labelCol: {
+    span:6,
+  },
+  wrapperCol: {
+    span: 14,
+  },
+};
+
+
+const ManageOrderPage = () => {
 
   const location=useLocation();
   const [dataSource, setDataSource] = useState([]);
@@ -80,20 +90,50 @@ const ManageProductPage = () => {
   const history=useHistory();
   const [isLoading,setIsLoading] = useState(false);
   const [form] = Form.useForm();
+  const params = useParams();
+  const [detailOrder,setDetailOrder]=useState([]);
 
-  useEffect( ()=>{
-    console.log('có');
-    onGetListProduct({
-      pageIndex,
-      pageSize
-    })
-  },[location.pathname,pageIndex,pageSize])
+  // useEffect( ()=>{
+  //   console.log('có');
+  //  // onGetListProduct({
+  //     pageIndex,
+  //     pageSize
+  //   })
+  // },[location.pathname,pageIndex,pageSize])
 
   useEffect(()=>{
-    form.setFieldsValue({
-      keyword:'',
-    });
+    console.log(params.id)
+    onGetOrderById(params.id);
   },[])
+
+  const onGetOrderById=async (id)=>{
+    try{
+      setIsLoading(true);
+      const data= await actions.onGetOrderByIdRequest(id);
+      mapObjectToFrom(data);
+      let lstTempDetailOrder = data.results;
+      let lstDetailOrder = lstTempDetailOrder.map((item, index) => {
+      return {
+          ...item,
+          key: index,
+          index: index + 1,
+          finalAmount:convertNumberToMoney(item.finalAmount)
+      }});
+      setDetailOrder(lstDetailOrder);
+      setIsLoading(false);
+    }
+    catch(e){
+      setIsLoading(false);
+      Toast.notifyError("Lỗi khi lấy dữ liệu thể loại sản phẩm này.")
+    }
+  }
+
+  const mapObjectToFrom=(obj)=>{
+    form.setFieldsValue({
+      name:obj.name,
+      description:obj.description,
+    });
+  }
 
   const validateMessages = {
     required: 'Nhập ${label}!',
@@ -111,7 +151,8 @@ const ManageProductPage = () => {
   const onGetListProduct =async(pagination)=>{
         try {
             setIsLoading(true);
-            const data = await actions.onGetListProductRequest(pagination);
+          //  const data = await actions.onGetListProductRequest(pagination);
+          const data=null
             setIsLoading(false);
             let lstTempProduct = data.results;
             let lstProduct = lstTempProduct.map((item, index) => {
@@ -142,10 +183,11 @@ const ManageProductPage = () => {
           setPageIndex(1);
           return ;
         }
-        const data = await actions.onSearchProductRequest(values.keyword,{
-          pageIndex,
-          pageSize
-        });
+       // const data = await actions.onSearchProductRequest(values.keyword,{
+         const data=null;
+        //   pageIndex,
+        //   pageSize
+        // });
         console.log(data);
         let lstTempProduct = data.results;
         let lstProduct = lstTempProduct.map((item, index) => {
@@ -170,12 +212,28 @@ const ManageProductPage = () => {
 
     }
 
+    const onFinishAddItem = async (values) => {
+      try{
+        setIsLoading(true);
+       // const result= await actions.onUpdateCategoryRequest(params.id,values);
+        setIsLoading(false);
+        //Toast.notifySuccess(`Cập nhật thể loại sản phẩm thành công. Bạn có thể tìm kiếm với mã ${result.id}`);
+        history.push('/categories');
+        setIsLoading(false);
+      }catch(e){
+        setIsLoading(false);
+        console.log(e);
+        Toast.notifyError("Đã có lỗi xảy ra vui lòng kiểm tra lại");
+      }
+       
+    };
+
   const onDeleteProduct=async(item)=>{
     try{
       const check=window.confirm(`Bạn có muốn xóa sản phẩm ${item.id}`);
       if(check){
         setIsLoading(true);
-        await actions.onDeleletProductRequest(item.id);
+     //   await actions.onDeleletProductRequest(item.id);
         setIsLoading(false);
         Toast.notifySuccess('Đã xóa sản phẩm thành công');
         setPageIndex(1);
@@ -215,31 +273,73 @@ const ManageProductPage = () => {
             Danh sách sản phẩm
           </Title>
 
+          <Divider plain>Hiển thị hóa đơn</Divider>
           <Form
+            {...layout}
             form={form}
-            name="basic"
-            className="filter-form"
-            initialValues={{
-              remember: true,
-            }}
-            onFinish={onSearch}
-            autoComplete="off"
-            layout="inline"
+            name="nest-messages"
+            onFinish={onFinishAddItem}
             validateMessages={validateMessages}
           >
             <Form.Item
-              name="keyword"
+              name="slug"
+              label="Tên khách hàng"
+              disabled={true}
               rules={[
-                { 
-
+                {
+                  required: true,
                 },
               ]}
             >
-              <Input placeholder="Nhập mã/tên sản phẩm" style={{ width: '100%' }} />
+              <Input disabled={true}/>
             </Form.Item>
-            <Form.Item>
+            <Form.Item
+              name="name"
+              label="Địa chỉ"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="description"
+              label="Số điện thoại"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="description"
+              label="Chi phí thanh toán"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="description"
+              label="Ngày đặt hàng"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 10 }}>
               <Button type="primary" htmlType="submit">
-                Tìm kiếm 
+                Thêm thể loại
               </Button>
             </Form.Item>
           </Form>
@@ -255,7 +355,8 @@ const ManageProductPage = () => {
               <Column title="Số thứ tụ" dataIndex="index"/>
               <Column title="Mã sản phẩm" dataIndex="sku" />
               <Column title="Tên sản phẩm" dataIndex="name"  />
-              <Column title="Giá bán" dataIndex="price"/>
+              <Column title="Kích cở" dataIndex="size"/>
+              <Column title="Số lượng" dataIndex="quantity"/>
               <Column
                     title="Thực hiện"
                     key="action"
@@ -291,4 +392,4 @@ const ManageProductPage = () => {
   );
 };
 
-export default ManageProductPage;
+export default ManageOrderPage;

@@ -41,26 +41,26 @@ const Sidebar = () => {
           </Menu.Item>
         </SubMenu>
         <SubMenu key="product" icon={<SkinOutlined  />} title="products">
-          <Menu.Item key="/manage-products">
+          <Menu.Item key="/products">
                 <span>Manage products</span>
-                <Link to="/manage-products">
+                <Link to="/products">
                 </Link>
           </Menu.Item>
-          <Menu.Item key="/create-product">
+          <Menu.Item key="/products/create">
             <span>Create products</span>
-            <Link to="/create-product">
+            <Link to="/products/create">
             </Link>
           </Menu.Item>
         </SubMenu>
         <SubMenu key="category" icon={<FilterOutlined />} title="category">
-          <Menu.Item key="/manage-categorys">
-            <span>Manage categorys</span>
-            <Link to="/manage-categorys">
+          <Menu.Item key="/categories">
+            <span>Manage categories</span>
+            <Link to="/categories">
             </Link>
           </Menu.Item>
-          <Menu.Item key="/create-category">
+          <Menu.Item key="/categories/create">
             <span>Create category</span>
-            <Link to="/create-category">
+            <Link to="/categories/create">
             </Link>
           </Menu.Item>
         </SubMenu>
@@ -77,14 +77,14 @@ const Sidebar = () => {
           </Menu.Item>
         </SubMenu>
         <SubMenu key="order" icon={<ShoppingCartOutlined />} title="order">
-          <Menu.Item key="/manage-orders">
-            <span>Manage orders</span>
-            <Link to="/manage-orders">
+          <Menu.Item key="/orders">
+            <span>orders</span>
+            <Link to="/orders">
             </Link>
           </Menu.Item>
-          <Menu.Item key="/create-order">
+          <Menu.Item key="/orders/create">
             <span>Create order</span>
-            <Link to="/create-order">
+            <Link to="/orders/create">
             </Link>
           </Menu.Item>
         </SubMenu>

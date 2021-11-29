@@ -1,8 +1,8 @@
 /* eslint-disable no-template-curly-in-string */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import * as actions from './actions';
-import {useHistory} from 'react-router-dom'
+import {useHistory, useParams} from 'react-router-dom'
 import {
   Layout as AntLayout,
   Typography,
@@ -12,10 +12,10 @@ import {
   Divider,
 } from 'antd';
 
-import {HeaderLayout, BreadcrumbLayout,FooterLayout,LoadingScreenCustom, Toast} from './../../Components'
+import {HeaderLayout, BreadcrumbLayout,FooterLayout, LoadingScreenCustom, Toast} from './../../Components'
 import { removeAccents} from '../../helper/generateSku';
 const { Content } = AntLayout;
-const { Title} = Typography;
+const { Title } = Typography;
 const { TextArea } = Input;
 const StyledCreateCategoryForm = styled(AntLayout)`
   .main-title {
@@ -68,6 +68,8 @@ const CreateCategoryForm = () => {
   const history=useHistory();
   const [slug,setSlug]=useState('');
   const [isLoading,setIsLoading] = useState(false);
+  const params=useParams();
+  const [form] = Form.useForm();
 
 
   const layout = {
@@ -92,20 +94,34 @@ const CreateCategoryForm = () => {
     },
   };
 
-  const onFinishAddItem = async (values) => {
+  useEffect(()=>{
+    onGetCategoryById(params.id);
+  },[])
+
+  const onGetCategoryById=async (id)=>{
     try{
       setIsLoading(true);
-      console.log('value',values);
-      const result= await actions.onCreateCategoryRequest(values);
+      const data= await actions.onGetCategoryByIdRequest(id);
+      console.log(data);
+      mapObjectToFrom(data);
       setIsLoading(false);
-      Toast.notifySuccess(`Thêm thể loại thành công. Bạn có thể tìm kiếm với mã ${result.id}`);
-      history.push('/manage-categories')
-      setIsLoading(false);
-    }catch(e){
-      setIsLoading(false);
-      console.log(e);
-      Toast.notifyError("Đã có lỗi xảy ra vui lòng kiểm tra lại");
     }
+    catch(e){
+      setIsLoading(false);
+      Toast.notifyError("Lỗi khi lấy dữ liệu thể loại sản phẩm này.")
+    }
+  }
+
+  const mapObjectToFrom=(obj)=>{
+    form.setFieldsValue({
+      name:obj.name,
+      description:obj.description,
+    });
+    setSlug(obj.slug);
+
+  }
+  const onFinishAddItem = async (values) => {
+   history.push(`/categories/${params.id}/update`)
      
   };
 
@@ -130,6 +146,7 @@ const CreateCategoryForm = () => {
           <Divider plain>Thêm thể loại sản phẩm</Divider>
           <Form
             {...layout}
+            form={form}
             name="nest-messages"
             onFinish={onFinishAddItem}
             validateMessages={validateMessages}
@@ -143,7 +160,6 @@ const CreateCategoryForm = () => {
             <Form.Item
               name="slug"
               label="Slug"
-              disabled={true}
               rules={[
                 {
                   required: true,
@@ -161,7 +177,7 @@ const CreateCategoryForm = () => {
                 },
               ]}
             >
-              <Input onChange={onChangeName}/>
+              <Input disabled={true} onChange={onChangeName}/>
             </Form.Item>
             <Form.Item
               name="description"
@@ -172,11 +188,11 @@ const CreateCategoryForm = () => {
                 },
               ]}
             >
-              <TextArea rows={5} />
+              <TextArea disabled={true} rows={5} />
             </Form.Item>
             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 10 }}>
               <Button type="primary" htmlType="submit">
-                Thêm thể loại
+                Chỉnh sửa loại sản phẩm này
               </Button>
             </Form.Item>
           </Form>

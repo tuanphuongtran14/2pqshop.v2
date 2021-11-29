@@ -7,10 +7,13 @@ import UpdateProductPage from './Containers/ProductPage/UpdateProduct';
 import ShowProductPage from './Containers/ProductPage/ShowProduct';
 import ManageCategoryPage from './Containers/CategoryPage/ManageCategory';
 import CreateCategoryPage from './Containers/CategoryPage/CreateCategory';
+import UpdateCategoryPage from './Containers/CategoryPage/UpdateCategory';
+import ShowCategoryPage from './Containers/CategoryPage/ShowCategory';
 import ManageTagPage from './Containers/TagPage/ManageTag';
 import CreateTagPage from './Containers/TagPage/CreateTag';
 import ManageOrderPage from './Containers/OrderPage/ManageOrder';
 import CreateOrderPage from './Containers/OrderPage/CreateOrder';
+import ShowOrderPage from './Containers/OrderPage/ShowOrder';
 import ManageUserPage from './Containers/UserPage/ManageUser';
 import LoginPage from './Containers/LoginPage/LoginPage';
 import ForgetPasswordPage from './Containers/LoginPage/ForgetPasswordPage';
@@ -29,16 +32,19 @@ function Routes({ isLoggedIn, isLoading }) {
         <Layout>
           <Switch>
             <Route path="/" exact component={HomePage} />
-            <Route path="/manage-products" component={ManageProductPage} />
-            <Route path="/create-product" component={CreateProductPage} />
-            <Route path="/update-product/:slug" component={UpdateProductPage} />
-            <Route path="/show-product/:slug" component={ShowProductPage} />
-            <Route path="/manage-categorys" component={ManageCategoryPage} />
-            <Route path="/create-category" component={CreateCategoryPage} />
+            <Route path="/products/create" component={CreateProductPage} />
+            <Route path="/products/:slug/update" component={UpdateProductPage} />
+            <Route path="/products/:slug" component={ShowProductPage} />
+            <Route path="/products" component={ManageProductPage} />
+            <Route path="/categories/create" component={CreateCategoryPage} />
+            <Route path="/categories/:id/update" component={UpdateCategoryPage} />
+            <Route path="/categories/:id/" component={ShowCategoryPage} />
+            <Route path="/categories" component={ManageCategoryPage} />
             <Route path="/manage-tags" component={ManageTagPage} />
             <Route path="/create-tag" component={CreateTagPage} />
-            <Route path="/manage-orders" component={ManageOrderPage} />
+            <Route path="/orders" component={ManageOrderPage} />
             <Route path="/create-order" component={CreateOrderPage} />
+            <Route path="/orders/:id" component={ShowOrderPage} />
             <Route path="/nguoi-dung/danh-sach" component={ManageUserPage} />
             <Redirect from="/dang-nhap" to="/" />
             <Redirect from="/quen-mat-khau" to="/" />

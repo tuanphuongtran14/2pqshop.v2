@@ -13,3 +13,40 @@ export const onGetListCatagorysRequest=({pageIndex,pageSize})=>{
         }
     })
 }
+
+export const onCreateCategoryRequest=(category)=>{
+    return new Promise( async(resolve, reject) => {
+        try{
+            const data= await axios.post(`/categories`,category);
+            resolve(data);
+        
+        }catch(e){
+            reject(e.response)
+        }
+    })
+}
+
+export const onGetCategoryByIdRequest=(id)=>{
+    return new Promise( async(resolve, reject) => {
+        try{
+            const data= await axios.get(`/categories/${id}`);
+            resolve(data);
+        
+        }catch(e){
+            reject(e.response)
+        }
+    })
+}
+
+export const onUpdateCategoryRequest=(id,category)=>{
+    return new Promise( async(resolve, reject) => {
+        try{
+            const data= await axios.put(`/categories/${id}`,category);
+            resolve(data);
+        
+        }catch(e){
+            reject(e.response)
+        }
+    })
+}
+

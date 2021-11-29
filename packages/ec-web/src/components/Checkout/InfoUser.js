@@ -67,22 +67,37 @@ class InfoUser extends Component {
         Authorization: `Bearer ${token}`
       }
     })
-      .then((res) => {
-        confirmAlert({
-          title: "Tạo đơn thành công!!!",
-          message: "Cảm ơn quý khách đã sử dụng dịch vụ của chúng tôi",
-          buttons: [
-            {
-              label: 'Về trang chủ',
-              onClick: () => history.push('/')
-            },
-            {
-              label: 'Kiểm tra đơn hàng',
-              onClick: () => history.push('/user/order-traking')
-            }
-          ],
-          closeOnClickOutside: false
-        });
+      .then(({ data: order }) => {
+        console.log(order);
+        if (order.paymentMethod === 'MOMO') {
+          callApi(`payment/momo/${order.id}`, "GET")
+            .then(({ data }) => {
+              console.log(data);
+              window.open(data.payUrl, '_self').focus();
+            });
+          confirmAlert({
+            title: "Tạo đơn thành công!!!",
+            message: "Chúng tôi sẽ đưa bạn đến trang thanh toán trong vài giây",
+            buttons: [],
+            closeOnClickOutside: false
+          });
+        } else {
+          confirmAlert({
+            title: "Tạo đơn thành công!!!",
+            message: "Cảm ơn quý khách đã sử dụng dịch vụ của chúng tôi",
+            buttons: [
+              {
+                label: 'Về trang chủ',
+                onClick: () => history.push('/')
+              },
+              {
+                label: 'Kiểm tra đơn hàng',
+                onClick: () => history.push('/user/order-traking')
+              }
+            ],
+            closeOnClickOutside: false
+          });
+        }
         this.props.fetchCart(token);
         e.target.reset();
       });
@@ -165,7 +180,7 @@ class InfoUser extends Component {
               className="custom-select mb-3"
               onChange={this.onChange}
             >
-              <option value="COD">
+              <option defaultValue value="COD">
                 Trả tiền khi nhận hàng
               </option>
               <option value="Chuyển khoản ngân hàng">

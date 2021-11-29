@@ -43,6 +43,7 @@ module.exports = {
         { method: 'GET', path: '/users/auth/email-confirmation', isExactly: true },
         { method: 'POST', path: '/users/auth/forget-password', isExactly: true },
         { method: 'POST', path: '/users/auth/reset-password', isExactly: true },
+        { method: '*', path: '/payment', isExactly: false },
       ],
     },
     {
@@ -65,6 +66,7 @@ module.exports = {
         { method: 'GET', path: '/users/me/cart/remove-coupon', isExactly: true },
         { method: 'GET', path: '/orders/', isExactly: false },
         { method: 'PUT', path: '/orders/update-status', isExactly: true },
+        { method: '*', path: '/payment', isExactly: false },
       ],
     },
     {
@@ -81,6 +83,7 @@ module.exports = {
         { method: '*', path: '/users/me/cart', isExactly: false },
         { method: 'POST', path: '/users/auth/change-password', isExactly: true },
         { method: 'GET', path: '/users/me', isExactly: true },
+        { method: '*', path: '/payment', isExactly: false },
       ],
     },
     {
@@ -97,6 +100,7 @@ module.exports = {
         { method: '*', path: '/users/me/cart', isExactly: false },
         { method: 'POST', path: '/users/auth/change-password', isExactly: true },
         { method: 'GET', path: '/users/me', isExactly: true },
+        { method: '*', path: '/payment', isExactly: false },
       ],
     },
     {
@@ -120,6 +124,7 @@ module.exports = {
         { method: 'GET', path: '/orders/', isExactly: false },
         { method: 'PUT', path: '/orders/update-status', isExactly: true },
         { method: '*', path: '/coupons', isExactly: false },
+        { method: '*', path: '/payment', isExactly: false },
       ],
     },
   ],

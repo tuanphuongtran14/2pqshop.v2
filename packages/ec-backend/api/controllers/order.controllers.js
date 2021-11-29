@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-return-assign */
 const validate = require('../validations/order.validations');
 const handleError = require('../../utils/handleErrorResponse');

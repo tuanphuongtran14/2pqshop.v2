@@ -5,6 +5,7 @@ const categoryRouter = require('./category.routers');
 const orderRouter = require('./order.routers');
 const couponRouter = require('./coupon.routers');
 const roleRouter = require('./role.routers');
+const paymentRouter = require('./payment.routers');
 
 module.exports = (app) => {
   app.use('/users', userRouter);
@@ -14,4 +15,5 @@ module.exports = (app) => {
   app.use('/orders', orderRouter);
   app.use('/coupons', couponRouter);
   app.use('/roles', roleRouter);
+  app.use('/payment', paymentRouter);
 };

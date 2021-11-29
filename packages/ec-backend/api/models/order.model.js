@@ -89,6 +89,7 @@ exports.initializeModel = (mongoose) => {
         required: true,
       },
       coupon: { type: Schema.Types.ObjectId, ref: 'Coupon' },
+      momoRequestId: String,
     },
     {
       timestamps: {

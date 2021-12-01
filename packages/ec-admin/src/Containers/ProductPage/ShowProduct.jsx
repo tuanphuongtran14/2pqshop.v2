@@ -18,7 +18,7 @@ import {
 } from 'antd';
 
 import {HeaderLayout, BreadcrumbLayout,FooterLayout, ImageCustomLayout, LoadingScreenCustom, Toast} from './../../Components'
-import { generateSku, removeAccents} from '../../helper/generateSku';
+import {convertNumberToMoney} from './../../helper/convertNumberToMoney'
 const { Content } = AntLayout;
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -88,7 +88,6 @@ const ShowProductForm = () => {
   const history=useHistory();
   const [lstCategory,setListCategory]=useState([]);
   const [lstTag,setListTag]=useState([]);
-  const lstGrade=[1,2,3,4,5];
   const [fileList, setFileList]=useState([]);
   const [optionS,setOptionS]=useState(false)
   const [optionM,setOptionM]=useState(false)
@@ -147,10 +146,10 @@ const ShowProductForm = () => {
     form.setFieldsValue({
       slug:product.slug,
       name:product.name,
-      price:product.price,
+      price:convertNumberToMoney(product.price),
       grade:grade,
       category:product.category,
-      tags:product.tags,
+      tags:product.tags.join(', '),
       shortDesc:product.shortDesc,
       fullDesc:product.fullDesc,
       additionalInfo:product.additionalInfo,
@@ -300,7 +299,7 @@ const ShowProductForm = () => {
                 },
               ]}
             >
-              <Input  disabled={true}/>
+              <Input className="text-dark" disabled={true}/>
             </Form.Item>
             <Form.Item
               name="name"
@@ -311,17 +310,15 @@ const ShowProductForm = () => {
                 },
               ]}
             >
-              <Input disabled={true} onChange={onChangeName}/>
+              <Input disabled={true} onChange={onChangeName} className="text-dark"/>
             </Form.Item>
             <Form.Item name="price" label="Giá cả"
               rules={[
                 {
-                  required: true,
-                  type: 'number',
-                  min: 10000,
+                 
                 },
               ]}>
-                <InputNumber disabled={true} style={{ width: '100%' }} />
+                <InputNumber disabled={true} style={{ width: '100%' }} className="text-dark"/>
             </Form.Item>
             <div className="form-group col-12 mx-0 px-0 mb-2 mt-2" style={{ zIndex: "0" }}>
                   <div style={{width:'70%',margin:'0px auto'}}>
@@ -334,7 +331,7 @@ const ShowProductForm = () => {
                     </Col>
                     <Col span={12}>
                       <Form.Item name="quantityS" label ="Số lượng">
-                        <InputNumber disabled={!optionS}  style={{width:'80%'}}/>
+                        <InputNumber disabled={!optionS}  style={{width:'80%'}} className="text-dark"/>
                       </Form.Item>
                     </Col>
                   </Row>
@@ -346,7 +343,7 @@ const ShowProductForm = () => {
                     </Col>
                     <Col span={12}>
                       <Form.Item name="quantityM" label ="Số lượng">
-                        <InputNumber disabled={!optionM}  style={{width:'80%'}}/>
+                        <InputNumber disabled={!optionM} className="text-dark" style={{width:'80%'}}/>
                       </Form.Item>
                     </Col>
                   </Row>
@@ -358,7 +355,7 @@ const ShowProductForm = () => {
                     </Col>
                     <Col span={12}>
                       <Form.Item name="quantityL" label ="Số lượng">
-                        <InputNumber disabled={!optionL}  style={{width:'80%'}}/>
+                        <InputNumber disabled={!optionL} className="text-dark" style={{width:'80%'}}/>
                       </Form.Item>
                     </Col>
                   </Row>
@@ -370,7 +367,7 @@ const ShowProductForm = () => {
                     </Col>
                     <Col span={12}>
                       <Form.Item name="quantityXL" label ="Số lượng">
-                        <InputNumber disabled={!optionXL}  style={{width:'80%'}}/>
+                        <InputNumber className="text-dark" disabled={!optionXL}  style={{width:'80%'}}/>
                       </Form.Item>
                     </Col>
                   </Row>
@@ -382,25 +379,7 @@ const ShowProductForm = () => {
                   required: true,
                 },
               ]}>
-                <Select
-                    showSearch
-                    disabled={true}
-                    style={{ width: '100%' }}
-                    placeholder="Đánh giá sản phẩm"
-                    optionFilterProp="children"
-                    optionLabelProp="label"
-                    filterOption={(input, option) =>{
-                      return Number(option.value)===Number(input);
-                    }
-                  }
-                  >{
-                    lstGrade.map((item,index)=>(
-                      <Option value={item} key={index}>
-                        {item}
-                      </Option>
-                    ))
-                  }
-                  </Select> 
+                <Input className="text-dark"  disabled={true} style={{width:'100%'}}/>
             </Form.Item>
             <Form.Item name="category" label="Thể loại"
               rules={[
@@ -408,26 +387,7 @@ const ShowProductForm = () => {
                   required: true,
                 },
               ]}>
-                <Select
-                    showSearch
-                    style={{ width: '100%' }}
-                    disabled={true} 
-                    placeholder="Chọn thể loại"
-                    optionFilterProp="children"
-                    optionLabelProp="label"
-                    filterOption={(input, option) =>{
-                        return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      }
-                    }
-                  > 
-                  {
-                    lstCategory.map((item,index)=>(
-                      <Option value={item.name} key={index}>
-                          {item.name}
-                      </Option>
-                    ))
-                  } 
-                  </Select> 
+                <Input className="text-dark"  disabled={true} style={{width:'100%'}}/>
             </Form.Item>
             <Form.Item
               name="tags"
@@ -439,23 +399,7 @@ const ShowProductForm = () => {
                 },
               ]}
             >
-              <Select
-                    mode="multiple"
-                    style={{ width: '100%' }}
-                    placeholder="Chọn nhãn"
-                    optionLabelProp="label"
-                    disabled={true}
-                  >
-                    {
-                    lstTag.map((item,index)=>(
-                      <Option value={item.name} label={item.name} key={index}>
-                        <div className="demo-option-label-item">
-                          {item.name}
-                        </div>
-                      </Option>
-                    ))
-                  } 
-                  </Select>
+              <Input className="text-dark"  disabled={true} style={{width:'100%'}}/>
             </Form.Item>
             <Form.Item
               name="shortDesc"
@@ -466,7 +410,7 @@ const ShowProductForm = () => {
                 },
               ]}
             >
-              <TextArea disabled={true} rows={3}/>
+              <TextArea disabled={true} rows={3} className="text-dark"/>
             </Form.Item>
             <Form.Item
               name="fullDesc"
@@ -477,7 +421,7 @@ const ShowProductForm = () => {
                 },
               ]}
             >
-              <TextArea disabled={true} rows={7} />
+              <TextArea disabled={true} rows={7} className="text-dark"/>
             </Form.Item>
             <Form.Item
               name="additionalInfo"
@@ -488,7 +432,7 @@ const ShowProductForm = () => {
                 },
               ]}
             >
-              <TextArea disabled={true} rows={5}/>
+              <TextArea disabled={true} rows={5} className="text-dark"/>
             </Form.Item>
             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 10 }}>
               <Button type="primary" htmlType="submit">

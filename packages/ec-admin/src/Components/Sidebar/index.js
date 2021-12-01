@@ -40,26 +40,26 @@ const Sidebar = () => {
             </Link>
           </Menu.Item>
         </SubMenu>
-        <SubMenu key="product" icon={<SkinOutlined  />} title="products">
+        <SubMenu key="product" icon={<SkinOutlined  />} title="Sản phẩm">
           <Menu.Item key="/products">
-                <span>Manage products</span>
+                <span>Quản lý</span>
                 <Link to="/products">
                 </Link>
           </Menu.Item>
           <Menu.Item key="/products/create">
-            <span>Create products</span>
+            <span>Tạo</span>
             <Link to="/products/create">
             </Link>
           </Menu.Item>
         </SubMenu>
-        <SubMenu key="category" icon={<FilterOutlined />} title="category">
+        <SubMenu key="category" icon={<FilterOutlined />} title="Thể loại sản phẩm">
           <Menu.Item key="/categories">
-            <span>Manage categories</span>
+            <span>Quản lý</span>
             <Link to="/categories">
             </Link>
           </Menu.Item>
           <Menu.Item key="/categories/create">
-            <span>Create category</span>
+            <span>Tạo mới</span>
             <Link to="/categories/create">
             </Link>
           </Menu.Item>
@@ -76,15 +76,10 @@ const Sidebar = () => {
             </Link>
           </Menu.Item>
         </SubMenu>
-        <SubMenu key="order" icon={<ShoppingCartOutlined />} title="order">
+        <SubMenu key="order" icon={<ShoppingCartOutlined />} title="Đơn hàng">
           <Menu.Item key="/orders">
-            <span>orders</span>
+            <span>Quản lý đơn hàng</span>
             <Link to="/orders">
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/orders/create">
-            <span>Create order</span>
-            <Link to="/orders/create">
             </Link>
           </Menu.Item>
         </SubMenu>

@@ -12,7 +12,6 @@ import ShowCategoryPage from './Containers/CategoryPage/ShowCategory';
 import ManageTagPage from './Containers/TagPage/ManageTag';
 import CreateTagPage from './Containers/TagPage/CreateTag';
 import ManageOrderPage from './Containers/OrderPage/ManageOrder';
-import CreateOrderPage from './Containers/OrderPage/CreateOrder';
 import ShowOrderPage from './Containers/OrderPage/ShowOrder';
 import ManageUserPage from './Containers/UserPage/ManageUser';
 import LoginPage from './Containers/LoginPage/LoginPage';
@@ -42,9 +41,8 @@ function Routes({ isLoggedIn, isLoading }) {
             <Route path="/categories" component={ManageCategoryPage} />
             <Route path="/manage-tags" component={ManageTagPage} />
             <Route path="/create-tag" component={CreateTagPage} />
-            <Route path="/orders" component={ManageOrderPage} />
-            <Route path="/create-order" component={CreateOrderPage} />
             <Route path="/orders/:id" component={ShowOrderPage} />
+            <Route path="/orders" component={ManageOrderPage} />
             <Route path="/nguoi-dung/danh-sach" component={ManageUserPage} />
             <Redirect from="/dang-nhap" to="/" />
             <Redirect from="/quen-mat-khau" to="/" />

@@ -26,13 +26,12 @@ export const onUpdateOrderStatusByIdRequest=(objOrderStatus)=>{
     })
 }
 
-export const onGetListOrderRequest=(objSearch,{pageIndex,pageSize})=>{
+export const onGetListOrderRequest=(objSearch)=>{
+    console.log(objSearch)
     return new Promise( async(resolve, reject) => {
         try{
             const query = qs.stringify({
-                ...objSearch,
-                page:pageIndex,
-                pageSize,
+                ...objSearch
               });
             const data= await axios.get(`/orders?${query}`)
             resolve(data);

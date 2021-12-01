@@ -21,6 +21,7 @@ import {convertNumberToMoney} from './../../helper/convertNumberToMoney'
 import { DownloadOutlined, EditOutlined, EyeOutlined,DeleteOutlined } from '@ant-design/icons';
 import {HeaderLayout, BreadcrumbLayout,FooterLayout,LoadingScreenCustom, Toast} from './../../Components'
 import {useLocation, useHistory} from 'react-router-dom'
+import PopupChangeStatus  from './Components/PopupChangeStatus';
 const { Title, Text } = Typography;
 const { Column } = Table;
 const { Content } = AntLayout;
@@ -109,19 +110,40 @@ const ManageOrderPage = () => {
   const [isLoading,setIsLoading] = useState(false);
   const [form] = Form.useForm();
   const [visible, setVisible] = useState(false);
-  const [confirmLoading, setConfirmLoading] = useState(false);
+  
   const [dataOptionModal,setDataOptionModal]= useState([]);
   const [valueID,setValueID]=useState('');
   const [valueStatus,setValueStatus]=useState('');
   const [flagSearch,setFlagSearch]=useState(false);
+  const [status,setStatus] =useState('ALL');
+  const [fromDate,setFromDate] =useState('');
+  const [toDate,setToDate] =useState('');
 
   useEffect( ()=>{
-    console.log('có');
-    onGetListOrder({},{
-      pageIndex,
-      pageSize
-    })
-  },[location.pathname,pageIndex,pageSize,flagSearch])
+    let objSearch={
+      page:pageIndex,
+      pageSize:pageSize
+    };
+    if(status!=='ALL'){
+      objSearch={
+        ...objSearch,
+        status:status
+      };
+    }
+    if(fromDate!==''){
+      objSearch={
+        ...objSearch,
+        orderDate_gte:fromDate
+      };
+    }
+    if(toDate!==''){
+      objSearch={
+        ...objSearch,
+        orderDate_lte:toDate
+      };
+    }
+    onGetListOrder(objSearch);
+  },[flagSearch])
 
   useEffect(()=>{
     form.setFieldsValue({
@@ -142,10 +164,10 @@ const ManageOrderPage = () => {
     },
   };
 
-  const onGetListOrder =async(objSearch, pagination)=>{
+  const onGetListOrder =async(objSearch)=>{
         try {
             setIsLoading(true);
-          const data = await actions.onGetListOrderRequest(objSearch, pagination);
+          const data = await actions.onGetListOrderRequest(objSearch);
           console.log(data);
             let lstTempOrder = data.results;
             let lstOrder = lstTempOrder.map((item, index) => {
@@ -169,35 +191,46 @@ const ManageOrderPage = () => {
     const onPageChange = (pageIndex, pageSize) => {
         setPageIndex(pageIndex);
         setPageSize(pageSize);
+        setFlagSearch(!flagSearch);
     }
     const onSearch= async(values)=>{
       try{
-        setIsLoading(true);
-        if(values.keyword===''){
-          setPageIndex(1);
-          return ;
-        }
-       // const data = await actions.onSearchProductRequest(values.keyword,{
-         const data=null;
-        //   pageIndex,
-        //   pageSize
-        // });
-        console.log(data);
-        let lstTempProduct = data.results;
-        let lstProduct = lstTempProduct.map((item, index) => {
-        return {
-            ...item,
-            key: index,
-            index: index + 1,
-            price:convertNumberToMoney(item.price)
+        let objSearch={
+          page:pageIndex,
+          pageSize:pageSize
         };
-        });
-        const panigionServer = data.pagination;
-        setDataSource(lstProduct);
-        setTotalProduct(panigionServer.total);
-        setIsLoading(false);
+        if(status!=='ALL'){
+          objSearch={
+            ...objSearch,
+            status:status
+          };
+        }
+        if(fromDate!==''){
+          objSearch={
+            ...objSearch,
+            orderDate_gte:fromDate
+          };
+        }
+        if(toDate!==''){
+          objSearch={
+            ...objSearch,
+            orderDate_lte:toDate
+          };
+        }
+        if(values.option==='receiverEmail'){
+          objSearch={
+            ...objSearch,
+            receiverEmail:values.keyword
+          };
+        }
+        if(values.option==='receiverPhone'){
+          objSearch={
+            ...objSearch,
+            receiverPhone:values.keyword
+          };
+        }
+        await onGetListOrder(objSearch);
       }
-      
       catch(e){
         setIsLoading(false);
         Toast.notifyError("Đã có lỗi. Vui lòng thử lại")
@@ -222,12 +255,11 @@ const ManageOrderPage = () => {
     }
     let indexValueOrderStatus=dataOption.findIndex(data=>data.status===objOrder.status);
     let listOptionSuccess=dataOption.filter((item,index)=>index>=indexValueOrderStatus);
-    console.log("list",listOptionSuccess);
     setDataOptionModal(listOptionSuccess);
   }
 
   const onRedirectShow=(objOrder)=>{
-    history.push({pathname:`/products/${objOrder.slug}`,
+    history.push({pathname:`/orders/${objOrder.id}`,
     state:{
       id:objOrder.id
     }})
@@ -275,41 +307,19 @@ const ManageOrderPage = () => {
     return data;
   }
 
-  const handleOkModal=async()=>{
-    if(dataOptionModal.length===0){
-      setVisible(false);
-      return ;
-    }
-    try{
-      setConfirmLoading(true);
-      const body={
-        id:valueID,
-        status:valueStatus
-      } 
-      await actions.onUpdateOrderStatusByIdRequest(body);
-      setConfirmLoading(false);
-      setVisible(false);
-      setFlagSearch(!flagSearch);
-      Toast.notifySuccess(`Cập nhật trạng thái hóa đơn ${valueID} thành công.`)
-    }catch(e){
-      setConfirmLoading(false);
-      setVisible(false);
-      Toast.notifyError("Đã có lỗi trong quá trình cập nhật trạng thái hóa đơn. Vui lòng kiểm tra lại")
-    }
-    
-    
-  }
-
-  const handleCancelModal=()=>{
-    setVisible(false);
-  }
+  
 
   const onChangeValueStatus=(value)=>{
     setValueStatus(value);
   }
 
-  const onChangeDate = (date, dateString) => {
-    console.log( dateString);
+  const onChangeFromDate = (date, dateString) => {
+    setFromDate(dateString);
+    setFlagSearch(!flagSearch);
+  }
+  const onChangeToDate = (date, dateString) => {
+    setToDate(dateString);
+    setFlagSearch(!flagSearch);
   }
 
   const onCancelOrder= async (objOrder)=>{
@@ -341,6 +351,12 @@ const ManageOrderPage = () => {
     }
   }
 
+  const onChangeStatus = async (value)=>{
+    setStatus(value);
+    setFlagSearch(!flagSearch);
+  }
+    
+
   return (
     <>
     <StyleManageProduct >
@@ -349,7 +365,7 @@ const ManageOrderPage = () => {
         <BreadcrumbLayout root="Product" branch="manage" />
         <div className="site-layout-background" style={{ padding: 24, minHeight: 360, position: 'relative' }}>
           <Title className="main-title" level={2}>
-            Danh sách hóa đơn
+            Danh sách đơn hàng
           </Title>
           <Form
             form={form}
@@ -365,7 +381,7 @@ const ManageOrderPage = () => {
             validateMessages={validateMessages}
           >
             <Form.Item
-              name="options"
+              name="option"
               rules={[
                 { 
                   required: true,
@@ -396,7 +412,7 @@ const ManageOrderPage = () => {
               name="keyword"
               rules={[
                 { 
-
+                  required: true,
                 },
               ]}
             >
@@ -413,16 +429,27 @@ const ManageOrderPage = () => {
           <div>
             <Divider plain>Danh sách hóa đơn hiện nay</Divider>
             <Text className="result-total">Tổng hóa đơn hiện nay: {totalProducts} hóa đơn</Text>
+            <div style={{display:'flex',justifyContent: 'flex-end'}} className="mt-3 mb-3">
+              <div className="me-2">
+                <Text>Từ ngày: </Text>
+                <DatePicker style={{width:'100%'}} onChange={onChangeFromDate} />
+              </div>
+              <div>
+                <Text>Đến ngày: </Text>
+                <DatePicker style={{width:'100%'}} onChange={onChangeToDate}  />
+              </div>
+            </div>
             <div className="mb-4" style={{width:'100%'}}>
+              <label >Trạng thái đơn hàng: </label>
               <Select
               showSearch
               style={{width:'20%'}}
-              className="me-3"
+              className="me-3 ms-2"
               placeholder="Trạng thái sản phẩm"
               optionFilterProp="children"
               optionLabelProp="label"
-              //value={valueStatus}
-              onChange={onChangeValueStatus}
+              value={status}
+              onChange={onChangeStatus}
               filterOption={(input, option) =>{
                 return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }}>
@@ -435,9 +462,11 @@ const ManageOrderPage = () => {
                     )
                   })
                 }
+                <Option value="ALL" key="ALL">
+                  Tất cả
+                </Option>
                 
               </Select>  
-              <DatePicker style={{width:'20%'}} onChange={onChangeDate} />
             </div>
             <Table className="result-table" dataSource={dataSource} 
             pagination={{current:pageIndex,pageSize: pageSize,total: totalProducts,
@@ -446,8 +475,9 @@ const ManageOrderPage = () => {
               <Column title="STT" dataIndex="index"/>
               <Column title="Mã sản phẩm" dataIndex="id" />
               <Column title="Số điện thoại" dataIndex="receiverPhone"  />
-              <Column title="Tiền thu" dataIndex="finalAmount"/>
-              <Column title="Thanh toán" dataIndex="paymentMethod"/>
+              <Column title="Ngày nhận" dataIndex="orderDate"  />
+              <Column title="Thanh toán" dataIndex="finalAmount"/>
+              <Column title="PTTT" dataIndex="paymentMethod"/>
               <Column title="Trạng thái" dataIndex="status"
                     render= {status => {
                       //  renderStatus(status);
@@ -488,45 +518,9 @@ const ManageOrderPage = () => {
         </div>   
       </Content>
       <FooterLayout />
-      <Modal
-        title="Title"
-        visible={visible}
-        onOk={handleOkModal}
-        confirmLoading={confirmLoading}
-        onCancel={handleCancelModal}
-      >  
-      { 
-        dataOptionModal.length>0?(
-          <>
-          <div className="mb-3">
-            <Input disabled={true} value={valueID} style={{color:'red'}}/>
-          </div>
-          <Select
-            showSearch
-            style={{ width: '100%' }}
-            placeholder="Thay đổi trạng thái sản phẩm"
-            optionFilterProp="children"
-            optionLabelProp="label"
-            value={valueStatus}
-            onChange={onChangeValueStatus}
-            filterOption={(input, option) =>{
-              return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-              }
-              >{
-                dataOptionModal.map((item,index)=>(
-                  <Option value={item.status} key={index}>
-                    {item.name}
-                  </Option>
-                ))
-              }
-            </Select>  
-        </>
-        ):
-        <p>Đơn hàng đã hoàn tất. Không thể thay đổi trạng thái</p>
-      }
-      </Modal>
-        
+      <PopupChangeStatus visible={visible}  setVisible={setVisible} onChangeValueStatus={onChangeValueStatus}
+          dataOptionModal={dataOptionModal} valueID={valueID} valueStatus={valueStatus} flagSearch={flagSearch}
+          setFlagSearch={setFlagSearch}/>
     </StyleManageProduct>
     
     </>

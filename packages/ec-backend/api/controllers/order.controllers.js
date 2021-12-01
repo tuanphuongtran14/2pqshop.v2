@@ -67,7 +67,49 @@ module.exports = {
   findOrdersByUser: async (req, res) => {
     try {
       const { user } = req.state;
-      const orders = await query(ORDER_MODEL_NAME).findPage({ user: user.id });
+      const queryParams = req.query;
+      queryParams.user = user.id;
+      if (queryParams.orderDate) {
+        queryParams.orderDate = {
+          $gte: `${queryParams.orderDate}T00:00:00`,
+          $lte: `${queryParams.orderDate}T23:59:59`,
+        };
+      }
+
+      if (!queryParams.orderDate) {
+        if (queryParams.orderDate_gte) {
+          queryParams.orderDate = {
+            $gte: `${queryParams.orderDate_gte}T00:00:00`,
+          };
+          delete queryParams.orderDate_gte;
+        }
+
+        if (queryParams.orderDate_lte) {
+          queryParams.orderDate = {
+            ...queryParams.orderDate,
+            $lte: `${queryParams.orderDate_lte}T23:59:59`,
+          };
+          delete queryParams.orderDate_lte;
+        }
+
+        if (queryParams.orderDate_gt) {
+          queryParams.orderDate = {
+            ...queryParams.orderDate,
+            $gt: `${queryParams.orderDate_gt}T23:59:59`,
+          };
+          delete queryParams.orderDate_gt;
+        }
+
+        if (queryParams.orderDate_lt) {
+          queryParams.orderDate = {
+            ...queryParams.orderDate,
+            $lt: `${queryParams.orderDate_lt}T00:00:00`,
+          };
+          delete queryParams.orderDate_lt;
+        }
+      }
+
+      const orders = await query(ORDER_MODEL_NAME).findPage(queryParams);
       return res.status(200).json(orders);
     } catch (ex) {
       return handleError.badGateway(res, `Error: ${ex}`);
@@ -95,7 +137,7 @@ module.exports = {
         if (queryParams.orderDate_lte) {
           queryParams.orderDate = {
             ...queryParams.orderDate,
-            $lte: `${queryParams.orderDate_lte}T00:00:00`,
+            $lte: `${queryParams.orderDate_lte}T23:59:59`,
           };
           delete queryParams.orderDate_lte;
         }
@@ -103,7 +145,7 @@ module.exports = {
         if (queryParams.orderDate_gt) {
           queryParams.orderDate = {
             ...queryParams.orderDate,
-            $gt: `${queryParams.orderDate_gt}T00:00:00`,
+            $gt: `${queryParams.orderDate_gt}T23:59:59`,
           };
           delete queryParams.orderDate_gt;
         }

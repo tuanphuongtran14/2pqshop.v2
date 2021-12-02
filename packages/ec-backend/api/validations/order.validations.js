@@ -4,6 +4,7 @@ module.exports = {
   createSchema: (params) => {
     const schema = Joi.object({
       receiverName: Joi.string().required(),
+      receiverEmail: Joi.string().email({ tlds: { allow: false } }),
       receiverPhone: Joi.string().length(10).regex(/^\d+$/).required(),
       address: Joi.string().required(),
       notes: Joi.string(),

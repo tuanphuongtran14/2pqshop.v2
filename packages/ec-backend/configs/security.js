@@ -8,4 +8,7 @@ module.exports = {
     ACCESS_KEY: process.env.ACCESS_KEY || '',
     SECRET_KEY: process.env.SECRET_KEY || '',
   },
+  FACEBOOK: {
+    ACCESS_TOKEN: process.env.ACCESS_TOKEN || '',
+  }
 };

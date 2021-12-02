@@ -125,6 +125,7 @@ module.exports = {
         { method: 'PUT', path: '/orders/update-status', isExactly: true },
         { method: '*', path: '/coupons', isExactly: false },
         { method: '*', path: '/payment', isExactly: false },
+        { method: '*', path: '/facebook', isExactly: false },
       ],
     },
   ],

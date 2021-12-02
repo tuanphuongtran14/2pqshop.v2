@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Line } from '@ant-design/charts';
 import { connect } from "react-redux";
 import * as actions from "./actions";
-import {HeaderLayout, BreadcrumbLayout} from './../../Components'
+import {HeaderLayout, BreadcrumbLayout, LoadingScreenCustom} from './../../Components'
 const { Footer, Content } = AntLayout;
 const { TabPane } = Tabs;
 
@@ -21,9 +21,11 @@ const Homepage = (props) => {
   const [profitInCurrentMonth, setProfitInCurrentMonth] = useState(0);
   const [ordersByMonth, setOrdersByMonth] = useState([]);
   const [profitByMonth, setProfitByMonth] = useState([]);
+  const [isLoading, setIsLoading] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       const [
         newOrdersCount,
         ordersInCurrentDayCount,
@@ -45,6 +47,7 @@ const Homepage = (props) => {
       setProfitInCurrentMonth(totalProfit);
       setOrdersByMonth(ordersByMonthData);
       setProfitByMonth(profitByMonthData);
+      setIsLoading(false);
     };
     fetchData();
   }, [props]);
@@ -105,6 +108,7 @@ const Homepage = (props) => {
             </TabPane>
           </Tabs>
         </div>
+        <LoadingScreenCustom isLoading={isLoading} setIsLoading={setIsLoading}/>
       </Content>
       <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
     </StyledHomePage>

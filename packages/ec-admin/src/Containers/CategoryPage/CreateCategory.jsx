@@ -120,7 +120,7 @@ const CreateCategoryForm = () => {
     <StyledCreateCategoryForm >
       <HeaderLayout />
       <Content style={{ margin: '0 16px' }}>
-      <BreadcrumbLayout root="Product" branch="create" />
+      <BreadcrumbLayout root="Thể loại sản phẩm" branch="Khởi tạo" />
 
         <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
           <Title className="main-title" level={2}>

@@ -240,7 +240,6 @@ const UpdateProductForm = () => {
       list.forEach(item=>{
        data.append("files.images",item.originFileObj);
       })
-      console.log("file",list);
       const result= await actions.onUpdateProductRequest(data,location.state.id);
       setIsLoading(false);
       Toast.notifySuccess(`Cập sản phẩm thành công. Bạn có thể tìm kiếm với mã ${result.id}`);
@@ -388,7 +387,7 @@ const UpdateProductForm = () => {
     <StyledUpdateProductForm >
       <HeaderLayout />
       <Content style={{ margin: '0 16px' }}>
-      <BreadcrumbLayout root="Product" branch="update" />
+      <BreadcrumbLayout root="Sản phẩm" branch="Cập nhật" />
 
         <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
           <Title className="main-title" level={2}>

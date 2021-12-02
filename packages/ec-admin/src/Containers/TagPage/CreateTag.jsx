@@ -1,26 +1,23 @@
 /* eslint-disable no-template-curly-in-string */
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import * as actions from './actions';
+import {useHistory} from 'react-router-dom'
 import {
   Layout as AntLayout,
-  Breadcrumb,
   Typography,
   Form,
   Input,
   Button,
   Divider,
-  Table,
-  Popconfirm,
-  message,
-  InputNumber,
-  Row, Col,Space
 } from 'antd';
-import { CheckCircleOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import {HeaderLayout, BreadcrumbLayout,FooterLayout,ImageLayout} from './../../Components'
-const { Content } = AntLayout;
-const { Title, Text } = Typography;
 
-const StyledCreateTagForm = styled(AntLayout)`
+import {HeaderLayout, BreadcrumbLayout,FooterLayout,LoadingScreenCustom, Toast} from './../../Components'
+import { removeAccents} from '../../helper/generateSku';
+const { Content } = AntLayout;
+const { Title} = Typography;
+const { TextArea } = Input;
+const StyledCreateCategoryForm = styled(AntLayout)`
   .main-title {
     margin-bottom: 30px;
     text-align: center;
@@ -56,40 +53,22 @@ const StyledCreateTagForm = styled(AntLayout)`
     display: flex;
     align-items: center;
     margin-left: auto;
-    bTag-radius: 10px;
-    bTag-color: #058d23;
+    border-radius: 10px;
+    border-color: #058d23;
     background-color: #058d23;
+  }
+  .site-layout-background {
+    background: #fff;
+    position: relative;
+    z-index:0
   }
 `;
 
-const CreateTagForm = () => {
-  const [showReportResult, setShowReportResult] = useState(false);
-  const [dateData, setDateData] = useState({ month: '', year: '' });
-  const [dataSource, setDataSource] = useState([
-    {
-      key: '1',
-      carName: 'Toyota',
-      numberRepair: '521452',
-      ratio: '100%',
-      total: 5000000,
-    },
-    {
-      key: '2',
-      carName: 'Honda',
-      numberRepair: '521452',
-      ratio: '100%',
-      total: 5000000,
-    },
-    {
-      key: '3',
-      carName: 'Suzuki',
-      numberRepair: '521452',
-      ratio: '100%',
-      total: 5000000,
-    },
-  ]);
+const CreateCategoryForm = () => {
+  const history=useHistory();
+  const [slug,setSlug]=useState('');
+  const [isLoading,setIsLoading] = useState(false);
 
-  dataSource.map((item, index) => (item.carNumber = index + 1));
 
   const layout = {
     labelCol: {
@@ -113,45 +92,49 @@ const CreateTagForm = () => {
     },
   };
 
-  
-  
-
-  const onFinishAddItem = (values) => {
-    values.carNumber = dataSource.length + 1;
-    const newData = {
-      carNumber: values.carNumber,
-      carName: values.carName,
-      numberRepair: values.numberRepair,
-      ratio: `${values.ratio}%`,
-      total: values.total,
-    };
-    setDataSource([...dataSource, newData]);
+  const onFinishAddItem = async (values) => {
+    try{
+      setIsLoading(true);
+      const result= await actions.onCreateTagRequest(values);
+      setIsLoading(false);
+      Toast.notifySuccess(`Thêm tag thành công. Bạn có thể tìm kiếm với mã ${result.id}`);
+      history.push('/tags')
+      setIsLoading(false);
+    }catch(e){
+      setIsLoading(false);
+      console.log(e);
+      Toast.notifyError("Đã có lỗi xảy ra vui lòng kiểm tra lại");
+    }
+     
   };
 
   return (
-    <StyledCreateTagForm >
+    <StyledCreateCategoryForm >
       <HeaderLayout />
       <Content style={{ margin: '0 16px' }}>
-      <BreadcrumbLayout root="Tag" branch="create" />
+      <BreadcrumbLayout root="Tag" branch="Khởi tạo" />
 
         <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
           <Title className="main-title" level={2}>
-            Form thêm sản phẩm
+           Quản lý Tag
           </Title>
           
-          <Divider plain>Thêm hình ảnh sản phẩm</Divider>
-          <div class="mt-2 text-center">
-            <ImageLayout/>
-          </div>
+          <Divider plain>Thêm tag</Divider>
           <Form
             {...layout}
             name="nest-messages"
             onFinish={onFinishAddItem}
             validateMessages={validateMessages}
+            fields={[
+              {
+                name: ["slug"],
+                value: slug,
+              },
+            ]}
           >
             <Form.Item
-              name="carName"
-              label="Tên sản phẩm"
+              name="name"
+              label="Tên tag"
               rules={[
                 {
                   required: true,
@@ -161,53 +144,28 @@ const CreateTagForm = () => {
               <Input />
             </Form.Item>
             <Form.Item
-              name="numberRepair"
-              label="Loại sản phẩm"
+              name="desc"
+              label="Mô tả"
               rules={[
                 {
                   required: true,
                 },
               ]}
             >
-              <Input />
+              <TextArea rows={5} />
             </Form.Item>
-            <Form.Item
-              name="ratio"
-              label="Giá cả"
-              rules={[
-                {
-                  required: true,
-                  type: 'number',
-                  min: 0,
-                  max: 100,
-                },
-              ]}
-            >
-              <InputNumber style={{ width: '100%' }} />
-            </Form.Item>
-            <Form.Item
-              name="total"
-              label="Thể loại"
-              rules={[
-                {
-                  required: true,
-                  type: 'number',
-                },
-              ]}
-            >
-              <InputNumber style={{ width: '100%' }} />
-            </Form.Item>
-            <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 10 }}>
+            <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 11 }}>
               <Button type="primary" htmlType="submit">
-                Thêm sản phẩm
+                Thêm Tag
               </Button>
             </Form.Item>
           </Form>
+          <LoadingScreenCustom isLoading={isLoading} setIsLoading={setIsLoading}/>
         </div>
       </Content>
       <FooterLayout />
-    </StyledCreateTagForm>
+    </StyledCreateCategoryForm>
   );
 };
 
-export default CreateTagForm;
+export default CreateCategoryForm;

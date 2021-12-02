@@ -1,6 +1,6 @@
 /* eslint-disable no-template-curly-in-string */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import {
   Layout as AntLayout,
@@ -13,9 +13,10 @@ import {
   Table,
   Space,
 } from 'antd';
-
-import { DownloadOutlined, EditOutlined, EyeOutlined,DeleteOutlined } from '@ant-design/icons';
-import {HeaderLayout, BreadcrumbLayout,FooterLayout} from './../../Components'
+import * as actions from './actions';
+import { DownloadOutlined, EditOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
+import { HeaderLayout, BreadcrumbLayout, FooterLayout,LoadingScreenCustom, Toast } from './../../Components';
+import { useLocation, useHistory } from 'react-router-dom';
 const { Title, Text } = Typography;
 const { Column } = Table;
 const { Content } = AntLayout;
@@ -67,172 +68,146 @@ const StyleManageTag = styled(AntLayout)`
 `;
 
 const ManageTagPage = () => {
-  const [showReportResult, setShowReportResult] = useState(false);
-  const [dateData, setDateData] = useState({ month: '', year: '' });
-  const [dataSource] = useState([
-    {
-        key:'1',
-        index: '1',
-        sku: 'Toyota1',
-        TagName: 'Toyota',
-        price: 10000,
-    },
-    {   
-        key:'2',
-        index: '1',
-        sku: 'Toyota2',
-        TagName: 'Toyota',
-        price: 10000,
-      },
-      { 
-        key:'3',
-        index: '1',
-        sku: 'Toyota3',
-        TagName: 'Toyota',
-        price: 10000,
-      },
-  ]);
+    const location=useLocation();
+    const [pageSize, setPageSize] = useState(10);
+    const [pageIndex, setPageIndex] = useState(1);
+    const [totalTags, setTotalTag] = useState(0);
+    const [dataSource, setDataSource] = useState([]);
+    const [isLoading,setIsLoading] = useState(false);
+    const [isSearch,setIsSearch] = useState(false);
+    const history=useHistory();
 
-  const columns = [
-    {
-      title: 'STT',
-      dataIndex: 'index',
-      key: 'index',
-    },
-    {
-      title: 'Mã sản phẩm',
-      dataIndex: 'sku',
-      key: 'sku',
-    },
-    {
-      title: 'Tên sản phẩm',
-      dataIndex: 'TagName',
-      key: 'TagName',
-    },
-    {
-      title: 'Giá bán',
-      dataIndex: 'price',
-      key: 'price',
+    useEffect(() => {
+        onGetListTags({
+        pageIndex,
+        pageSize,
+        });
+        
+    }, [isSearch]);
+
+    const onPageChange = (pageIndex, pageSize) => {
+        setPageIndex(pageIndex);
+        setPageSize(pageSize);
+        setIsSearch(!isSearch);
+    };
+    const onGetListTags = async (pagination) => {
+        try {
+          setIsLoading(true);
+          const data = await actions.onGetListTagsRequest(pagination);
+          let lstTempTag = data.results;
+          let lstTag = lstTempTag.map((item, index) => {
+              return {
+              ...item,
+              key: index,
+              index: index + 1,
+              };
+          });
+          const panigionServer = data.pagination;
+          setDataSource(lstTag);
+          setTotalTag(panigionServer.total);
+          setIsLoading(false);
+        } catch (e) {
+          setIsLoading(false);
+          Toast.notifyError('Đã có lỗi xảy ra. Vui lòng kiểm tra lại')
+        }
+    };
+
+    const onRedirectUpdate=(item)=>{
+      history.push(`/tags/${item.id}/update`)
     }
-  ];
 
-  dataSource.map((item, index) => (item.carNumber = index + 1));
+    const onRedirectShow=(item)=>{
+      history.push(`/tags/${item.id}`)
+    }
 
-  const validateMessages = {
-    required: 'Nhập ${label}!',
-    types: {
-      email: '${label} không phải là email hợp lệ!',
-      number: '${label} không phải là số hợp lệ!',
-    },
-    number: {
-      min: "'${label}' không thể nhỏ hơn ${min}",
-      max: "'${label}' không thể lớn hơn ${max}",
-      range: '${label} phải ở giữa ${min} và ${max}',
-    },
-  };
+    const onDeleteTags = async (item) =>{
+      let isDelete = window.confirm(`Bạn có muốn xóa tag ${item.id} này không?`);
+      if(!isDelete) return;
+      try{
+        setIsLoading(true);
+        await actions.onDeleteTagRequest(item.id);
+        setIsLoading(false);
+        setIsSearch(!isSearch);
+        Toast.notifySuccess('Xóa tag thành công')
+      }catch(e){
+        setIsLoading(false);
+        Toast.notifyError('Đã có lỗi xảy ra. Vui lòng kiểm tra lại')
+      }
+      
+    }
+    return (
+        <StyleManageTag>
+        <HeaderLayout />
+        <Content style={{ margin: '0 16px' }}>
+            <BreadcrumbLayout root="Tag" branch="Quản lý" />
+            <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
+              <Title className="main-title" level={2}>
+                  Danh sách tag
+              </Title>
+              {/* <div className={showReportResult ? 'show' : 'hide'}> */}
+              <div>
+                  <Divider plain>Danh sách tag hiện nay</Divider>
+                  <Text className="result-total">Tổng số tag hiện nay: {totalTags} loại</Text>;
+                  <Table
+                  className="result-table"
+                  dataSource={dataSource}
+                  pagination={{
+                      current: pageIndex,
+                      pageSize: pageSize,
+                      total: totalTags,
+                      showSizeChanger: true,
+                      pageSizeOptions: ['5', '10', '15'],
+                      onChange: onPageChange,
+                  }}
+                  >
+                  <Column title="Số thứ tụ" dataIndex="index" />
+                  <Column title="Mã loại sản phẩm" dataIndex="id" />
+                  <Column title="Tên loại sản phẩm" dataIndex="name" />
+                  <Column title="Mô tả" dataIndex="desc" />
+                  <Column
+                      title="Thực hiện"
+                      key="action"
+                      render={(item) => {
+                      return (
+                          <Space size="middle">
+                          <Button
+                              icon={<EyeOutlined />}
+                              onClick={() => {
+                                onRedirectShow(item);
+                              }}
+                          />
+                          <Button
+                              icon={<EditOutlined />}
+                              onClick={() => {
+                              onRedirectUpdate(item);
+                              }}
+                          />
+                          <Button
+                              icon={<DeleteOutlined />}
+                              onClick={() => {
+                              onDeleteTags(item);
+                              }}
+                          />
+                          </Space>
+                      );
+                      }}
+                  />
+                  </Table>
+                  <Button
+                  className="button-finish"
+                  icon={<DownloadOutlined />}
+                  type="primary"
+                  size="middle"
+                  >
+                  In excel danh sách sản phẩm
+                  </Button>
+              </div>
+              <LoadingScreenCustom isLoading={isLoading} setIsLoading={setIsLoading}/>
+            </div>
+        </Content>
+        <FooterLayout />
+        </StyleManageTag>
+    );
+    };
 
-  const onFinishCreateTable = (values) => {
-    const { month, year } = values;
-    setDateData({ ...dateData, month: month, year: year });
-    setShowReportResult(true);
-  };
-
-  const onFinishFailedCreateTable = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-    setShowReportResult(false);
-  };
-
-  const ResultTitle = () => (
-    <Title className="main-title-result" level={4}>
-      Kết quả báo cáo doanh thu tháng {dateData.month} năm {dateData.year}
-    </Title>
-  );
-
-  const TotalValues = () => {
-    const total = dataSource.reduce((a, b) => a + b.total, 0);
-    return <Text className="result-total">Tổng doanh thu tháng: {total} đồng</Text>;
-  };
-  
-  return (
-    <StyleManageTag >
-      <HeaderLayout />
-      <Content style={{ margin: '0 16px' }}>
-        <BreadcrumbLayout root="Tag" branch="manage" />
-        <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
-          <Title className="main-title" level={2}>
-            Danh sách sản phẩm
-          </Title>
-
-          <Form
-            name="basic"
-            className="filter-form"
-            initialValues={{
-              remember: true,
-            }}
-            onFinish={onFinishCreateTable}
-            onFinishFailed={onFinishFailedCreateTable}
-            autoComplete="off"
-            layout="inline"
-            validateMessages={validateMessages}
-          >
-            <Form.Item
-              name="keyword"
-              // rules={[
-              //   {
-              //     type: 'text',
-              //     min: 1,
-              //     max: 20,
-              //   },
-              // ]}
-            >
-              <Input placeholder="Nhập mã/tên sản phẩm" style={{ width: '100%' }} />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Tìm kiếm 
-              </Button>
-            </Form.Item>
-          </Form>
-
-          {/* <div className={showReportResult ? 'show' : 'hide'}> */}
-          <div>
-            <Divider plain>Danh sách sản phẩm hiện nay</Divider>
-            <ResultTitle />
-            <TotalValues />
-            <Table className="result-table" dataSource={dataSource} pagination={{current: 2,
-      pageSize: 10,total: 200}} >
-              <Column title="Số thứ tụ" dataIndex="index"/>
-              <Column title="Mã sản phẩm" dataIndex="sku" />
-              <Column title="Tên sản phẩm" dataIndex="TagName"  />
-              <Column title="Giá bán" dataIndex="price"/>
-              <Column
-                    title="Thực hiện"
-                    key="action"
-                    render={(item) => {
-                        return(
-                            <Space size="middle">
-                                <Button icon={<EyeOutlined />} onClick={()=>{console.log(item)}}/>
-                                <Button icon={<EditOutlined/>} onClick={()=>{console.log(item)}}/>
-                                <Button icon={<DeleteOutlined/>} onClick={()=>{console.log(item)}}/>
-                            </Space>
-                        )}
-                    }
-                    />
-            </Table>
-            <Button
-              className="button-finish"
-              icon={<DownloadOutlined />}
-              type="primary"
-              size="middle"
-            >
-              In excel danh sách sản phẩm
-            </Button>
-          </div>
-        </div>
-      </Content>
-      <FooterLayout />
-    </StyleManageTag>
-  );
-};
-
-export default ManageTagPage;
+    export default ManageTagPage;

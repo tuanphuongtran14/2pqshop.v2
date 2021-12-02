@@ -17,7 +17,7 @@ import { removeAccents} from '../../helper/generateSku';
 const { Content } = AntLayout;
 const { Title } = Typography;
 const { TextArea } = Input;
-const StyledCreateCategoryForm = styled(AntLayout)`
+const StyledUpdateTagForm = styled(AntLayout)`
   .main-title {
     margin-bottom: 30px;
     text-align: center;
@@ -64,7 +64,7 @@ const StyledCreateCategoryForm = styled(AntLayout)`
   }
 `;
 
-const CreateCategoryForm = () => {
+const UpdateTagForm = () => {
   const history=useHistory();
   const [slug,setSlug]=useState('');
   const [isLoading,setIsLoading] = useState(false);
@@ -95,13 +95,13 @@ const CreateCategoryForm = () => {
   };
 
   useEffect(()=>{
-    onGetCategoryById(params.id);
+    onGetTagById(params.id);
   },[])
 
-  const onGetCategoryById=async (id)=>{
+  const onGetTagById=async (id)=>{
     try{
       setIsLoading(true);
-      const data= await actions.onGetCategoryByIdRequest(id);
+      const data= await actions.onGetTagByIdRequest(id);
       console.log(data);
       mapObjectToFrom(data);
       setIsLoading(false);
@@ -115,7 +115,8 @@ const CreateCategoryForm = () => {
   const mapObjectToFrom=(obj)=>{
     form.setFieldsValue({
       name:obj.name,
-      description:obj.description,
+      desc:obj.desc,
+      id:obj.id
     });
     setSlug(obj.slug);
 
@@ -123,10 +124,14 @@ const CreateCategoryForm = () => {
   const onFinishAddItem = async (values) => {
     try{
       setIsLoading(true);
-      const result= await actions.onUpdateCategoryRequest(params.id,values);
+      let param={
+        name:values.name,
+        desc:values.desc
+      };
+      const result= await actions.onUpdateTagRequest(params.id, param);
       setIsLoading(false);
-      Toast.notifySuccess(`Cập nhật thể loại sản phẩm thành công. Bạn có thể tìm kiếm với mã ${result.id}`);
-      history.push('/categories');
+      Toast.notifySuccess(`Cập nhật tag thành công. Bạn có thể tìm kiếm với mã ${result.id}`);
+      history.push('/tags');
       setIsLoading(false);
     }catch(e){
       setIsLoading(false);
@@ -136,41 +141,28 @@ const CreateCategoryForm = () => {
      
   };
 
-  const onChangeName= (e)=>{
-    let name=e.target.value;
-    name=removeAccents(name);
-    let slug=name.toLowerCase().split(' ').join('-');
-    setSlug(slug);
-
-  }
   return (
-    <StyledCreateCategoryForm >
+    <StyledUpdateTagForm >
       <HeaderLayout />
       <Content style={{ margin: '0 16px' }}>
-      <BreadcrumbLayout root="Thể loại sản phẩm" branch="Cập nhật" />
+      <BreadcrumbLayout root="Tag" branch="Cập nhật" />
 
         <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
           <Title className="main-title" level={2}>
-           Quản lý thể loại sản phẩm
+           Quản lý tag
           </Title>
           
-          <Divider plain>Thêm thể loại sản phẩm</Divider>
+          <Divider plain>Cập nhật tag</Divider>
           <Form
             {...layout}
             form={form}
             name="nest-messages"
             onFinish={onFinishAddItem}
             validateMessages={validateMessages}
-            fields={[
-              {
-                name: ["slug"],
-                value: slug,
-              },
-            ]}
           >
             <Form.Item
-              name="slug"
-              label="Slug"
+              name="id"
+              label="Mã tag"
               disabled={true}
               rules={[
                 {
@@ -182,17 +174,17 @@ const CreateCategoryForm = () => {
             </Form.Item>
             <Form.Item
               name="name"
-              label="Tên thể loại"
+              label="Tên tag"
               rules={[
                 {
                   required: true,
                 },
               ]}
             >
-              <Input onChange={onChangeName}/>
+              <Input />
             </Form.Item>
             <Form.Item
-              name="description"
+              name="desc"
               label="Mô tả"
               rules={[
                 {
@@ -202,9 +194,9 @@ const CreateCategoryForm = () => {
             >
               <TextArea rows={5} />
             </Form.Item>
-            <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 10 }}>
+            <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 11 }}>
               <Button type="primary" htmlType="submit">
-                Thêm thể loại
+                Cập nhật tag
               </Button>
             </Form.Item>
           </Form>
@@ -212,8 +204,8 @@ const CreateCategoryForm = () => {
         </div>
       </Content>
       <FooterLayout />
-    </StyledCreateCategoryForm>
+    </StyledUpdateTagForm>
   );
 };
 
-export default CreateCategoryForm;
+export default UpdateTagForm;

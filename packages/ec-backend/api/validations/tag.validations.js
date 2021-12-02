@@ -4,7 +4,7 @@ module.exports = {
   createSchema: (params) => {
     const schema = Joi.object({
       name: Joi.string().max(128).required(),
-      description: Joi.string().required(),
+      desc: Joi.string().required(),
     });
 
     const { error } = schema.validate(params);
@@ -18,7 +18,7 @@ module.exports = {
   updateSchema: (params) => {
     const schema = Joi.object({
       name: Joi.string().max(128),
-      description: Joi.string(),
+      desc: Joi.string(),
     });
 
     const { error } = schema.validate(params);

@@ -64,15 +64,15 @@ const Sidebar = () => {
             </Link>
           </Menu.Item>
         </SubMenu>
-        <SubMenu key="tag" icon={<TagOutlined />} title="tag">
-          <Menu.Item key="/manage-tags">
-            <span>Manage tags</span>
-            <Link to="/manage-tags">
+        <SubMenu key="tag" icon={<TagOutlined />} title="Tag">
+          <Menu.Item key="/tags">
+            <span>Quản lý tags</span>
+            <Link to="/tags">
             </Link>
           </Menu.Item>
-          <Menu.Item key="/create-tag">
+          <Menu.Item key="/tags/create">
             <span>Create tag</span>
-            <Link to="/create-tag">
+            <Link to="/tags/create">
             </Link>
           </Menu.Item>
         </SubMenu>

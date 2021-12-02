@@ -10,7 +10,9 @@ import CreateCategoryPage from './Containers/CategoryPage/CreateCategory';
 import UpdateCategoryPage from './Containers/CategoryPage/UpdateCategory';
 import ShowCategoryPage from './Containers/CategoryPage/ShowCategory';
 import ManageTagPage from './Containers/TagPage/ManageTag';
+import ShowTagPage from './Containers/TagPage/ShowTag';
 import CreateTagPage from './Containers/TagPage/CreateTag';
+import UpdateTagPage from './Containers/TagPage/UpdateTag';
 import ManageOrderPage from './Containers/OrderPage/ManageOrder';
 import ShowOrderPage from './Containers/OrderPage/ShowOrder';
 import ManageUserPage from './Containers/UserPage/ManageUser';
@@ -39,8 +41,10 @@ function Routes({ isLoggedIn, isLoading }) {
             <Route path="/categories/:id/update" component={UpdateCategoryPage} />
             <Route path="/categories/:id/" component={ShowCategoryPage} />
             <Route path="/categories" component={ManageCategoryPage} />
-            <Route path="/manage-tags" component={ManageTagPage} />
-            <Route path="/create-tag" component={CreateTagPage} />
+            <Route path="/tags/create" component={CreateTagPage} />
+            <Route path="/tags/:id/update" component={UpdateTagPage} />
+            <Route path="/tags/:id" component={ShowTagPage} />
+            <Route path="/tags" component={ManageTagPage} />
             <Route path="/orders/:id" component={ShowOrderPage} />
             <Route path="/orders" component={ManageOrderPage} />
             <Route path="/nguoi-dung/danh-sach" component={ManageUserPage} />

@@ -266,7 +266,7 @@ const ShowProductForm = () => {
     <StyledShowProductForm >
       <HeaderLayout />
       <Content style={{ margin: '0 16px' }}>
-      <BreadcrumbLayout root="Product" branch="show" />
+      <BreadcrumbLayout root="Sản phẩm" branch="hiển thị chi tiết" />
 
         <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
           <Title className="main-title" level={2}>

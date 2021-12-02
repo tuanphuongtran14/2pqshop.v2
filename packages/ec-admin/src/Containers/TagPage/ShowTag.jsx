@@ -17,7 +17,7 @@ import { removeAccents} from '../../helper/generateSku';
 const { Content } = AntLayout;
 const { Title } = Typography;
 const { TextArea } = Input;
-const StyledCreateCategoryForm = styled(AntLayout)`
+const StyledShowTagForm = styled(AntLayout)`
   .main-title {
     margin-bottom: 30px;
     text-align: center;
@@ -64,9 +64,8 @@ const StyledCreateCategoryForm = styled(AntLayout)`
   }
 `;
 
-const CreateCategoryForm = () => {
+const ShowTagForm = () => {
   const history=useHistory();
-  const [slug,setSlug]=useState('');
   const [isLoading,setIsLoading] = useState(false);
   const params=useParams();
   const [form] = Form.useForm();
@@ -95,13 +94,13 @@ const CreateCategoryForm = () => {
   };
 
   useEffect(()=>{
-    onGetCategoryById(params.id);
+    onGetTagById(params.id);
   },[])
 
-  const onGetCategoryById=async (id)=>{
+  const onGetTagById=async (id)=>{
     try{
       setIsLoading(true);
-      const data= await actions.onGetCategoryByIdRequest(id);
+      const data= await actions.onGetTagByIdRequest(id);
       console.log(data);
       mapObjectToFrom(data);
       setIsLoading(false);
@@ -115,62 +114,38 @@ const CreateCategoryForm = () => {
   const mapObjectToFrom=(obj)=>{
     form.setFieldsValue({
       name:obj.name,
-      description:obj.description,
+      desc:obj.desc,
+      id:obj.id
     });
-    setSlug(obj.slug);
 
   }
-  const onFinishAddItem = async (values) => {
-    try{
-      setIsLoading(true);
-      const result= await actions.onUpdateCategoryRequest(params.id,values);
-      setIsLoading(false);
-      Toast.notifySuccess(`Cập nhật thể loại sản phẩm thành công. Bạn có thể tìm kiếm với mã ${result.id}`);
-      history.push('/categories');
-      setIsLoading(false);
-    }catch(e){
-      setIsLoading(false);
-      console.log(e);
-      Toast.notifyError("Đã có lỗi xảy ra vui lòng kiểm tra lại");
-    }
-     
-  };
-
-  const onChangeName= (e)=>{
-    let name=e.target.value;
-    name=removeAccents(name);
-    let slug=name.toLowerCase().split(' ').join('-');
-    setSlug(slug);
-
+  
+  const onUpdateItem=(tag)=>{
+    history.push(`/tags/${tag.id}/update`);
   }
+
   return (
-    <StyledCreateCategoryForm >
+    <StyledShowTagForm >
       <HeaderLayout />
       <Content style={{ margin: '0 16px' }}>
-      <BreadcrumbLayout root="Thể loại sản phẩm" branch="Cập nhật" />
+      <BreadcrumbLayout root="Tag" branch="Hiển thị chi tiết" />
 
         <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
           <Title className="main-title" level={2}>
-           Quản lý thể loại sản phẩm
+           Quản lý tag
           </Title>
           
-          <Divider plain>Thêm thể loại sản phẩm</Divider>
+          <Divider plain>Hiển thị chi tiết tag</Divider>
           <Form
             {...layout}
             form={form}
             name="nest-messages"
-            onFinish={onFinishAddItem}
             validateMessages={validateMessages}
-            fields={[
-              {
-                name: ["slug"],
-                value: slug,
-              },
-            ]}
+            onFinish={onUpdateItem}
           >
             <Form.Item
-              name="slug"
-              label="Slug"
+              name="id"
+              label="Mã tag"
               disabled={true}
               rules={[
                 {
@@ -178,21 +153,21 @@ const CreateCategoryForm = () => {
                 },
               ]}
             >
-              <Input disabled={true}/>
+              <Input disabled={true} className="text-dark" />
             </Form.Item>
             <Form.Item
               name="name"
-              label="Tên thể loại"
+              label="Tên tag"
               rules={[
                 {
                   required: true,
                 },
               ]}
             >
-              <Input onChange={onChangeName}/>
+              <Input disabled={true} className="text-dark" />
             </Form.Item>
             <Form.Item
-              name="description"
+              name="desc"
               label="Mô tả"
               rules={[
                 {
@@ -200,11 +175,11 @@ const CreateCategoryForm = () => {
                 },
               ]}
             >
-              <TextArea rows={5} />
+              <TextArea rows={5} disabled={true} className="text-dark" />
             </Form.Item>
-            <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 10 }}>
+            <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 11 }}>
               <Button type="primary" htmlType="submit">
-                Thêm thể loại
+                Cập nhật tag
               </Button>
             </Form.Item>
           </Form>
@@ -212,8 +187,8 @@ const CreateCategoryForm = () => {
         </div>
       </Content>
       <FooterLayout />
-    </StyledCreateCategoryForm>
+    </StyledShowTagForm>
   );
 };
 
-export default CreateCategoryForm;
+export default ShowTagForm;

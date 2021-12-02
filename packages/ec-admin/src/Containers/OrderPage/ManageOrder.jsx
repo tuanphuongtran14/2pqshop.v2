@@ -362,7 +362,7 @@ const ManageOrderPage = () => {
     <StyleManageProduct >
       <HeaderLayout />
       <Content style={{ margin: '0 16px' }}>
-        <BreadcrumbLayout root="Product" branch="manage" />
+        <BreadcrumbLayout root="Hóa đơn" branch="Quản lý" />
         <div className="site-layout-background" style={{ padding: 24, minHeight: 360, position: 'relative' }}>
           <Title className="main-title" level={2}>
             Danh sách đơn hàng
@@ -473,7 +473,7 @@ const ManageOrderPage = () => {
              showSizeChanger: true, pageSizeOptions: ['5', '10', '15'],
              onChange:onPageChange}} >
               <Column title="STT" dataIndex="index"/>
-              <Column title="Mã sản phẩm" dataIndex="id" />
+              <Column title="Mã đơn hàng" dataIndex="id" />
               <Column title="Số điện thoại" dataIndex="receiverPhone"  />
               <Column title="Ngày nhận" dataIndex="orderDate"  />
               <Column title="Thanh toán" dataIndex="finalAmount"/>

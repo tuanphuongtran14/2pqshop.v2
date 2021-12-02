@@ -38,6 +38,18 @@ export const onGetCategoryByIdRequest=(id)=>{
     })
 }
 
+export const onDeleteCategoryByIdRequest=(id)=>{
+    return new Promise( async(resolve, reject) => {
+        try{
+            const data= await axios.delete(`/categories/${id}`);
+            resolve(data);
+        
+        }catch(e){
+            reject(e.response)
+        }
+    })
+}
+
 export const onUpdateCategoryRequest=(id,category)=>{
     return new Promise( async(resolve, reject) => {
         try{

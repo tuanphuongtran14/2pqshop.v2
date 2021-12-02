@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import * as actions from './actions'
 import {
   Layout as AntLayout,
-  Breadcrumb,
   Typography,
   Form,
   Input,
@@ -72,22 +71,21 @@ const StyleManageProduct = styled(AntLayout)`
 
 const ManageProductPage = () => {
 
-  const location=useLocation();
   const [dataSource, setDataSource] = useState([]);
   const [pageSize, setPageSize] = useState(10);
   const [pageIndex, setPageIndex] = useState(1);
   const [totalProducts, setTotalProduct] = useState(0);
   const history=useHistory();
   const [isLoading,setIsLoading] = useState(false);
+  const [isSearch, setIsSearch] =useState(false);
   const [form] = Form.useForm();
 
   useEffect( ()=>{
-    console.log('có');
     onGetListProduct({
       pageIndex,
       pageSize
     })
-  },[location.pathname,pageIndex,pageSize])
+  },[isSearch])
 
   useEffect(()=>{
     form.setFieldsValue({
@@ -112,7 +110,7 @@ const ManageProductPage = () => {
         try {
             setIsLoading(true);
             const data = await actions.onGetListProductRequest(pagination);
-            setIsLoading(false);
+            
             let lstTempProduct = data.results;
             let lstProduct = lstTempProduct.map((item, index) => {
             return {
@@ -125,28 +123,28 @@ const ManageProductPage = () => {
             const panigionServer = data.pagination;
             setDataSource(lstProduct);
             setTotalProduct(panigionServer.total);
+            setIsLoading(false);
         } catch (e) {
           setIsLoading(false);
             Toast.notifyError('Đã có lỗi xảy ra vui lòng kiểm tra lại');
         }
-    
     }
     const onPageChange = (pageIndex, pageSize) => {
         setPageIndex(pageIndex);
         setPageSize(pageSize);
+        setIsSearch(!isSearch);
     }
     const onSearch= async(values)=>{
       try{
         setIsLoading(true);
         if(values.keyword===''){
-          setPageIndex(1);
+          setIsSearch(!isSearch);
           return ;
         }
         const data = await actions.onSearchProductRequest(values.keyword,{
           pageIndex,
           pageSize
         });
-        console.log(data);
         let lstTempProduct = data.results;
         let lstProduct = lstTempProduct.map((item, index) => {
         return {
@@ -166,8 +164,6 @@ const ManageProductPage = () => {
         setIsLoading(false);
         Toast.notifyError("Đã có lỗi. Vui lòng thử lại")
       }
-      
-
     }
 
   const onDeleteProduct=async(item)=>{
@@ -177,12 +173,8 @@ const ManageProductPage = () => {
         setIsLoading(true);
         await actions.onDeleletProductRequest(item.id);
         setIsLoading(false);
+        setIsSearch(!isSearch);
         Toast.notifySuccess('Đã xóa sản phẩm thành công');
-        setPageIndex(1);
-        onGetListProduct({
-          pageIndex:1,
-          pageSize
-        })
       }
     }catch(e){
       setIsLoading(false);
@@ -209,7 +201,7 @@ const ManageProductPage = () => {
     <StyleManageProduct >
       <HeaderLayout />
       <Content style={{ margin: '0 16px' }}>
-        <BreadcrumbLayout root="Product" branch="manage" />
+        <BreadcrumbLayout root="Sản phẩm" branch="Quản lý" />
         <div className="site-layout-background" style={{ padding: 24, minHeight: 360, position: 'relative' }}>
           <Title className="main-title" level={2}>
             Danh sách sản phẩm

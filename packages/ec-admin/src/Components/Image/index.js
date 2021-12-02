@@ -8,7 +8,6 @@ const ImageLayout = (props) => {
   const onChange = ({ file,fileList: newFileList }) => {
     setFileList(newFileList);
     
-
   };
 
   const onPreview = async file => {

@@ -165,7 +165,7 @@ const CreateCategoryForm = () => {
                 },
               ]}
             >
-              <Input disabled={true}/>
+              <Input disabled={true} className="text-dark"/>
             </Form.Item>
             <Form.Item
               name="name"
@@ -176,7 +176,7 @@ const CreateCategoryForm = () => {
                 },
               ]}
             >
-              <Input disabled={true} onChange={onChangeName}/>
+              <Input disabled={true} onChange={onChangeName} className="text-dark"/>
             </Form.Item>
             <Form.Item
               name="description"
@@ -187,7 +187,7 @@ const CreateCategoryForm = () => {
                 },
               ]}
             >
-              <TextArea disabled={true} rows={5} />
+              <TextArea disabled={true} rows={5} className="text-dark"/>
             </Form.Item>
             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 10 }}>
               <Button type="primary" htmlType="submit">

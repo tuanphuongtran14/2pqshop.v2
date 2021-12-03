@@ -193,14 +193,6 @@ const ManageTagPage = () => {
                       }}
                   />
                   </Table>
-                  <Button
-                  className="button-finish"
-                  icon={<DownloadOutlined />}
-                  type="primary"
-                  size="middle"
-                  >
-                  In excel danh sách sản phẩm
-                  </Button>
               </div> 
             </div>
             <LoadingScreenCustom isLoading={isLoading} setIsLoading={setIsLoading}/>

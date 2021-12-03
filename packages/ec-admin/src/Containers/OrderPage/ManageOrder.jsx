@@ -504,14 +504,6 @@ const ManageOrderPage = () => {
                     }
                     />
             </Table>
-            <Button
-              className="button-finish"
-              icon={<DownloadOutlined />}
-              type="primary"
-              size="middle"
-            >
-              In excel danh sách sản phẩm
-            </Button>
           </div>
           <LoadingScreenCustom isLoading={isLoading} setIsLoading={setIsLoading}/>
         </div>   

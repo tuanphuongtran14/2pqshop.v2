@@ -120,7 +120,7 @@ class IndexPage extends Component {
                         smartSpeed={1200}
                         autoplay={false}
                     >
-                        <div className="hero__items set-bg" data-setbg="img/hero/hero-1.jpg" >
+                        <div className="hero__items set-bg" data-setbg="/img/hero/hero-1.jpg" >
                             <div className="container">
                                 <div className="row">
                                     <div className="col-xl-5 col-lg-7 col-md-8">
@@ -282,7 +282,7 @@ class IndexPage extends Component {
                         <div className="row">
                             <div className="col-lg-4 col-md-6 col-sm-6">
                                 <div className="blog__item">
-                                    <div className="blog__item__pic set-bg" data-setbg="img/blog/blog-1.jpg"></div>
+                                    <div className="blog__item__pic set-bg" data-setbg="/img/blog/blog-1.jpg"></div>
                                     <div className="blog__item__text">
                                         <span><img src="/img/icon/calendar.png" alt="" /> 16 05 2021</span>
                                         <h5>Sự kết hợp giữa thời trang và cà phê</h5>

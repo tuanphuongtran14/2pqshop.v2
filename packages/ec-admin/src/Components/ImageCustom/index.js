@@ -11,7 +11,7 @@ const ImageLayoutCustom = (props) => {
           listImage.map((item,index)=>{
             return (
               <div key={index} className=" me-2">
-                <img alt={item} src={`http://localhost:8081${item}`} style={{width:'100px',height:'120px'}} />
+                <img alt={item} src={`${process.env.REACT_APP_API_URL}${item}`} style={{width:'100px',height:'120px'}} />
               </div>
             )
           })

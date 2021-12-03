@@ -185,7 +185,7 @@ const ShowProductForm = () => {
           uid: `-${index}`,
           name: item,
           status: 'done',
-          url: `http://localhost:8081${item}`,
+          url: `${process.env.REACT_APP_API_URL}${item}`,
         }
         listData.push(data);
     })

@@ -26,11 +26,13 @@ const ImageLayout = (props) => {
   };
 
   const onRemove=(item)=>{
-    let list=[...listImage];
-    if(list.length>0){
-      list =list.filter(data=>data!==item.name);
+    if(listImage!==null){
+      let list=[...listImage];
+      if(list.length>0){
+        list =list.filter(data=>data!==item.name);
+      }
+      setListImage(list);
     }
-    setListImage(list);
   }
   return (
     <ImgCrop rotate >

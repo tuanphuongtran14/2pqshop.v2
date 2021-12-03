@@ -18,7 +18,7 @@ const StyledLayout = styled(AntLayout)`
 
 const Layout = ({ children }) => {
   return (
-    <StyledLayout style={{ minHeight: '100vh' }}>
+    <StyledLayout style={{ }}>
       <Sidebar  />
         {children}
     </StyledLayout>

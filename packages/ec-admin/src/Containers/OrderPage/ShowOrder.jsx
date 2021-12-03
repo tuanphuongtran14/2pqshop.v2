@@ -122,7 +122,6 @@ const ManageOrderPage = () => {
   const [valueStatus,setValueStatus]=useState('');
 
   useEffect(()=>{
-    console.log(params.id)
     onGetOrderById(params.id);
   },[flagSearch])
 
@@ -146,7 +145,6 @@ const ManageOrderPage = () => {
       const data= await actions.onGetOrderByIdRequest(id);
       setForm(data);
       let lstTempDetailOrder = data.items;
-      console.log(lstTempDetailOrder);
       let lstDetailOrder = lstTempDetailOrder.map((item, index) => {
       return {
           ...item,

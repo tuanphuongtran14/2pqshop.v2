@@ -95,15 +95,13 @@ const CreateCategoryForm = () => {
   const onFinishAddItem = async (values) => {
     try{
       setIsLoading(true);
-      console.log('value',values);
       const result= await actions.onCreateCategoryRequest(values);
       setIsLoading(false);
       Toast.notifySuccess(`Thêm thể loại thành công. Bạn có thể tìm kiếm với mã ${result.id}`);
-      history.push('/manage-categories')
+      history.push('/categories')
       setIsLoading(false);
     }catch(e){
       setIsLoading(false);
-      console.log(e);
       Toast.notifyError("Đã có lỗi xảy ra vui lòng kiểm tra lại");
     }
      

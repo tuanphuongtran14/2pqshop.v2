@@ -46,9 +46,11 @@ export const onCreateProductRequest=(product)=>{
                 url: '/products',
                 data: product,
               });
+            console.log('data',data);
+            await axios.get(`/facebook/post-product/${data.id}`)
             resolve(data);
-        
         }catch(e){
+            console.log(e.response)
             reject(e.response)
         }
     })
@@ -62,6 +64,7 @@ export const onUpdateProductRequest=(product,id)=>{
                 url: `/products/${id}`,
                 data: product,
               });
+              console.log(data);
             resolve(data);
         
         }catch(e){

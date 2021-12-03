@@ -27,7 +27,6 @@ export const onUpdateOrderStatusByIdRequest=(objOrderStatus)=>{
 }
 
 export const onGetListOrderRequest=(objSearch)=>{
-    console.log(objSearch)
     return new Promise( async(resolve, reject) => {
         try{
             const query = qs.stringify({

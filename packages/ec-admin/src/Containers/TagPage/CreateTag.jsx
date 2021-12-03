@@ -102,7 +102,6 @@ const CreateCategoryForm = () => {
       setIsLoading(false);
     }catch(e){
       setIsLoading(false);
-      console.log(e);
       Toast.notifyError("Đã có lỗi xảy ra vui lòng kiểm tra lại");
     }
      

@@ -101,7 +101,6 @@ const ShowTagForm = () => {
     try{
       setIsLoading(true);
       const data= await actions.onGetTagByIdRequest(id);
-      console.log(data);
       mapObjectToFrom(data);
       setIsLoading(false);
     }

@@ -388,7 +388,6 @@ const UpdateProductForm = () => {
       <HeaderLayout />
       <Content style={{ margin: '0 16px' }}>
       <BreadcrumbLayout root="Sản phẩm" branch="Cập nhật" />
-
         <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
           <Title className="main-title" level={2}>
            Cập nhật sản phẩm

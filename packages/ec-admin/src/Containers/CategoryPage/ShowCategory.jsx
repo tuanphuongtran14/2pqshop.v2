@@ -102,7 +102,6 @@ const CreateCategoryForm = () => {
     try{
       setIsLoading(true);
       const data= await actions.onGetCategoryByIdRequest(id);
-      console.log(data);
       mapObjectToFrom(data);
       setIsLoading(false);
     }

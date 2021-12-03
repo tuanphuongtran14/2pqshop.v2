@@ -201,9 +201,9 @@ const ManageTagPage = () => {
                   >
                   In excel danh sách sản phẩm
                   </Button>
-              </div>
-              <LoadingScreenCustom isLoading={isLoading} setIsLoading={setIsLoading}/>
+              </div> 
             </div>
+            <LoadingScreenCustom isLoading={isLoading} setIsLoading={setIsLoading}/>
         </Content>
         <FooterLayout />
         </StyleManageTag>

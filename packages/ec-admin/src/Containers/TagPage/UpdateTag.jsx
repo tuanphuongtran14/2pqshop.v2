@@ -102,7 +102,6 @@ const UpdateTagForm = () => {
     try{
       setIsLoading(true);
       const data= await actions.onGetTagByIdRequest(id);
-      console.log(data);
       mapObjectToFrom(data);
       setIsLoading(false);
     }
@@ -135,7 +134,6 @@ const UpdateTagForm = () => {
       setIsLoading(false);
     }catch(e){
       setIsLoading(false);
-      console.log(e);
       Toast.notifyError("Đã có lỗi xảy ra vui lòng kiểm tra lại");
     }
      

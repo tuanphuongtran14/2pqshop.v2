@@ -138,18 +138,15 @@ const CreateProductForm = () => {
       data.append('fullDesc',values.fullDesc);
       data.append('additionalInfo',values.additionalInfo);
       data.append('images','[]');
-      console.log('fileList',fileList);
       fileList.forEach(item=>{
-        console.log('item',item);
        data.append("files.images",item.originFileObj);
       })
       const result= await actions.onCreateProductRequest(data);
       setIsLoading(false);
       Toast.notifySuccess(`Thêm sản phẩm thành công. Bạn có thể tìm kiếm với mã ${result.id}`);
-      history.push('/manage-products')
+      history.push('/products')
     }catch(e){
       setIsLoading(false);
-      console.log(e);
       Toast.notifyError("Đã có lỗi xảy ra vui lòng kiểm tra lại");
     }
      
@@ -234,7 +231,7 @@ const CreateProductForm = () => {
           
           <Divider plain>Thêm hình ảnh sản phẩm</Divider>
           <div className="mt-2 text-center">
-            <ImageLayout fileList={fileList} setFileList={setFileList}/>
+            <ImageLayout fileList={fileList} setFileList={setFileList} listImage={null} setListImage={null}/>
           </div>
           <Form
             {...layout}

@@ -3,20 +3,13 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import {
   Layout as AntLayout,
-  Breadcrumb,
   Typography,
   Form,
   Input,
   Button,
-  Divider,
-  Table,
-  Popconfirm,
-  message,
   InputNumber,
-  Row, Col,Space
 } from 'antd';
-import { CheckCircleOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import {HeaderLayout, BreadcrumbLayout,FooterLayout,ImageLayout} from './../../Components'
+import {HeaderLayout, BreadcrumbLayout,FooterLayout} from './../../Components'
 const { Content } = AntLayout;
 const { Title, Text } = Typography;
 
@@ -63,8 +56,6 @@ const StyledCreateProductForm = styled(AntLayout)`
 `;
 
 const RegisterAdminForm = () => {
-  const [showReportResult, setShowReportResult] = useState(false);
-  const [dateData, setDateData] = useState({ month: '', year: '' });
   const [dataSource, setDataSource] = useState([
     {
       key: '1',
@@ -112,9 +103,6 @@ const RegisterAdminForm = () => {
       range: '${label} phải ở giữa ${min} và ${max}',
     },
   };
-
-  
-  
 
   const onFinishAddItem = (values) => {
     values.carNumber = dataSource.length + 1;

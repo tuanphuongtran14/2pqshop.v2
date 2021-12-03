@@ -168,7 +168,6 @@ const ManageOrderPage = () => {
         try {
             setIsLoading(true);
           const data = await actions.onGetListOrderRequest(objSearch);
-          console.log(data);
             let lstTempOrder = data.results;
             let lstOrder = lstTempOrder.map((item, index) => {
             return {

@@ -102,7 +102,6 @@ const CreateCategoryForm = () => {
     try{
       setIsLoading(true);
       const data= await actions.onGetCategoryByIdRequest(id);
-      console.log(data);
       mapObjectToFrom(data);
       setIsLoading(false);
     }
@@ -130,7 +129,6 @@ const CreateCategoryForm = () => {
       setIsLoading(false);
     }catch(e){
       setIsLoading(false);
-      console.log(e);
       Toast.notifyError("Đã có lỗi xảy ra vui lòng kiểm tra lại");
     }
      

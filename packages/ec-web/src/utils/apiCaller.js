@@ -4,7 +4,7 @@ export default function callApi(endpoint,method='GET',body, config){
     return axios({
         method: method,
         url: endpoint,
-        baseURL: "http://localhost:8081/",
+        baseURL: `${process.env.REACT_APP_API_URL}/`,
         data: body,
         ...config      
     })

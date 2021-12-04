@@ -21,7 +21,6 @@ exports.initializeModel = (mongoose) => {
       },
       receiverEmail: {
         type: String,
-        required: true,
       },
       address: {
         type: String,

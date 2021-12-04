@@ -14,7 +14,7 @@ class InfoUser extends Component {
                     <tbody>
                         <tr>
                             <th scope="row">Họ tên</th>
-                            <td className="text-info">{user.username}</td>
+                            <td className="text-info">{user.firstName + " " + user.lastName}</td>
                         </tr>
                         <tr>
                             <th scope="row">Số điện thoại:</th>
@@ -26,7 +26,7 @@ class InfoUser extends Component {
                         </tr>
                         <tr>
                                 <th scope="row">Địa chỉ:</th>
-                                <td className="text-info">{user.address}
+                                <td className="text-info">19 Quang Trung, TX. An Khê, Bình Định
                                     </td>
                         </tr>
                         <tr>

@@ -31,6 +31,7 @@ module.exports = {
     {
       roleKey: 'public',
       permissions: [
+        { method: '*', path: '/uploads', isExactly: false },
         { method: 'GET', path: '/products', isExactly: true },
         { method: 'GET', path: '/products/', isExactly: false },
         { method: 'GET', path: '/categories', isExactly: true },
@@ -49,6 +50,7 @@ module.exports = {
     {
       roleKey: 'user',
       permissions: [
+        { method: '*', path: '/uploads', isExactly: false },
         { method: 'GET', path: '/products', isExactly: true },
         { method: 'GET', path: '/products/', isExactly: false },
         { method: 'GET', path: '/categories', isExactly: true },
@@ -72,6 +74,7 @@ module.exports = {
     {
       roleKey: 'sales_staff',
       permissions: [
+        { method: '*', path: '/uploads', isExactly: false },
         { method: 'GET', path: '/products', isExactly: true },
         { method: 'GET', path: '/products/', isExactly: false },
         { method: 'GET', path: '/categories', isExactly: true },
@@ -89,6 +92,7 @@ module.exports = {
     {
       roleKey: 'warehouse_staff',
       permissions: [
+        { method: '*', path: '/uploads', isExactly: false },
         { method: 'GET', path: '/products', isExactly: true },
         { method: 'GET', path: '/products/', isExactly: false },
         { method: 'GET', path: '/categories', isExactly: true },
@@ -106,6 +110,7 @@ module.exports = {
     {
       roleKey: 'super_admin',
       permissions: [
+        { method: '*', path: '/uploads', isExactly: false },
         { method: 'POST', path: '/users/auth/send-email-confirmation', isExactly: true },
         { method: 'GET', path: '/users/auth/email-confirmation', isExactly: true },
         { method: '*', path: '/users/me/cart', isExactly: false },

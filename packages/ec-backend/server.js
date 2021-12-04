@@ -12,7 +12,10 @@ const authentication = require('./api/middleware/authentication');
 const permission = require('./api/middleware/permission');
 
 app.use(morgan('dev'));
-app.use(cors('*'));
+app.use(cors({
+  origin: '*'
+}));
+
 
 // Configure body parser
 app.use(express.json());

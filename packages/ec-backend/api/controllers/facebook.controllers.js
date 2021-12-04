@@ -34,6 +34,7 @@ module.exports = {
             published: false,
             url: DOMAIN + imageURL,
           }
+          console.log(params.url);
           return fb.api(`/${pageId}/photos`, 'POST', params)
         }));
       } else {

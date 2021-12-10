@@ -23,6 +23,8 @@ const { Content } = AntLayout;
 const StyleManageTag = styled(AntLayout)`
   .site-layout-background {
     background: #fff;
+    position: relative;
+    z-index:0
   }
 
   .main-title {
@@ -194,8 +196,9 @@ const ManageTagPage = () => {
                   />
                   </Table>
               </div> 
+              <LoadingScreenCustom isLoading={isLoading} setIsLoading={setIsLoading}/>
             </div>
-            <LoadingScreenCustom isLoading={isLoading} setIsLoading={setIsLoading}/>
+            
         </Content>
         <FooterLayout />
         </StyleManageTag>

@@ -197,6 +197,7 @@ const CreateCategoryForm = () => {
           </Form>
           <LoadingScreenCustom isLoading={isLoading} setIsLoading={setIsLoading}/>
         </div>
+        
       </Content>
       <FooterLayout />
     </StyledCreateCategoryForm>

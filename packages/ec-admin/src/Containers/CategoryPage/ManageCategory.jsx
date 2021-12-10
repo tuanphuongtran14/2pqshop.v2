@@ -23,6 +23,8 @@ const { Content } = AntLayout;
 const StyleManageCategory = styled(AntLayout)`
   .site-layout-background {
     background: #fff;
+    position: relative;
+    z-index:0
   }
 
   .main-title {

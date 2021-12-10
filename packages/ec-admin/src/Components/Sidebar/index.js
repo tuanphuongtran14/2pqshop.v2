@@ -30,7 +30,7 @@ const Sidebar = () => {
       <div className="logo" />
       <Menu theme="dark" defaultSelectedKeys={[location.pathname]} mode="inline">
         <Menu.Item key="/" icon={<HomeOutlined />}>
-            <span>Home Page</span>
+            <span>Trang chủ</span>
             <Link to="/"></Link>
         </Menu.Item>
         <SubMenu key="users" icon={<UserOutlined />} title="Người dùng">

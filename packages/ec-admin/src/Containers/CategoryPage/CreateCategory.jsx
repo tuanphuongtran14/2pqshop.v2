@@ -177,9 +177,10 @@ const CreateCategoryForm = () => {
                 Thêm thể loại
               </Button>
             </Form.Item>
-          </Form>
-          <LoadingScreenCustom isLoading={isLoading} setIsLoading={setIsLoading}/>
+          </Form> 
+          <LoadingScreenCustom isLoading={isLoading} setIsLoading={setIsLoading}/>  
         </div>
+        
       </Content>
       <FooterLayout />
     </StyledCreateCategoryForm>

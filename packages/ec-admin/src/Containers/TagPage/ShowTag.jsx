@@ -181,9 +181,10 @@ const ShowTagForm = () => {
                 Cập nhật tag
               </Button>
             </Form.Item>
-          </Form>
+          </Form>   
           <LoadingScreenCustom isLoading={isLoading} setIsLoading={setIsLoading}/>
         </div>
+        
       </Content>
       <FooterLayout />
     </StyledShowTagForm>
